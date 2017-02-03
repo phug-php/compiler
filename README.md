@@ -5,9 +5,7 @@ Phug Compiler
 What is Phug Compiler?
 --------------------
 
-The Phug compiler get a document node from the parser then return the compiled
-document element to be formatter to HTML, XML or any other representation with
-the formatter.
+The Phug compiler get pug string or a pug file then return a PHP compiled template.
 
 Installation
 ------------
@@ -24,7 +22,7 @@ Usage
 ```php
 
 $compiler = new Phug\Compiler($options);
-$root = $compiler->compile($pugInput);
+$phtml = $compiler->compile($pugInput);
 
-//$root is now a Phug\Formatter\Element\DocumentElement element
+//$phtml is the PHP compiled template
 ```
