@@ -22,7 +22,7 @@
     "require": {
         "php": ">=5.5.0",
         "phug/formatter": "^0.1.0",
-        "phug/parser": "^0.1.1",
+        "phug/parser": "^0.1.1"
     },
     "require-dev": {
         "phug/dev-tool": "^0.1.0"
