@@ -2,13 +2,66 @@
 
 namespace Phug;
 
+use Phug\Compiler\AssignementListCompiler;
+use Phug\Compiler\AssignementCompiler;
+use Phug\Compiler\AttributeListCompiler;
+use Phug\Compiler\AttributeCompiler;
+use Phug\Compiler\BlockCompiler;
+use Phug\Compiler\CaseCompiler;
+use Phug\Compiler\CommentCompiler;
+use Phug\Compiler\ConditionalCompiler;
+use Phug\Compiler\DoctypeCompiler;
 use Phug\Compiler\DocumentCompiler;
+use Phug\Compiler\DoCompiler;
+use Phug\Compiler\EachCompiler;
 use Phug\Compiler\ElementCompiler;
+use Phug\Compiler\ExpressionCompiler;
+use Phug\Compiler\FilterCompiler;
+use Phug\Compiler\ForCompiler;
+use Phug\Compiler\ImportCompiler;
+use Phug\Compiler\MixinCallCompiler;
+use Phug\Compiler\MixinCompiler;
+use Phug\Compiler\TextCompiler;
+use Phug\Compiler\VariableCompiler;
+use Phug\Compiler\WhenCompiler;
+use Phug\Compiler\WhileCompiler;
+
+use Phug\Formatter\Format\BasicFormat;
+use Phug\Formatter\Format\FramesetFormat;
 use Phug\Formatter\Format\HtmlFormat;
+use Phug\Formatter\Format\MobileFormat;
+use Phug\Formatter\Format\OneDotOneFormat;
+use Phug\Formatter\Format\PlistFormat;
+use Phug\Formatter\Format\StrictFormat;
+use Phug\Formatter\Format\TransitionalFormat;
+use Phug\Formatter\Format\XmlFormat;
 use Phug\Formatter\FormatInterface;
+
+use Phug\Parser\Node\AssignementListNode;
+use Phug\Parser\Node\AssignementNode;
+use Phug\Parser\Node\AttributeListNode;
+use Phug\Parser\Node\AttributeNode;
+use Phug\Parser\Node\BlockNode;
+use Phug\Parser\Node\CaseNode;
+use Phug\Parser\Node\CommentNode;
+use Phug\Parser\Node\ConditionalNode;
+use Phug\Parser\Node\DoctypeNode;
 use Phug\Parser\Node\DocumentNode;
+use Phug\Parser\Node\DoNode;
+use Phug\Parser\Node\EachNode;
 use Phug\Parser\Node\ElementNode;
+use Phug\Parser\Node\ExpressionNode;
+use Phug\Parser\Node\FilterNode;
+use Phug\Parser\Node\ForNode;
+use Phug\Parser\Node\ImportNode;
+use Phug\Parser\Node\MixinCallNode;
+use Phug\Parser\Node\MixinNode;
+use Phug\Parser\Node\TextNode;
+use Phug\Parser\Node\VariableNode;
+use Phug\Parser\Node\WhenNode;
+use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
+
 use Phug\Util\OptionInterface;
 use Phug\Util\Partial\OptionTrait;
 
@@ -33,10 +86,42 @@ class Compiler implements OptionInterface, CompilerInterface
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
-            'format_class_name'    => HtmlFormat::class,
+            'default_format'       => BasicFormat::class,
+            'formats'              => [
+                'basic'        => BasicFormat::class,
+                'frameset'     => FramesetFormat::class,
+                'html'         => HtmlFormat::class,
+                'mobile'       => MobileFormat::class,
+                '1.1'          => OneDotOneFormat::class,
+                'plist'        => PlistFormat::class,
+                'strict'       => StrictFormat::class,
+                'transitional' => TransitionalFormat::class,
+                'xml'          => XmlFormat::class,
+            ],
             'node_compilers'       => [
-                DocumentNode::class => DocumentCompiler::class,
-                ElementNode::class  => ElementCompiler::class,
+                AssignementListNode::class => AssignementListCompiler::class,
+                AssignementNode::class     => AssignementCompiler::class,
+                AttributeListNode::class   => AttributeListCompiler::class,
+                AttributeNode::class       => AttributeCompiler::class,
+                BlockNode::class           => BlockCompiler::class,
+                CaseNode::class            => CaseCompiler::class,
+                CommentNode::class         => CommentCompiler::class,
+                ConditionalNode::class     => ConditionalCompiler::class,
+                DoctypeNode::class         => DoctypeCompiler::class,
+                DocumentNode::class        => DocumentCompiler::class,
+                DoNode::class              => DoCompiler::class,
+                EachNode::class            => EachCompiler::class,
+                ElementNode::class         => ElementCompiler::class,
+                ExpressionNode::class      => ExpressionCompiler::class,
+                FilterNode::class          => FilterCompiler::class,
+                ForNode::class             => ForCompiler::class,
+                ImportNode::class          => ImportCompiler::class,
+                MixinCallNode::class       => MixinCallCompiler::class,
+                MixinNode::class           => MixinCompiler::class,
+                TextNode::class            => TextCompiler::class,
+                VariableNode::class        => VariableCompiler::class,
+                WhenNode::class            => WhenCompiler::class,
+                WhileNode::class           => WhileCompiler::class,
             ],
         ], $options ?: []);
 
@@ -62,11 +147,11 @@ class Compiler implements OptionInterface, CompilerInterface
 
         $this->formatter = new $formatterClassName($this->options['formatter_options']);
 
-        $formatClassName = $this->options['format_class_name'];
+        $formatClassName = $this->options['default_format'];
 
         if (!is_a($formatClassName, FormatInterface::class, true)) {
             throw new CompilerException(
-                "Passed format class $formatClassName must ".
+                "Passed default format class $formatClassName must ".
                 'implement '.FormatInterface::class
             );
         }
@@ -99,6 +184,27 @@ class Compiler implements OptionInterface, CompilerInterface
     public function getFormatter()
     {
         return $this->formatter;
+    }
+
+    /**
+     * Set the node compiler for a givent node class name.
+     *
+     * @param string                       node class name
+     * @param NodeCompilerInterface|string handler
+     *
+     * @return $this
+     */
+    public function setFormat($doctype, $format)
+    {
+        if (!is_a($format, FormatInterface::class, true)) {
+            throw new \InvalidArgumentException(
+                "Passed default format class $format must ".
+                'implement '.FormatInterface::class
+            );
+        }
+        $this->setOption(['formats', $doctype], $format);
+
+        return $this;
     }
 
     /**

@@ -1,0 +1,23 @@
+<?php
+
+namespace Phug\Compiler;
+
+use Phug\AbstractNodeCompiler;
+use Phug\CompilerException;
+use Phug\Formatter\Element\MarkupElement;
+use Phug\Parser\Node\ConditionalNode;
+use Phug\Parser\NodeInterface;
+
+class ConditionalCompiler extends AbstractNodeCompiler
+{
+    public function compileNode(NodeInterface $node)
+    {
+        if (!($node instanceof ConditionalNode)) {
+            throw new CompilerException(
+                'Unexpected '.get_class($node).' given to conditional compiler.'
+            );
+        }
+
+        return new MarkupElement('to-do-conditional');
+    }
+}
