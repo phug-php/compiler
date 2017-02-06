@@ -3,10 +3,8 @@
 namespace Phug;
 
 use Phug\Compiler\DocumentCompiler;
-use Phug\Formatter;
 use Phug\Formatter\Format\HtmlFormat;
 use Phug\Formatter\FormatInterface;
-use Phug\Parser;
 use Phug\Parser\Node\DocumentNode;
 use Phug\Parser\NodeInterface;
 use Phug\Util\OptionInterface;
