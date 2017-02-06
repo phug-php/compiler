@@ -3,9 +3,11 @@
 namespace Phug;
 
 use Phug\Compiler\DocumentCompiler;
+use Phug\Compiler\ElementCompiler;
 use Phug\Formatter\Format\HtmlFormat;
 use Phug\Formatter\FormatInterface;
 use Phug\Parser\Node\DocumentNode;
+use Phug\Parser\Node\ElementNode;
 use Phug\Parser\NodeInterface;
 use Phug\Util\OptionInterface;
 use Phug\Util\Partial\OptionTrait;
@@ -34,6 +36,7 @@ class Compiler implements OptionInterface, CompilerInterface
             'format_class_name'    => HtmlFormat::class,
             'node_compilers'       => [
                 DocumentNode::class => DocumentCompiler::class,
+                ElementNode::class  => ElementCompiler::class,
             ],
         ], $options ?: []);
 
@@ -153,6 +156,10 @@ class Compiler implements OptionInterface, CompilerInterface
                 return $compiler->compileNode($node);
             }
         }
+
+        throw new CompilerException(
+            'No compiler found able to compile '.get_class($node)
+        );
     }
 
     /**
