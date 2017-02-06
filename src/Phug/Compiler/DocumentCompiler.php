@@ -4,9 +4,9 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\DocumentElement;
 use Phug\Parser\Node\DocumentNode;
 use Phug\Parser\NodeInterface;
-use Phug\Formatter\Element\DocumentElement;
 
 class DocumentCompiler extends AbstractNodeCompiler
 {

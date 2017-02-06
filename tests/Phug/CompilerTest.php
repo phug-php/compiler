@@ -14,6 +14,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testCompile()
     {
-        self::assertSame('<html></html>', $this->compiler->compile('html')); 
+        self::assertSame('<html></html>', $this->compiler->compile('html'));
     }
 }
