@@ -14,6 +14,11 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
         $this->compiler = $compiler;
     }
 
+    public function getCompiler()
+    {
+        return $this->compiler;
+    }
+
     public function compileNodeChildren(NodeInterface $node, ElementInterface $element)
     {
         foreach ($node->getChildren() ?: [] as $child) {

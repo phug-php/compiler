@@ -15,4 +15,12 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     {
         $this->compiler = new Compiler();
     }
+
+    protected function assertCompile($expected, $actual)
+    {
+        $actual = is_string($actual) ? $actual : implode('', $actual);
+        $expected = is_string($expected) ? $expected : implode('', $expected);
+
+        self::assertSame($expected, $this->compiler->compile($actual));
+    }
 }

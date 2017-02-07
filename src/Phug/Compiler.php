@@ -2,6 +2,7 @@
 
 namespace Phug;
 
+// Node compilers
 use Phug\Compiler\AssignementCompiler;
 use Phug\Compiler\AssignementListCompiler;
 use Phug\Compiler\AttributeCompiler;
@@ -25,16 +26,7 @@ use Phug\Compiler\TextCompiler;
 use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
-use Phug\Formatter\Format\BasicFormat;
-use Phug\Formatter\Format\FramesetFormat;
-use Phug\Formatter\Format\HtmlFormat;
-use Phug\Formatter\Format\MobileFormat;
-use Phug\Formatter\Format\OneDotOneFormat;
-use Phug\Formatter\Format\PlistFormat;
-use Phug\Formatter\Format\StrictFormat;
-use Phug\Formatter\Format\TransitionalFormat;
-use Phug\Formatter\Format\XmlFormat;
-use Phug\Formatter\FormatInterface;
+// Nodes
 use Phug\Parser\Node\AssignementListNode;
 use Phug\Parser\Node\AssignementNode;
 use Phug\Parser\Node\AttributeListNode;
@@ -59,6 +51,7 @@ use Phug\Parser\Node\VariableNode;
 use Phug\Parser\Node\WhenNode;
 use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
+// Utils
 use Phug\Util\OptionInterface;
 use Phug\Util\Partial\OptionTrait;
 
@@ -66,35 +59,33 @@ class Compiler implements OptionInterface, CompilerInterface
 {
     use OptionTrait;
 
-    private $format;
-
+    /**
+     * @var Formatter
+     */
     private $formatter;
 
+    /**
+     * @var Parser
+     */
     private $parser;
 
+    /**
+     * @var array
+     */
     private $nodeCompilers;
 
+    /**
+     * @var array
+     */
     private $namedCompilers;
 
     public function __construct(array $options = null)
     {
-        $this->options = array_replace_recursive([
+        $this->setOptionsRecursive([
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
-            'default_format'       => BasicFormat::class,
-            'formats'              => [
-                'basic'        => BasicFormat::class,
-                'frameset'     => FramesetFormat::class,
-                'html'         => HtmlFormat::class,
-                'mobile'       => MobileFormat::class,
-                '1.1'          => OneDotOneFormat::class,
-                'plist'        => PlistFormat::class,
-                'strict'       => StrictFormat::class,
-                'transitional' => TransitionalFormat::class,
-                'xml'          => XmlFormat::class,
-            ],
             'node_compilers'       => [
                 AssignementListNode::class => AssignementListCompiler::class,
                 AssignementNode::class     => AssignementCompiler::class,
@@ -120,9 +111,10 @@ class Compiler implements OptionInterface, CompilerInterface
                 WhenNode::class            => WhenCompiler::class,
                 WhileNode::class           => WhileCompiler::class,
             ],
-        ], $options ?: []);
+        ]);
+        $this->setOptionsRecursive($options ?: []);
 
-        $parserClassName = $this->options['parser_class_name'];
+        $parserClassName = $this->getOption('parser_class_name');
 
         if ($parserClassName !== Parser::class && !is_a($parserClassName, Parser::class, true)) {
             throw new CompilerException(
@@ -131,9 +123,9 @@ class Compiler implements OptionInterface, CompilerInterface
             );
         }
 
-        $this->parser = new $parserClassName($this->options['parser_options']);
+        $this->parser = new $parserClassName($this->getOption('parser_options'));
 
-        $formatterClassName = $this->options['formatter_class_name'];
+        $formatterClassName = $this->getOption('formatter_class_name');
 
         if ($formatterClassName !== Formatter::class && !is_a($formatterClassName, Formatter::class, true)) {
             throw new CompilerException(
@@ -142,23 +134,12 @@ class Compiler implements OptionInterface, CompilerInterface
             );
         }
 
-        $this->formatter = new $formatterClassName($this->options['formatter_options']);
-
-        $formatClassName = $this->options['default_format'];
-
-        if (!is_a($formatClassName, FormatInterface::class, true)) {
-            throw new CompilerException(
-                "Passed default format class $formatClassName must ".
-                'implement '.FormatInterface::class
-            );
-        }
-
-        $this->format = $formatClassName;
+        $this->formatter = new $formatterClassName($this->getOption('formatter_options'));
 
         $this->nodeCompilers = [];
         $this->namedCompilers = [];
 
-        foreach ($this->options['node_compilers'] as $className => $handler) {
+        foreach ($this->getOption('node_compilers') as $className => $handler) {
             $this->setNodeCompiler($className, $handler);
         }
     }
@@ -181,27 +162,6 @@ class Compiler implements OptionInterface, CompilerInterface
     public function getFormatter()
     {
         return $this->formatter;
-    }
-
-    /**
-     * Set the node compiler for a givent node class name.
-     *
-     * @param string                       node class name
-     * @param NodeCompilerInterface|string handler
-     *
-     * @return $this
-     */
-    public function setFormat($doctype, $format)
-    {
-        if (!is_a($format, FormatInterface::class, true)) {
-            throw new \InvalidArgumentException(
-                "Passed default format class $format must ".
-                'implement '.FormatInterface::class
-            );
-        }
-        $this->setOption(['formats', $doctype], $format);
-
-        return $this;
     }
 
     /**
@@ -277,6 +237,6 @@ class Compiler implements OptionInterface, CompilerInterface
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
 
-        return $this->formatter->format($element, $this->format);
+        return $this->formatter->format($element);
     }
 }

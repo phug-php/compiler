@@ -4,7 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\Element\DoctypeElement;
 use Phug\Parser\Node\DoctypeNode;
 use Phug\Parser\NodeInterface;
 
@@ -18,6 +18,9 @@ class DoctypeCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-doctype');
+        $formatter = $this->getCompiler()->getFormatter();
+        $formatter->setFormat($node->getName());
+
+        return new DoctypeElement($node->getName());
     }
 }
