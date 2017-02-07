@@ -18,9 +18,6 @@ class DoctypeCompiler extends AbstractNodeCompiler
             );
         }
 
-        $formatter = $this->getCompiler()->getFormatter();
-        $formatter->setFormat($node->getName());
-
         return new DoctypeElement($node->getName());
     }
 }

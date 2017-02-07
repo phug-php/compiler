@@ -2,8 +2,6 @@
 
 namespace Phug\Test;
 
-use Phug\Compiler;
-
 /**
  * @coversDefaultClass Phug\Compiler
  */
@@ -38,11 +36,11 @@ class CompilerTest extends AbstractCompilerTest
             '<!DOCTYPE html>',
             '<html><input></html>',
             '<!DOCTYPE foobar>',
-            '<html><input/></html>',
+            '<html><input /></html>',
             '<?xml version="1.0" encoding="utf-8" ?>',
-            '<html><input></input></html>',
+            '<html><input /></html>',
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-            '<html><input/></html>',
+            '<html><input /></html>',
         ], [
             "doctype html\n",
             "html: input\n",

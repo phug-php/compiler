@@ -1,13 +1,7 @@
 ---
 engines:
   duplication:
-    enabled: true
-    config:
-      languages:
-      - ruby
-      - javascript
-      - python
-      - php
+    enabled: false
   fixme:
     enabled: true
   phpmd:
