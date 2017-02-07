@@ -2,17 +2,17 @@
 
 namespace Phug;
 
-use Phug\Compiler\AssignementListCompiler;
 use Phug\Compiler\AssignementCompiler;
-use Phug\Compiler\AttributeListCompiler;
+use Phug\Compiler\AssignementListCompiler;
 use Phug\Compiler\AttributeCompiler;
+use Phug\Compiler\AttributeListCompiler;
 use Phug\Compiler\BlockCompiler;
 use Phug\Compiler\CaseCompiler;
 use Phug\Compiler\CommentCompiler;
 use Phug\Compiler\ConditionalCompiler;
+use Phug\Compiler\DoCompiler;
 use Phug\Compiler\DoctypeCompiler;
 use Phug\Compiler\DocumentCompiler;
-use Phug\Compiler\DoCompiler;
 use Phug\Compiler\EachCompiler;
 use Phug\Compiler\ElementCompiler;
 use Phug\Compiler\ExpressionCompiler;
@@ -25,7 +25,6 @@ use Phug\Compiler\TextCompiler;
 use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
-
 use Phug\Formatter\Format\BasicFormat;
 use Phug\Formatter\Format\FramesetFormat;
 use Phug\Formatter\Format\HtmlFormat;
@@ -36,7 +35,6 @@ use Phug\Formatter\Format\StrictFormat;
 use Phug\Formatter\Format\TransitionalFormat;
 use Phug\Formatter\Format\XmlFormat;
 use Phug\Formatter\FormatInterface;
-
 use Phug\Parser\Node\AssignementListNode;
 use Phug\Parser\Node\AssignementNode;
 use Phug\Parser\Node\AttributeListNode;
@@ -61,7 +59,6 @@ use Phug\Parser\Node\VariableNode;
 use Phug\Parser\Node\WhenNode;
 use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
-
 use Phug\Util\OptionInterface;
 use Phug\Util\Partial\OptionTrait;
 
