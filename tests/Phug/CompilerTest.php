@@ -9,6 +9,8 @@ class CompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers ::<public>
+     * @covers Phug\AbstractNodeCompiler::<public>
+     * @covers Phug\Compiler\DoctypeCompiler::<public>
      */
     public function testCompile()
     {
