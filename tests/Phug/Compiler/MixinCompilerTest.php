@@ -3,24 +3,24 @@
 namespace Phug\Test\Compiler;
 
 use Phug\Compiler;
-use Phug\Compiler\AttributeCompiler;
+use Phug\Compiler\MixinCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
  * @coversDefaultClass Phug\Compiler\DoctypeCompiler
  */
-class AttributeCompilerTest extends AbstractCompilerTest
+class MixinCompilerTest extends AbstractCompilerTest
 {
     /**
     * @covers                   ::<public>
     * @expectedException        Phug\CompilerException
     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to attribute compiler.
+    * @expectedExceptionMessage given to mixin compiler.
     */
     public function testException()
     {
-        $attributeCompiler = new AttributeCompiler(new Compiler());
-        $attributeCompiler->compileNode(new ElementNode());
+        $mixinCompiler = new MixinCompiler(new Compiler());
+        $mixinCompiler->compileNode(new ElementNode());
     }
 }

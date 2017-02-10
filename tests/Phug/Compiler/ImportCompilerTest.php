@@ -3,24 +3,24 @@
 namespace Phug\Test\Compiler;
 
 use Phug\Compiler;
-use Phug\Compiler\AttributeCompiler;
+use Phug\Compiler\ImportCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
  * @coversDefaultClass Phug\Compiler\DoctypeCompiler
  */
-class AttributeCompilerTest extends AbstractCompilerTest
+class ImportCompilerTest extends AbstractCompilerTest
 {
     /**
     * @covers                   ::<public>
     * @expectedException        Phug\CompilerException
     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to attribute compiler.
+    * @expectedExceptionMessage given to import compiler.
     */
     public function testException()
     {
-        $attributeCompiler = new AttributeCompiler(new Compiler());
-        $attributeCompiler->compileNode(new ElementNode());
+        $importCompiler = new ImportCompiler(new Compiler());
+        $importCompiler->compileNode(new ElementNode());
     }
 }

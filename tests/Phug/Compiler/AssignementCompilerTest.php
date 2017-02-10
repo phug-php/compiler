@@ -20,7 +20,7 @@ class AssignementCompilerTest extends AbstractCompilerTest
     */
     public function testException()
     {
-        $doctypeCompiler = new AssignementCompiler(new Compiler());
-        $doctypeCompiler->compileNode(new ElementNode());
+        $assignementCompiler = new AssignementCompiler(new Compiler());
+        $assignementCompiler->compileNode(new ElementNode());
     }
 }

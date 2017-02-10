@@ -8,7 +8,7 @@ use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
- * @coversDefaultClass Phug\Compiler\AssignementListCompiler
+ * @coversDefaultClass Phug\Compiler\DoctypeCompiler
  */
 class AssignementListCompilerTest extends AbstractCompilerTest
 {
@@ -16,11 +16,11 @@ class AssignementListCompilerTest extends AbstractCompilerTest
     * @covers                   ::<public>
     * @expectedException        Phug\CompilerException
     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to doctype compiler.
+    * @expectedExceptionMessage given to assignementlist compiler.
     */
     public function testException()
     {
-        $doctypeCompiler = new AssignementListCompiler(new Compiler());
-        $doctypeCompiler->compileNode(new ElementNode());
+        $assignementlistCompiler = new AssignementListCompiler(new Compiler());
+        $assignementlistCompiler->compileNode(new ElementNode());
     }
 }
