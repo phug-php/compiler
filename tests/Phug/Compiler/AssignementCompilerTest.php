@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class AssignementCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to assignement compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to assignement compiler.
+     */
     public function testException()
     {
         $assignementCompiler = new AssignementCompiler(new Compiler());

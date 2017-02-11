@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class ImportCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to import compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to import compiler.
+     */
     public function testException()
     {
         $importCompiler = new ImportCompiler(new Compiler());

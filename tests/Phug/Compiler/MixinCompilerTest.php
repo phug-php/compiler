@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to mixin compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to mixin compiler.
+     */
     public function testException()
     {
         $mixinCompiler = new MixinCompiler(new Compiler());

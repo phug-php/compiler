@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class VariableCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to variable compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to variable compiler.
+     */
     public function testException()
     {
         $variableCompiler = new VariableCompiler(new Compiler());

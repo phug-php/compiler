@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class WhileCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to while compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to while compiler.
+     */
     public function testException()
     {
         $whileCompiler = new WhileCompiler(new Compiler());

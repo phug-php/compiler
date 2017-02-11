@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class DocumentCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to document compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to document compiler.
+     */
     public function testException()
     {
         $documentCompiler = new DocumentCompiler(new Compiler());

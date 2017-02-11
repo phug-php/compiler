@@ -13,11 +13,11 @@ use Phug\Test\AbstractCompilerTest;
 class CaseCompilerTest extends AbstractCompilerTest
 {
     /**
-    * @covers                   ::<public>
-    * @expectedException        Phug\CompilerException
-    * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-    * @expectedExceptionMessage given to case compiler.
-    */
+     * @covers                   ::<public>
+     * @expectedException        Phug\CompilerException
+     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage given to case compiler.
+     */
     public function testException()
     {
         $caseCompiler = new CaseCompiler(new Compiler());
