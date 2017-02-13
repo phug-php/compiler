@@ -5,18 +5,21 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\Element\MarkupElement;
-use Phug\Parser\Node\AssignementListNode;
+use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\NodeInterface;
 
-class AssignementListCompiler extends AbstractNodeCompiler
+class AssignmentListCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node)
     {
-        if (!($node instanceof AssignementListNode)) {
+        if (!($node instanceof AssignmentListNode)) {
             throw new CompilerException(
-                'Unexpected '.get_class($node).' given to assignement list compiler.'
+                'Unexpected '.get_class($node).' given to assignment list compiler.'
             );
         }
+        /**
+         * @var AssignmentListNode $node
+         */
 
         return new MarkupElement('to-do-assignement-list');
     }

@@ -35,7 +35,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
             'width=get_width("foo.png") ',
             'height=30 ',
             'data-ratio=0.54 ',
-            'data-code=0x3f4d)'
+            'data-code=0x3f4d)',
         ]);
         $this->assertCompile(
             '<img src="<?= (isset($image) ? $image : \'\') ?>" />',

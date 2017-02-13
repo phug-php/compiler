@@ -37,7 +37,9 @@ class CompilerTest extends AbstractCompilerTest
 
         $section = new ElementNode();
         $section->setName('section');
-        /** @var MarkupElement */
+        /**
+         * @var MarkupElement $section
+         */
         $section = $compiler->compileNode($section);
 
         self::assertInstanceOf(MarkupElement::class, $section);
@@ -103,7 +105,7 @@ class CompilerTest extends AbstractCompilerTest
     public function testParserClassException()
     {
         new Compiler([
-            'parser_class_name' => ElementNode::class
+            'parser_class_name' => ElementNode::class,
         ]);
     }
 
@@ -118,7 +120,7 @@ class CompilerTest extends AbstractCompilerTest
     public function testFormatterClassException()
     {
         new Compiler([
-            'formatter_class_name' => ElementNode::class
+            'formatter_class_name' => ElementNode::class,
         ]);
     }
 

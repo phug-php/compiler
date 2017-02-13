@@ -3,8 +3,8 @@
 namespace Phug;
 
 // Node compilers
-use Phug\Compiler\AssignementCompiler;
-use Phug\Compiler\AssignementListCompiler;
+use Phug\Compiler\AssignmentCompiler;
+use Phug\Compiler\AssignmentListCompiler;
 use Phug\Compiler\AttributeCompiler;
 use Phug\Compiler\AttributeListCompiler;
 use Phug\Compiler\BlockCompiler;
@@ -27,8 +27,8 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
-use Phug\Parser\Node\AssignementListNode;
-use Phug\Parser\Node\AssignementNode;
+use Phug\Parser\Node\AssignmentListNode;
+use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\Node\AttributeListNode;
 use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\Node\BlockNode;
@@ -87,8 +87,8 @@ class Compiler implements OptionInterface, CompilerInterface
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
             'node_compilers'       => [
-                AssignementListNode::class => AssignementListCompiler::class,
-                AssignementNode::class     => AssignementCompiler::class,
+                AssignmentListNode::class  => AssignmentListCompiler::class,
+                AssignmentNode::class      => AssignmentCompiler::class,
                 AttributeListNode::class   => AttributeListCompiler::class,
                 AttributeNode::class       => AttributeCompiler::class,
                 BlockNode::class           => BlockCompiler::class,

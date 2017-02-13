@@ -16,11 +16,11 @@ class MixinCallCompilerTest extends AbstractCompilerTest
      * @covers                   ::<public>
      * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to mixincall compiler.
+     * @expectedExceptionMessage given to mixin call compiler.
      */
     public function testException()
     {
-        $mixincallCompiler = new MixinCallCompiler(new Compiler());
-        $mixincallCompiler->compileNode(new ElementNode());
+        $mixinCallCompiler = new MixinCallCompiler(new Compiler());
+        $mixinCallCompiler->compileNode(new ElementNode());
     }
 }

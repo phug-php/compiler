@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Parser\Node\ElementNode;
 use Phug\Parser\NodeInterface;
@@ -19,6 +18,9 @@ class ElementCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to element compiler.'
             );
         }
+        /**
+         * @var ElementNode $node
+         */
 
         $attributes = new SplObjectStorage();
         foreach ($node->getAttributes() as $attribute) {
