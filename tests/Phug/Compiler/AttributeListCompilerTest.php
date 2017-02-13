@@ -14,9 +14,9 @@ class AttributeListCompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers                   ::<public>
-     * @expectedException        Phug\CompilerException
+     * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to attributelist compiler.
+     * @expectedExceptionMessage given to attribute list compiler.
      */
     public function testException()
     {

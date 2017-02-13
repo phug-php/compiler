@@ -13,6 +13,14 @@ use Phug\Test\AbstractCompilerTest;
 class ElementCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile('<section><input /></section>', 'section: input');
+    }
+
+    /**
      * @covers                   ::<public>
      * @expectedException        Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\DoNode

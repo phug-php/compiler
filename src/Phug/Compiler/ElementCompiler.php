@@ -4,9 +4,11 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Parser\Node\ElementNode;
 use Phug\Parser\NodeInterface;
+use SplObjectStorage;
 
 class ElementCompiler extends AbstractNodeCompiler
 {
@@ -18,9 +20,11 @@ class ElementCompiler extends AbstractNodeCompiler
             );
         }
 
-        $markup = new MarkupElement();
-        $markup->setName($node->getName());
-        $markup->getAttributes()->addAll($node->getAttributes());
+        $attributes = new SplObjectStorage();
+        foreach ($node->getAttributes() as $attribute) {
+            $attributes->attach($this->getCompiler()->compileNode($attribute));
+        }
+        $markup = new MarkupElement($node->getName(), $attributes);
 
         $this->compileNodeChildren($node, $markup);
 
