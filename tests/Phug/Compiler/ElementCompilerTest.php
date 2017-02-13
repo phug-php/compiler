@@ -8,7 +8,7 @@ use Phug\Parser\Node\DoNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
- * @coversDefaultClass Phug\Compiler\ElementCompiler
+ * @coversDefaultClass \Phug\Compiler\ElementCompiler
  */
 class ElementCompilerTest extends AbstractCompilerTest
 {
@@ -22,7 +22,7 @@ class ElementCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers                   ::<public>
-     * @expectedException        Phug\CompilerException
+     * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\DoNode
      * @expectedExceptionMessage given to element compiler.
      */

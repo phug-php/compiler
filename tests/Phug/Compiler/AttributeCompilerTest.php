@@ -8,7 +8,7 @@ use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
- * @coversDefaultClass Phug\Compiler\AttributeCompiler
+ * @coversDefaultClass \Phug\Compiler\AttributeCompiler
  */
 class AttributeCompilerTest extends AbstractCompilerTest
 {
@@ -45,7 +45,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers                   ::<public>
-     * @expectedException        Phug\CompilerException
+     * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
      * @expectedExceptionMessage given to attribute compiler.
      */

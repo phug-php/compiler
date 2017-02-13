@@ -129,7 +129,7 @@ class Compiler implements OptionInterface, CompilerInterface
 
         if ($formatterClassName !== Formatter::class && !is_a($formatterClassName, Formatter::class, true)) {
             throw new CompilerException(
-                "Passed formatter class $formatClassName is ".
+                "Passed formatter class $formatterClassName is ".
                 'not a valid '.Formatter::class
             );
         }
@@ -179,6 +179,7 @@ class Compiler implements OptionInterface, CompilerInterface
                 'Passed node compiler needs to implement '.NodeCompilerInterface::class
             );
         }
+
         $this->nodeHandlers[$className] = $handler;
 
         return $this;
@@ -202,9 +203,9 @@ class Compiler implements OptionInterface, CompilerInterface
     }
 
     /**
-     * Returns PHTML from pug input.
+     * Returns PHTML from pug node input.
      *
-     * @param string pug input
+     * @param NodeInterface $node input
      *
      * @return string
      */
@@ -228,7 +229,7 @@ class Compiler implements OptionInterface, CompilerInterface
     /**
      * Returns PHTML from pug input.
      *
-     * @param string pug input
+     * @param string $pugInput pug input
      *
      * @return string
      */

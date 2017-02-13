@@ -8,13 +8,13 @@ use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
- * @coversDefaultClass Phug\Compiler\AssignementListCompiler
+ * @coversDefaultClass \Phug\Compiler\AssignementListCompiler
  */
 class AssignementListCompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers                   ::<public>
-     * @expectedException        Phug\CompilerException
+     * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
      * @expectedExceptionMessage given to assignementlist compiler.
      */

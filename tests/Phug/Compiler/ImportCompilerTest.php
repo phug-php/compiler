@@ -8,13 +8,13 @@ use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
- * @coversDefaultClass Phug\Compiler\ImportCompiler
+ * @coversDefaultClass \Phug\Compiler\ImportCompiler
  */
 class ImportCompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers                   ::<public>
-     * @expectedException        Phug\CompilerException
+     * @expectedException        \Phug\CompilerException
      * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
      * @expectedExceptionMessage given to import compiler.
      */

@@ -2,15 +2,52 @@
 
 namespace Phug\Test;
 
+use Phug\Compiler;
+use Phug\Formatter;
+use Phug\Formatter\Element\MarkupElement;
+use Phug\Parser;
+use Phug\Parser\Node\ElementNode;
+
 /**
- * @coversDefaultClass Phug\Compiler
+ * @coversDefaultClass \Phug\Compiler
  */
 class CompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers ::<public>
-     * @covers Phug\AbstractNodeCompiler::<public>
-     * @covers Phug\Compiler\DoctypeCompiler::<public>
+     */
+    public function testGetters()
+    {
+        $compiler = new Compiler();
+
+        self::assertInstanceOf(Formatter::class, $compiler->getFormatter());
+        self::assertInstanceOf(Parser::class, $compiler->getParser());
+    }
+
+    /**
+     * @covers ::compileNode
+     * @covers ::getNamedCompiler
+     */
+    public function testCompileNode()
+    {
+        $compiler = new Compiler();
+
+        self::assertInstanceOf(Formatter::class, $compiler->getFormatter());
+        self::assertInstanceOf(Parser::class, $compiler->getParser());
+
+        $section = new ElementNode();
+        $section->setName('section');
+        /** @var MarkupElement */
+        $section = $compiler->compileNode($section);
+
+        self::assertInstanceOf(MarkupElement::class, $section);
+        self::assertSame('section', $section->getName());
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers \Phug\AbstractNodeCompiler::<public>
+     * @covers \Phug\Compiler\DoctypeCompiler::<public>
      */
     public function testCompile()
     {
@@ -53,5 +90,60 @@ class CompilerTest extends AbstractCompilerTest
             "doctype 1.1\n",
             "html: input\n",
         ]);
+    }
+
+    /**
+     * @covers                   ::__construct
+     * @expectedException        \Phug\CompilerException
+     * @expectedExceptionMessage Passed parser class
+     * @expectedExceptionMessage Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage is not a valid
+     * @expectedExceptionMessage Phug\Parser
+     */
+    public function testParserClassException()
+    {
+        new Compiler([
+            'parser_class_name' => ElementNode::class
+        ]);
+    }
+
+    /**
+     * @covers                   ::__construct
+     * @expectedException        \Phug\CompilerException
+     * @expectedExceptionMessage Passed formatter class
+     * @expectedExceptionMessage Phug\Parser\Node\ElementNode
+     * @expectedExceptionMessage is not a valid
+     * @expectedExceptionMessage Phug\Formatter
+     */
+    public function testFormatterClassException()
+    {
+        new Compiler([
+            'formatter_class_name' => ElementNode::class
+        ]);
+    }
+
+    /**
+     * @covers                   ::setNodeCompiler
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage Passed node compiler needs to implement
+     * @expectedExceptionMessage Phug\CompilerInterface
+     */
+    public function testSetNodeCompilerException()
+    {
+        $compiler = new Compiler();
+        $compiler->setNodeCompiler(ElementNode::class, ElementNode::class);
+    }
+
+    /**
+     * @covers                   ::compileNode
+     * @expectedException        \Phug\CompilerException
+     * @expectedExceptionMessage No compiler found able to compile
+     * @expectedExceptionMessage Phug\CompilerInterface
+     */
+    public function testCompileNodeException()
+    {
+        include_once __DIR__.'/Node/TestNode.php';
+        $compiler = new Compiler();
+        $compiler->compileNode(new TestNode());
     }
 }
