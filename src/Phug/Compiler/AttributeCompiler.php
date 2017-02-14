@@ -54,9 +54,6 @@ class AttributeCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to attribute compiler.'
             );
         }
-        /**
-         * @var AttributeNode $node
-         */
 
         return new AttributeElement($node->getName(), $this->compileValue($node));
     }

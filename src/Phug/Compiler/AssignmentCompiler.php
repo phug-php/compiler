@@ -17,9 +17,6 @@ class AssignmentCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to assignment compiler.'
             );
         }
-        /**
-         * @var AssignmentNode $node
-         */
 
         return new ExpressionElement(
             'foreach (array_merge('.$node->getName().') as $name => $value) {'."\n".

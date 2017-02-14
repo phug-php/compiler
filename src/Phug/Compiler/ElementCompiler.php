@@ -18,9 +18,6 @@ class ElementCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to element compiler.'
             );
         }
-        /**
-         * @var ElementNode $node
-         */
 
         $attributes = new SplObjectStorage();
         foreach ($node->getAttributes() as $attribute) {
