@@ -18,6 +18,8 @@ class AttributeCompilerTest extends AbstractCompilerTest
     public function testCompile()
     {
         $this->assertCompile('<input name="a" />', 'input(name="a")');
+        $this->assertCompile('<input (name)="a" />', 'input((name)="a")');
+        $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
         $this->assertCompile('<input name="<a>" />', 'input(name!="<a>")');
         $this->assertCompile('<input name="&lt;a&gt;" />', 'input(name="<a>")');
         $this->assertCompile([

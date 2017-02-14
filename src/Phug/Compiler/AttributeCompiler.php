@@ -16,21 +16,16 @@ class AttributeCompiler extends AbstractNodeCompiler
     {
         $value = $node->getValue();
 
+        if ($node->hasStaticValue()) {
+            // eval is safe here since pass to it only one valid number or constant string.
+            $value = strval(eval('return '.$value.';'));
+            $value = new TextElement($value);
+            $value->setIsEscaped($node->isEscaped());
+
+            return $value;
+        }
+
         if (is_string($value)) {
-            $tokens = token_get_all('<?php '.$value);
-            if (
-                count($tokens) === 2 &&
-                is_array($tokens[1]) &&
-                in_array($tokens[1][0], [T_CONSTANT_ENCAPSED_STRING, T_DNUMBER, T_LNUMBER])
-            ) {
-                // eval is safe here since pass to it only one valid number or constant string.
-                $value = strval(eval('return '.$value.';'));
-                $value = new TextElement($value);
-                $value->setIsEscaped($node->isEscaped());
-
-                return $value;
-            }
-
             $value = new ExpressionElement($value);
         }
 
