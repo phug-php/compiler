@@ -37,6 +37,7 @@ class CompilerTest extends AbstractCompilerTest
 
         $section = new ElementNode();
         $section->setName('section');
+
         /**
          * @var MarkupElement $section
          */

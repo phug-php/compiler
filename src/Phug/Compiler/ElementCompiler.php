@@ -18,17 +18,19 @@ class ElementCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to element compiler.'
             );
         }
+
         /**
-         * @var ElementNode $node
+         * @var ElementNode $element
          */
+        $element = $node;
 
         $attributes = new SplObjectStorage();
-        foreach ($node->getAttributes() as $attribute) {
+        foreach ($no$elementde->getAttributes() as $attribute) {
             $attributes->attach($this->getCompiler()->compileNode($attribute));
         }
-        $markup = new MarkupElement($node->getName(), $attributes);
+        $markup = new MarkupElement($element->getName(), $attributes);
 
-        $this->compileNodeChildren($node, $markup);
+        $this->compileNodeChildren($element, $markup);
 
         return $markup;
     }

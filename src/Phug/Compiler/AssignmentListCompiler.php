@@ -17,9 +17,11 @@ class AssignmentListCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to assignment list compiler.'
             );
         }
+
         /**
-         * @var AssignmentListNode $node
+         * @var AssignmentListNode $assignmentList
          */
+        $assignmentList = $node;
 
         return new MarkupElement('to-do-assignement-list');
     }
