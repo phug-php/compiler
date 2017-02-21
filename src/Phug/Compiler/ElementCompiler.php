@@ -25,7 +25,7 @@ class ElementCompiler extends AbstractNodeCompiler
         $element = $node;
 
         $attributes = new SplObjectStorage();
-        foreach ($no$elementde->getAttributes() as $attribute) {
+        foreach ($element->getAttributes() as $attribute) {
             $attributes->attach($this->getCompiler()->compileNode($attribute));
         }
         $markup = new MarkupElement($element->getName(), $attributes);
