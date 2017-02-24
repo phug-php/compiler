@@ -37,6 +37,10 @@ class CompilerTest extends AbstractCompilerTest
 
         $section = new ElementNode();
         $section->setName('section');
+
+        /**
+         * @var MarkupElement $section
+         */
         $section = $compiler->compileNode($section);
 
         self::assertInstanceOf(MarkupElement::class, $section);

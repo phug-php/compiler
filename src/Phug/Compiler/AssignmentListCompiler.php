@@ -18,6 +18,11 @@ class AssignmentListCompiler extends AbstractNodeCompiler
             );
         }
 
+        /**
+         * @var AssignmentListNode $assignmentList
+         */
+        $assignmentList = $node;
+
         return new MarkupElement('to-do-assignement-list');
     }
 }

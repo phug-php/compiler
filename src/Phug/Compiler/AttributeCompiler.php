@@ -50,6 +50,11 @@ class AttributeCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new AttributeElement($node->getName(), $this->compileValue($node));
+        /**
+         * @var AttributeNode $attribute
+         */
+        $attribute = $node;
+
+        return new AttributeElement($attribute->getName(), $this->compileValue($attribute));
     }
 }

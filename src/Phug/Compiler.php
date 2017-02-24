@@ -237,7 +237,9 @@ class Compiler implements OptionInterface, CompilerInterface
     {
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
+        $this->formatter->initDependencies();
+        $phtml = $this->formatter->format($element);
 
-        return $this->formatter->format($element);
+        return $this->formatter->formatDependencies().$phtml;
     }
 }
