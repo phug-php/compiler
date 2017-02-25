@@ -4,7 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\ExpressionElement;
+use Phug\Formatter\Element\AssignmentElement;
 use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\NodeInterface;
 
@@ -22,14 +22,8 @@ class AssignmentCompiler extends AbstractNodeCompiler
          * @var AssignmentNode $node
          */
         $name = $node->getName();
+        $attributes = $node->getAttributes();
 
-        return new ExpressionElement(
-            'foreach (array_merge('.$name.') as $name => $value) {'."\n".
-            '  if ($value) {'."\n".
-            '    echo  $name;'."\n".
-            '    echo "=\"$value\"";'."\n".
-            '  }'."\n".
-            '}'
-        );
+        return new AssignmentElement($name, $attributes);
     }
 }

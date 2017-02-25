@@ -167,8 +167,8 @@ class Compiler implements OptionInterface, CompilerInterface
     /**
      * Set the node compiler for a givent node class name.
      *
-     * @param string                       node class name
-     * @param NodeCompilerInterface|string handler
+     * @param string                       $className node class name
+     * @param NodeCompilerInterface|string $handler   handler
      *
      * @return $this
      */
@@ -180,7 +180,7 @@ class Compiler implements OptionInterface, CompilerInterface
             );
         }
 
-        $this->nodeHandlers[$className] = $handler;
+        $this->nodeCompilers[$className] = $handler;
 
         return $this;
     }
@@ -211,7 +211,7 @@ class Compiler implements OptionInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node)
     {
-        foreach ($this->nodeHandlers as $className => $compiler) {
+        foreach ($this->nodeCompilers as $className => $compiler) {
             if (is_a($node, $className)) {
                 if (!($compiler instanceof NodeCompilerInterface)) {
                     $compiler = $this->getNamedCompiler($compiler);

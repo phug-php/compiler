@@ -17,7 +17,11 @@ class AssignmentCompilerTest extends AbstractCompilerTest
      */
     public function testCompile()
     {
-        $this->assertCompile('<a href="#"></a>', 'a&attributes(["href" => "#"])');
+        $this->assertRender('<a href="#"></a>', 'a&attributes(["href" => "#"])');
+        $this->assertRender(
+            '<a class="bar fiz foo biz"></a>',
+            'a.foo(class=["bar", "biz"])&attributes(["class" => "bar fiz"])'
+        );
     }
 
     /**

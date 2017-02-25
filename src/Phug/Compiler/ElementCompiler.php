@@ -29,6 +29,9 @@ class ElementCompiler extends AbstractNodeCompiler
             $attributes->attach($this->getCompiler()->compileNode($attribute));
         }
         $markup = new MarkupElement($element->getName(), $attributes);
+        foreach ($element->getAssignments() as $assignment) {
+            $markup->addAssignment($this->getCompiler()->compileNode($assignment));
+        }
 
         $this->compileNodeChildren($element, $markup);
 

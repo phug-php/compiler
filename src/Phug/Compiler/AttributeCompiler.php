@@ -12,6 +12,17 @@ use Phug\Parser\NodeInterface;
 
 class AttributeCompiler extends AbstractNodeCompiler
 {
+    protected function compileName(AttributeNode $node)
+    {
+        $name = $node->getName();
+
+        if ($node->hasStaticMember('name')) {
+            return strval(eval('return '.$name.';'));
+        }
+
+        return $name;
+    }
+
     protected function compileValue(AttributeNode $node)
     {
         $value = $node->getValue();
@@ -51,10 +62,11 @@ class AttributeCompiler extends AbstractNodeCompiler
         }
 
         /**
-         * @var AttributeNode $attribute
+         * @var AttributeNode $node
          */
-        $attribute = $node;
+        $name = $this->compileName($node);
+        $value = $this->compileValue($node);
 
-        return new AttributeElement($attribute->getName(), $this->compileValue($attribute));
+        return new AttributeElement($name, $value);
     }
 }

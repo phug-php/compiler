@@ -13,10 +13,12 @@ use Phug\Test\AbstractCompilerTest;
 class AttributeCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @group i
      * @covers ::<public>
      */
     public function testCompile()
     {
+        $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
         $this->assertCompile('<input name="a" />', 'input(name="a")');
         $this->assertCompile('<input (name)="a" />', 'input((name)="a")');
         $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
