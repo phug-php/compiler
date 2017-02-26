@@ -15,10 +15,11 @@ class AttributeCompilerTest extends AbstractCompilerTest
     /**
      * @group i
      * @covers ::<public>
+     * @covers ::compileName
+     * @covers ::compileValue
      */
     public function testCompile()
     {
-        $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
         $this->assertCompile('<input name="a" />', 'input(name="a")');
         $this->assertCompile('<input (name)="a" />', 'input((name)="a")');
         $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');

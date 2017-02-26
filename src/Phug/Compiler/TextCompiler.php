@@ -4,7 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\Element\TextElement;
 use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
 
@@ -18,6 +18,9 @@ class TextCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-text');
+        $text = new TextElement($node->getValue());
+        $text->setIsEscaped($node->isEscaped());
+
+        return $text;
     }
 }

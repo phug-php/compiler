@@ -23,4 +23,9 @@ class TextCompilerTest extends AbstractCompilerTest
         $textCompiler = new TextCompiler(new Compiler());
         $textCompiler->compileNode(new ElementNode());
     }
+
+    public function testText()
+    {
+        $this->assertCompile('Hello', '| Hello');
+    }
 }

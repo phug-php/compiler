@@ -54,6 +54,9 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testCompile()
     {
+        // Empty string
+        $this->assertCompile('', '');
+
         // Single tag
         $this->assertCompile('<html></html>', 'html');
 

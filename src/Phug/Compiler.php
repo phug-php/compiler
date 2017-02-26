@@ -79,6 +79,11 @@ class Compiler implements OptionInterface, CompilerInterface
      */
     private $namedCompilers;
 
+    /**
+     * @var array
+     */
+    private $namedBlocks;
+
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
@@ -203,6 +208,19 @@ class Compiler implements OptionInterface, CompilerInterface
     }
 
     /**
+     * @param $name
+     * @return mixed
+     */
+    public function &getNamedBlock($name)
+    {
+        if (!isset($this->namedBlocks[$name])) {
+            $this->namedBlocks[$name] = [];
+        }
+
+        return $this->namedBlocks[$name];
+    }
+
+    /**
      * Returns PHTML from pug node input.
      *
      * @param NodeInterface $node input
@@ -235,6 +253,7 @@ class Compiler implements OptionInterface, CompilerInterface
      */
     public function compile($pugInput)
     {
+        $this->namedBlocks = [];
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
         $this->formatter->initDependencies();

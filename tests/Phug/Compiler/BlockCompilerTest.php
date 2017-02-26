@@ -23,4 +23,20 @@ class BlockCompilerTest extends AbstractCompilerTest
         $blockCompiler = new BlockCompiler(new Compiler());
         $blockCompiler->compileNode(new ElementNode());
     }
+
+    public function testBlock()
+    {
+        $this->assertCompile(
+            [
+                '<div>',
+                '  <p>Foo</p>',
+                '</div>',
+            ],
+            [
+                "div\n",
+                "  block place\n",
+                '    p Foo',
+            ]
+        );
+    }
 }
