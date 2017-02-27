@@ -7,6 +7,7 @@ use Phug\Compiler\AssignmentCompiler;
 use Phug\Compiler\AssignmentListCompiler;
 use Phug\Compiler\AttributeCompiler;
 use Phug\Compiler\AttributeListCompiler;
+use Phug\Compiler\Block;
 use Phug\Compiler\BlockCompiler;
 use Phug\Compiler\CaseCompiler;
 use Phug\Compiler\CommentCompiler;
@@ -80,7 +81,7 @@ class Compiler implements OptionInterface, CompilerInterface
     private $namedCompilers;
 
     /**
-     * @var array
+     * @var array[Block]
      */
     private $namedBlocks;
 
@@ -209,12 +210,13 @@ class Compiler implements OptionInterface, CompilerInterface
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function &getNamedBlock($name)
     {
         if (!isset($this->namedBlocks[$name])) {
-            $this->namedBlocks[$name] = [];
+            $this->namedBlocks[$name] = new Block();
         }
 
         return $this->namedBlocks[$name];
