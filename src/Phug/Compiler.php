@@ -53,10 +53,9 @@ use Phug\Parser\Node\WhenNode;
 use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 // Utils
-use Phug\Util\OptionInterface;
 use Phug\Util\Partial\OptionTrait;
 
-class Compiler implements OptionInterface, CompilerInterface
+class Compiler implements CompilerInterface
 {
     use OptionTrait;
 
@@ -69,6 +68,11 @@ class Compiler implements OptionInterface, CompilerInterface
      * @var Parser
      */
     private $parser;
+
+    /**
+     * @var string
+     */
+    private $fileName;
 
     /**
      * @var array
@@ -88,6 +92,7 @@ class Compiler implements OptionInterface, CompilerInterface
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
+            'basedir'              => null,
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
@@ -250,11 +255,13 @@ class Compiler implements OptionInterface, CompilerInterface
      * Returns PHTML from pug input.
      *
      * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
      *
      * @return string
      */
-    public function compile($pugInput)
+    public function compile($pugInput, $fileName = null)
     {
+        $this->fileName = $fileName;
         $this->namedBlocks = [];
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
@@ -262,5 +269,13 @@ class Compiler implements OptionInterface, CompilerInterface
         $phtml = $this->formatter->format($element);
 
         return $this->formatter->formatDependencies().$phtml;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->fileName;
     }
 }

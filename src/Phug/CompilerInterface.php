@@ -3,8 +3,9 @@
 namespace Phug;
 
 use Phug\Parser\NodeInterface;
+use Phug\Util\OptionInterface;
 
-interface CompilerInterface
+interface CompilerInterface extends OptionInterface
 {
     public function getParser();
 
@@ -12,7 +13,11 @@ interface CompilerInterface
 
     public function setNodeCompiler($className, $handler);
 
+    public function &getNamedBlock($name);
+
     public function compileNode(NodeInterface $node);
 
     public function compile($pugInput);
+
+    public function getFileName();
 }

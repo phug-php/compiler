@@ -23,4 +23,12 @@ class ImportCompilerTest extends AbstractCompilerTest
         $importCompiler = new ImportCompiler(new Compiler());
         $importCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @covers ::<public>
+     */
+    public function testInclude()
+    {
+        $this->assertCompile('', 'include /inc.pug');
+    }
 }
