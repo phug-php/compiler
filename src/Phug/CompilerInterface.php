@@ -17,7 +17,13 @@ interface CompilerInterface extends OptionInterface
 
     public function compileNode(NodeInterface $node);
 
-    public function compile($pugInput);
+    public function compile($pugInput, $fileName = null);
+
+    public function compileFile($fileName);
+
+    public function compileIntoElement($pugInput, $fileName = null);
+
+    public function compileFileIntoElement($fileName);
 
     public function getFileName();
 }

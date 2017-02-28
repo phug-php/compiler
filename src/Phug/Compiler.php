@@ -261,14 +261,52 @@ class Compiler implements CompilerInterface
      */
     public function compile($pugInput, $fileName = null)
     {
-        $this->fileName = $fileName;
-        $this->namedBlocks = [];
-        $node = $this->parser->parse($pugInput);
-        $element = $this->compileNode($node);
+        $element = $this->compileIntoElement($pugInput, $fileName);
         $this->formatter->initDependencies();
         $phtml = $this->formatter->format($element);
 
         return $this->formatter->formatDependencies().$phtml;
+    }
+
+    /**
+     * Returns PHTML from pug input file.
+     *
+     * @param string $fileName path of the compiled source
+     *
+     * @return string
+     */
+    public function compileFile($fileName)
+    {
+        return $this->compile(file_get_contents($fileName), $fileName);
+    }
+
+    /**
+     * Returns DocumentElement from pug input.
+     *
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @return DocumentElement
+     */
+    public function compileIntoElement($pugInput, $fileName = null)
+    {
+        $this->fileName = $fileName;
+        $this->namedBlocks = [];
+        $node = $this->parser->parse($pugInput);
+
+        return $this->compileNode($node);
+    }
+
+    /**
+     * Returns DocumentElement from pug input file.
+     *
+     * @param string $fileName path of the compiled source
+     *
+     * @return DocumentElement
+     */
+    public function compileFileIntoElement($fileName)
+    {
+        return $this->compileIntoElement(file_get_contents($fileName), $fileName);
     }
 
     /**

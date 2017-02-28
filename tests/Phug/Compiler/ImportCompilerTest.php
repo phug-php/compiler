@@ -29,6 +29,9 @@ class ImportCompilerTest extends AbstractCompilerTest
      */
     public function testInclude()
     {
-        $this->assertCompile('', 'include /inc.pug');
+        $this->assertCompile(
+            '<section><div>sample</div></section>',
+            'section: include /inc.pug'
+        );
     }
 }

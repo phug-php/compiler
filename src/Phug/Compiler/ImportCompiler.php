@@ -10,7 +10,7 @@ use Phug\Parser\NodeInterface;
 
 class ImportCompiler extends AbstractNodeCompiler
 {
-    protected function getPath($path)
+    protected function getBaseDirectoryForPath($path)
     {
         $compiler = $this->getCompiler();
 
@@ -22,14 +22,8 @@ class ImportCompiler extends AbstractNodeCompiler
                     'includes and extends with "absolute" paths.'
                 );
             }
-            $file = rtrim($base, '\\/').DIRECTORY_SEPARATOR.ltrim($path, '\\/');
-            if (!file_exists($file)) {
-                throw new CompilerException(
-                    'file not found at path '.var_export($path, true).'.'
-                );
-            }
 
-            return $file;
+            return $base;
         }
 
         $base = $compiler->getFileName();
@@ -38,6 +32,22 @@ class ImportCompiler extends AbstractNodeCompiler
                 'No source file path provided to get relative paths from it.'
             );
         }
+
+        return $base;
+    }
+
+    protected function resolvePath($path)
+    {
+        $base = $this->getBaseDirectoryForPath($path);
+        $file = rtrim($base, '\\/').DIRECTORY_SEPARATOR.ltrim($path, '\\/');
+
+        if (!file_exists($file)) {
+            throw new CompilerException(
+                'file not found at path '.var_export($path, true).'.'
+            );
+        }
+
+        return $file;
     }
 
     public function compileNode(NodeInterface $node)
@@ -48,11 +58,10 @@ class ImportCompiler extends AbstractNodeCompiler
             );
         }
 
-        if ($node->getName() === 'include') {
-            $compiler = $this->getCompiler();
-            if ($compiler->getOption('base_dir')) {
+        $compiler = clone $this->getCompiler();
 
-            }
+        if ($node->getName() === 'include') {
+            return $compiler->compileFileIntoElement($this->resolvePath($node->getPath()));
         }
 
         return new MarkupElement('to-do-import');
