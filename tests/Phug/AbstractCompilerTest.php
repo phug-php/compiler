@@ -18,23 +18,33 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    protected function implodeLines($str)
+    {
+        return is_string($str) ? $str : implode('', $str);
+    }
+
+    protected function assertSameLines($expected, $actual)
+    {
+        self::assertSame($this->implodeLines($expected), $this->implodeLines($actual));
+    }
+
     protected function assertCompile($expected, $actual)
     {
-        $actual = is_string($actual) ? $actual : implode('', $actual);
-        $expected = is_string($expected) ? $expected : implode('', $expected);
+        return $this->assertSameLines($expected, $this->compiler->compile($this->implodeLines($actual)));
+    }
 
-        self::assertSame($expected, $this->compiler->compile($actual));
+    protected function assertCompileFile($expected, $actual)
+    {
+        return $this->assertSameLines($expected, $this->compiler->compileFile($actual));
     }
 
     protected function assertRender($expected, $actual)
     {
-        $actual = is_string($actual) ? $actual : implode('', $actual);
-        $expected = is_string($expected) ? $expected : implode('', $expected);
         ob_start();
-        eval('?>'.$this->compiler->compile($actual));
+        eval('?>'.$this->compiler->compile($this->implodeLines($actual)));
         $actual = ob_get_contents();
         ob_end_clean();
 
-        self::assertSame($expected, $actual);
+        return $this->assertSameLines($expected, $actual);
     }
 }

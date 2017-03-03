@@ -98,6 +98,7 @@ class Compiler implements CompilerInterface
     {
         $this->setOptionsRecursive([
             'basedir'              => null,
+            'extensions'           => ['', '.pug', '.jade'],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
@@ -158,6 +159,14 @@ class Compiler implements CompilerInterface
         foreach ($this->getOption('node_compilers') as $className => $handler) {
             $this->setNodeCompiler($className, $handler);
         }
+    }
+
+    /**
+     * Reset layout on clone.
+     */
+    public function __clone()
+    {
+        $this->layout = null;
     }
 
     /**
@@ -291,23 +300,13 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Returns PHTML from pug input.
+     * Replace each block by its compiled children.
      *
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
-     *
-     * @return string
+     * @return $this
      */
-    public function compile($pugInput, $fileName = null)
+    public function compileBlocks()
     {
-        $element = $this->compileIntoElement($pugInput, $fileName);
-        $layout = $this->getLayout();
-        $layoutCompiler = $this;
-        if ($layout) {
-            $element = $layout->getDocument();
-            $layoutCompiler = $layout->getCompiler();
-        }
-        foreach ($layoutCompiler->getBlocks() as $name => $blocks) {
+        foreach ($this->getBlocks() as $name => $blocks) {
             foreach ($blocks as $block) {
                 $children = [];
                 foreach ($block->getChildren() as $child) {
@@ -319,6 +318,28 @@ class Compiler implements CompilerInterface
                 $block->remove();
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Returns PHTML from pug input.
+     *
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @return string
+     */
+    public function compile($pugInput, $fileName = null)
+    {
+        $element = $this->compileIntoElement($pugInput, $fileName);
+        $layout = $this->getLayout();
+        $blocksCompiler = $this;
+        if ($layout) {
+            $element = $layout->getDocument();
+            $blocksCompiler = $layout->getCompiler();
+        }
+        $blocksCompiler->compileBlocks();
         $this->formatter->initDependencies();
         $phtml = $this->formatter->format($element);
 

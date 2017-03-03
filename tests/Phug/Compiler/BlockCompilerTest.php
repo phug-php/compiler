@@ -25,7 +25,8 @@ class BlockCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\Block::<public>
      */
     public function testBlock()
     {

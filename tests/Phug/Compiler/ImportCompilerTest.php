@@ -26,12 +26,27 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\Block::<public>
      */
     public function testInclude()
     {
         $this->assertCompile(
             '<section><div>sample</div></section>',
             'section: include /inc.pug'
+        );
+    }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\Block::<public>
+     * @covers \Phug\Compiler\Layout::<public>
+     */
+    public function testExtends()
+    {
+        $this->assertCompileFile(
+            '<section>1A2A</section>',
+            __DIR__.'/../../templates/page.pug'
         );
     }
 }

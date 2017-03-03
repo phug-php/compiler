@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Parser\Node\ImportNode;
 use Phug\Parser\NodeInterface;
 
@@ -33,7 +32,7 @@ class ImportCompiler extends AbstractNodeCompiler
             );
         }
 
-        return $base;
+        return dirname($base);
     }
 
     protected function resolvePath($path)
@@ -41,13 +40,15 @@ class ImportCompiler extends AbstractNodeCompiler
         $base = $this->getBaseDirectoryForPath($path);
         $file = rtrim($base, '\\/').DIRECTORY_SEPARATOR.ltrim($path, '\\/');
 
-        if (!file_exists($file)) {
-            throw new CompilerException(
-                'file not found at path '.var_export($path, true).'.'
-            );
+        foreach ($this->getCompiler()->getOption('extensions') as $extension) {
+            if (file_exists($file.$extension)) {
+                return $file.$extension;
+            }
         }
 
-        return $file;
+        throw new CompilerException(
+            'file not found at path '.var_export($path, true).'.'
+        );
     }
 
     public function compileNode(NodeInterface $node)
@@ -58,15 +59,17 @@ class ImportCompiler extends AbstractNodeCompiler
             );
         }
 
-        $compiler = clone $this->getCompiler();
-        $element = $compiler->compileFileIntoElement($this->resolvePath($node->getPath()));
+        $compiler = $this->getCompiler();
+        $subCompiler = clone $compiler;
+        $path = $this->resolvePath($node->getPath());
+        $element = $subCompiler->compileFileIntoElement($path);
 
         if ($node->getName() === 'include') {
             return $element;
         }
 
         if ($node->getName() === 'extends') {
-            $this->setLayout(new Layout($element, $compiler));
+            $compiler->setLayout(new Layout($element, $subCompiler));
         }
     }
 }

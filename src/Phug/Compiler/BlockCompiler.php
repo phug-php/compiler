@@ -14,12 +14,16 @@ class BlockCompiler extends AbstractNodeCompiler
     {
         $compiler = $this->getCompiler();
         $layout = $compiler->getLayout();
+
         if ($layout) {
-            foreach ($layout->getBlocksByName($name) as $block) {
+            var_dump($layout->getCompiler()->getBlocks(), $compiler->getBlocks());
+            exit;
+            $blocks = &$layout->getCompiler()->getBlocksByName($name);
+            foreach ($blocks as $block) {
                 $block->proceedNode($node);
             }
 
-            return null;
+            return;
         }
 
         $block = new Block();
