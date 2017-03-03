@@ -7,7 +7,6 @@ use Phug\Compiler\AssignmentCompiler;
 use Phug\Compiler\AssignmentListCompiler;
 use Phug\Compiler\AttributeCompiler;
 use Phug\Compiler\AttributeListCompiler;
-use Phug\Compiler\Block;
 use Phug\Compiler\BlockCompiler;
 use Phug\Compiler\CaseCompiler;
 use Phug\Compiler\CommentCompiler;
@@ -21,6 +20,7 @@ use Phug\Compiler\ExpressionCompiler;
 use Phug\Compiler\FilterCompiler;
 use Phug\Compiler\ForCompiler;
 use Phug\Compiler\ImportCompiler;
+use Phug\Compiler\Layout;
 use Phug\Compiler\MixinCallCompiler;
 use Phug\Compiler\MixinCompiler;
 use Phug\Compiler\TextCompiler;
@@ -85,9 +85,14 @@ class Compiler implements CompilerInterface
     private $namedCompilers;
 
     /**
-     * @var array[Block]
+     * @var array[array[Block]]
      */
     private $namedBlocks;
+
+    /**
+     * @var Layout
+     */
+    private $layout;
 
     public function __construct(array $options = null)
     {
@@ -156,6 +161,30 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Return the current layout extended if set.
+     *
+     * @return DocumentElement
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * Set the current layout to extend.
+     *
+     * @param DocumentElement $layout layout extended
+     *
+     * @return $this
+     */
+    public function setLayout(Layout $layout)
+    {
+        $this->layout = $layout;
+
+        return $this;
+    }
+
+    /**
      * Returns the currently used Parser instance.
      *
      * @return Parser
@@ -218,13 +247,23 @@ class Compiler implements CompilerInterface
      *
      * @return mixed
      */
-    public function &getNamedBlock($name)
+    public function &getBlocksByName($name)
     {
         if (!isset($this->namedBlocks[$name])) {
-            $this->namedBlocks[$name] = new Block();
+            $this->namedBlocks[$name] = [];
         }
 
         return $this->namedBlocks[$name];
+    }
+
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function getBlocks()
+    {
+        return $this->namedBlocks;
     }
 
     /**
@@ -262,6 +301,24 @@ class Compiler implements CompilerInterface
     public function compile($pugInput, $fileName = null)
     {
         $element = $this->compileIntoElement($pugInput, $fileName);
+        $layout = $this->getLayout();
+        $layoutCompiler = $this;
+        if ($layout) {
+            $element = $layout->getDocument();
+            $layoutCompiler = $layout->getCompiler();
+        }
+        foreach ($layoutCompiler->getBlocks() as $name => $blocks) {
+            foreach ($blocks as $block) {
+                $children = [];
+                foreach ($block->getChildren() as $child) {
+                    $children[] = $this->compileNode($child);
+                }
+                foreach (array_reverse($children) as $child) {
+                    $block->getParent()->insertAfter($block, $child);
+                }
+                $block->remove();
+            }
+        }
         $this->formatter->initDependencies();
         $phtml = $this->formatter->format($element);
 

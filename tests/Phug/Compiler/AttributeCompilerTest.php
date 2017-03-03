@@ -13,7 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class AttributeCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @group i
      * @covers ::<public>
      * @covers ::compileName
      * @covers ::compileValue

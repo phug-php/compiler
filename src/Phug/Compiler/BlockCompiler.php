@@ -10,8 +10,22 @@ use Phug\Parser\NodeInterface;
 
 class BlockCompiler extends AbstractNodeCompiler
 {
-    protected function compileNamedBlock(Block $block, BlockNode $node)
+    protected function compileNamedBlock($name, BlockNode $node)
     {
+        $compiler = $this->getCompiler();
+        $layout = $compiler->getLayout();
+        if ($layout) {
+            foreach ($layout->getBlocksByName($name) as $block) {
+                $block->proceedNode($node);
+            }
+
+            return null;
+        }
+
+        $block = new Block();
+        $blocks = &$compiler->getBlocksByName($name);
+        $blocks[] = $block;
+
         return $block->proceedNode($node);
     }
 
@@ -29,6 +43,6 @@ class BlockCompiler extends AbstractNodeCompiler
             return new MarkupElement('to-do-anonymous-block');
         }
 
-        return $this->compileNamedBlock($this->getCompiler()->getNamedBlock($name), $node);
+        return $this->compileNamedBlock($name, $node);
     }
 }

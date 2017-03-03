@@ -2,9 +2,10 @@
 
 namespace Phug\Compiler;
 
+use Phug\Ast\Node;
 use Phug\Parser\Node\BlockNode;
 
-class Block
+class Block extends Node
 {
     /**
      * @var array

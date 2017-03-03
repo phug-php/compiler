@@ -13,7 +13,9 @@ interface CompilerInterface extends OptionInterface
 
     public function setNodeCompiler($className, $handler);
 
-    public function &getNamedBlock($name);
+    public function &getBlocksByName($name);
+
+    public function getBlocks();
 
     public function compileNode(NodeInterface $node);
 

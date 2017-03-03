@@ -24,12 +24,15 @@ class BlockCompilerTest extends AbstractCompilerTest
         $blockCompiler->compileNode(new ElementNode());
     }
 
+    /**
+     * @group i
+     */
     public function testBlock()
     {
         $this->assertCompile(
             [
                 '<div>',
-                '  <p>Foo</p>',
+                '<p>Foo</p>',
                 '</div>',
             ],
             [

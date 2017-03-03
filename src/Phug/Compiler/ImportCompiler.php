@@ -59,11 +59,14 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         $compiler = clone $this->getCompiler();
+        $element = $compiler->compileFileIntoElement($this->resolvePath($node->getPath()));
 
         if ($node->getName() === 'include') {
-            return $compiler->compileFileIntoElement($this->resolvePath($node->getPath()));
+            return $element;
         }
 
-        return new MarkupElement('to-do-import');
+        if ($node->getName() === 'extends') {
+            $this->setLayout(new Layout($element, $compiler));
+        }
     }
 }
