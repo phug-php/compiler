@@ -30,6 +30,7 @@ class BlockCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers ::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */
     public function testBlock()

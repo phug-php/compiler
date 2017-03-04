@@ -26,4 +26,20 @@ class CommentCompilerTest extends AbstractCompilerTest
         $commentCompiler = new CommentCompiler(new Compiler());
         $commentCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            '<!-- Comment -->',
+            '// Comment'
+        );
+        $this->assertCompile(
+            '',
+            '//- Comment'
+        );
+    }
 }

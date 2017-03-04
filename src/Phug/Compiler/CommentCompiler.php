@@ -4,9 +4,10 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CommentNode;
+use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
 
 class CommentCompiler extends AbstractNodeCompiler
@@ -19,6 +20,14 @@ class CommentCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-comment');
+        if (!$node->isVisible()) {
+            return null;
+        }
+
+        $comment = implode("\n", array_map(function (TextNode $text) {
+            return $text->getValue();
+        }, $node->getChildren()));
+
+        return new TextElement('<!-- '.$comment.' -->');
     }
 }

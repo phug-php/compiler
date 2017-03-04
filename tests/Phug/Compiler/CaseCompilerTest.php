@@ -28,7 +28,6 @@ class CaseCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\WhenCompiler::<public>
      */

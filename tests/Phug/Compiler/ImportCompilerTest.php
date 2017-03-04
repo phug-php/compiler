@@ -30,6 +30,7 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */
     public function testInclude()
@@ -42,6 +43,7 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName

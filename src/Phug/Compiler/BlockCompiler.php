@@ -18,12 +18,9 @@ class BlockCompiler extends AbstractNodeCompiler
 
         if ($layout) {
             $blocks = &$layout->getCompiler()->getBlocksByName($name);
-            foreach ($blocks as $block) {
-                /**
-                 * @var Block $block
-                 */
+            array_walk($blocks, function (Block $block) use ($node) {
                 $block->proceedNode($node);
-            }
+            });
 
             return null;
         }
