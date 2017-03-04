@@ -19,7 +19,7 @@ class ImportCompilerTest extends AbstractCompilerTest
      */
     public function testException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected Phug\Parser\Node\ElementNode '.
             'given to import compiler.'
         );
@@ -67,7 +67,7 @@ class ImportCompilerTest extends AbstractCompilerTest
      */
     public function testCompileIntoElementException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Phug\Parser\Node\DocumentNode '.
             'compiled into a value that does not '.
             'implement ElementInterface: string'

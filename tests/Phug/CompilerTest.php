@@ -104,7 +104,7 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testParserClassException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Passed parser class '.
             'Phug\Parser\Node\ElementNode '.
             'is not a valid '.
@@ -122,7 +122,7 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testFormatterClassException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Passed formatter class '.
             'Phug\Parser\Node\ElementNode '.
             'is not a valid '.
@@ -140,7 +140,7 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testSetNodeCompilerException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Passed node compiler needs to implement '.
             'Phug\NodeCompilerInterface'
         );
@@ -155,7 +155,7 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testCompileNodeException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'No compiler found able to compile '.
             'Phug\Test\TestNode'
         );

@@ -55,7 +55,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
      */
     public function testException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected Phug\Parser\Node\ElementNode '.
             'given to attribute compiler.'
         );
@@ -71,7 +71,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
      */
     public function testAttributeException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Attribute value can only be a string or an expression, '.
             'stdClass given.'
         );

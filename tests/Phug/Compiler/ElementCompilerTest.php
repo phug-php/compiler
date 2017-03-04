@@ -26,7 +26,7 @@ class ElementCompilerTest extends AbstractCompilerTest
      */
     public function testException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected Phug\Parser\Node\DoNode '.
             'given to element compiler.'
         );

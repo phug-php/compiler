@@ -18,7 +18,7 @@ class ForCompilerTest extends AbstractCompilerTest
      */
     public function testException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected Phug\Parser\Node\ElementNode '.
             'given to for compiler.'
         );

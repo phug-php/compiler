@@ -19,7 +19,7 @@ class BlockCompilerTest extends AbstractCompilerTest
      */
     public function testException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected Phug\Parser\Node\ElementNode '.
             'given to block compiler.'
         );
@@ -54,7 +54,7 @@ class BlockCompilerTest extends AbstractCompilerTest
      */
     public function testCompileBlocksException()
     {
-        self::expectExceptionMessage(
+        $this->expectMessageToBeThrown(
             'Unexpected block for the name foo'
         );
 
@@ -62,7 +62,7 @@ class BlockCompilerTest extends AbstractCompilerTest
         $compiler = new Compiler([
             'node_compilers' => [
                 BlockNode::class => TestBlockCompiler::class,
-            ]
+            ],
         ]);
         $compiler->compile('block foo');
     }

@@ -11,6 +11,17 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
      */
     protected $compiler;
 
+    protected function expectMessageToBeThrown($message)
+    {
+        if (method_exists($this, 'expectExceptionMessage')) {
+            $this->expectExceptionMessage($message);
+
+            return;
+        }
+
+        $this->setExpectedException(null, $message, null);
+    }
+
     public function setUp()
     {
         $this->compiler = new Compiler([
