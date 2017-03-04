@@ -18,6 +18,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
      * @covers ::<public>
      * @covers ::compileName
      * @covers ::compileValue
+     * @covers \Phug\Compiler\ElementCompiler::compileNode
      */
     public function testCompile()
     {
@@ -65,7 +66,6 @@ class AttributeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers            ::compileValue
      * @expectedException \Phug\CompilerException
      */

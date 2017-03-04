@@ -286,13 +286,14 @@ class Compiler implements CompilerInterface
     /**
      * Returns PHTML from pug node input.
      *
-     * @param NodeInterface $node input
+     * @param NodeInterface    $node   input
+     * @param ElementInterface $parent optional parent element
      *
      * @throws CompilerException
      *
      * @return ElementInterface
      */
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         foreach ($this->nodeCompilers as $className => $compiler) {
             if (is_a($node, $className)) {
@@ -300,7 +301,7 @@ class Compiler implements CompilerInterface
                     $compiler = $this->getNamedCompiler($compiler);
                 }
 
-                return $compiler->compileNode($node);
+                return $compiler->compileNode($node, $parent);
             }
         }
 

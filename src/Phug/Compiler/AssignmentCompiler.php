@@ -5,12 +5,13 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\Element\AssignmentElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\NodeInterface;
 
 class AssignmentCompiler extends AbstractNodeCompiler
 {
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof AssignmentNode)) {
             throw new CompilerException(

@@ -14,6 +14,7 @@ class AssignmentCompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\ElementCompiler::compileNode
      */
     public function testCompile()
     {

@@ -7,6 +7,7 @@ use Phug\CompilerException;
 use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\NodeInterface;
 
@@ -53,7 +54,7 @@ class AttributeCompiler extends AbstractNodeCompiler
         return $value;
     }
 
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof AttributeNode)) {
             throw new CompilerException(

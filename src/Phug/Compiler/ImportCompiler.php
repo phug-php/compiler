@@ -53,13 +53,14 @@ class ImportCompiler extends AbstractNodeCompiler
     }
 
     /**
-     * @param NodeInterface $node
+     * @param NodeInterface    $node
+     * @param ElementInterface $parent
      *
      * @throws CompilerException
      *
-     * @return ElementInterface|null
+     * @return null|ElementInterface
      */
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof ImportNode)) {
             throw new CompilerException(

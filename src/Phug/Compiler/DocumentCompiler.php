@@ -5,12 +5,13 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\Element\DocumentElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\DocumentNode;
 use Phug\Parser\NodeInterface;
 
 class DocumentCompiler extends AbstractNodeCompiler
 {
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof DocumentNode)) {
             throw new CompilerException(

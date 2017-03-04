@@ -26,4 +26,12 @@ class DocumentCompilerTest extends AbstractCompilerTest
         $documentCompiler = new DocumentCompiler(new Compiler());
         $documentCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile('<html></html>', 'html');
+    }
 }

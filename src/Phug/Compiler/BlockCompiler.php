@@ -5,6 +5,7 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\BlockNode;
 use Phug\Parser\NodeInterface;
 
@@ -18,6 +19,9 @@ class BlockCompiler extends AbstractNodeCompiler
         if ($layout) {
             $blocks = &$layout->getCompiler()->getBlocksByName($name);
             foreach ($blocks as $block) {
+                /**
+                 * @var Block $block
+                 */
                 $block->proceedNode($node);
             }
 
@@ -31,7 +35,7 @@ class BlockCompiler extends AbstractNodeCompiler
         return $block->proceedNode($node);
     }
 
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof BlockNode)) {
             throw new CompilerException(

@@ -26,4 +26,33 @@ class CaseCompilerTest extends AbstractCompilerTest
         $caseCompiler = new CaseCompiler(new Compiler());
         $caseCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\WhenCompiler::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            [
+                '<?php switch ($foo) { ?>',
+                '<?php case 0: ?>',
+                '<?php case 1: ?>',
+                '<p>Hello</p>',
+                '<?php break; ?>',
+                '<?php default: ?>',
+                '<p>Bye</p>',
+                '<?php } ?>',
+            ],
+            [
+                'case $foo'."\n",
+                '  when 0'."\n",
+                '  when 1'."\n",
+                '    p Hello'."\n",
+                '  default'."\n",
+                '    p Bye',
+            ]
+        );
+    }
 }

@@ -4,13 +4,14 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\Element\CodeElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CaseNode;
 use Phug\Parser\NodeInterface;
 
 class CaseCompiler extends AbstractNodeCompiler
 {
-    public function compileNode(NodeInterface $node)
+    public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof CaseNode)) {
             throw new CompilerException(
@@ -18,6 +19,15 @@ class CaseCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-case');
+        /**
+         * @var CaseNode $node
+         */
+        $value = $node->getSubject();
+
+        $code = new CodeElement('switch ('.$value.')');
+
+        $this->compileNodeChildren($node, $code);
+
+        return $code;
     }
 }
