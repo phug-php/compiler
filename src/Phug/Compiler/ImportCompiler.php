@@ -4,6 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ImportNode;
 use Phug\Parser\NodeInterface;
 
@@ -51,6 +52,13 @@ class ImportCompiler extends AbstractNodeCompiler
         );
     }
 
+    /**
+     * @param NodeInterface $node
+     *
+     * @throws CompilerException
+     *
+     * @return ElementInterface|null
+     */
     public function compileNode(NodeInterface $node)
     {
         if (!($node instanceof ImportNode)) {
@@ -71,5 +79,7 @@ class ImportCompiler extends AbstractNodeCompiler
         if ($node->getName() === 'extends') {
             $compiler->setLayout(new Layout($element, $subCompiler));
         }
+
+        return null;
     }
 }

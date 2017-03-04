@@ -7,6 +7,7 @@ use Phug\Compiler\AssignmentCompiler;
 use Phug\Compiler\AssignmentListCompiler;
 use Phug\Compiler\AttributeCompiler;
 use Phug\Compiler\AttributeListCompiler;
+use Phug\Compiler\Block;
 use Phug\Compiler\BlockCompiler;
 use Phug\Compiler\CaseCompiler;
 use Phug\Compiler\CommentCompiler;
@@ -28,6 +29,7 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
+use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\Node\AttributeListNode;
@@ -162,17 +164,18 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Reset layout on clone.
+     * Reset layout and compilers cache on clone.
      */
     public function __clone()
     {
         $this->layout = null;
+        $this->namedCompilers = [];
     }
 
     /**
      * Return the current layout extended if set.
      *
-     * @return DocumentElement
+     * @return Layout
      */
     public function getLayout()
     {
@@ -182,7 +185,7 @@ class Compiler implements CompilerInterface
     /**
      * Set the current layout to extend.
      *
-     * @param DocumentElement $layout layout extended
+     * @param Layout $layout layout extended
      *
      * @return $this
      */
@@ -235,8 +238,8 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Instanciate a new compiler by name or return the previous
-     * instancied one with the same name.
+     * Create a new compiler instance by name or return the previous
+     * instance with the same name.
      *
      * @param string $compiler name
      *
@@ -252,6 +255,8 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Return list of blocks for a given name.
+     *
      * @param $name
      *
      * @return mixed
@@ -266,9 +271,9 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * @param $name
+     * Returns lists of blocks grouped by name.
      *
-     * @return mixed
+     * @return array
      */
     public function getBlocks()
     {
@@ -280,7 +285,9 @@ class Compiler implements CompilerInterface
      *
      * @param NodeInterface $node input
      *
-     * @return string
+     * @throws CompilerException
+     *
+     * @return ElementInterface
      */
     public function compileNode(NodeInterface $node)
     {
@@ -302,12 +309,19 @@ class Compiler implements CompilerInterface
     /**
      * Replace each block by its compiled children.
      *
+     * @throws CompilerException
+     *
      * @return $this
      */
     public function compileBlocks()
     {
         foreach ($this->getBlocks() as $name => $blocks) {
             foreach ($blocks as $block) {
+                if (!($block instanceof Block)) {
+                    throw new CompilerException(
+                        'Unexpected block for the name '.$name
+                    );
+                }
                 $children = [];
                 foreach ($block->getChildren() as $child) {
                     $children[] = $this->compileNode($child);
@@ -359,28 +373,39 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Returns DocumentElement from pug input.
+     * Returns ElementInterface from pug input.
      *
      * @param string $pugInput pug input
      * @param string $fileName optional path of the compiled source
      *
-     * @return DocumentElement
+     * @throws CompilerException
+     *
+     * @return null|ElementInterface
      */
     public function compileIntoElement($pugInput, $fileName = null)
     {
         $this->fileName = $fileName;
         $this->namedBlocks = [];
         $node = $this->parser->parse($pugInput);
+        $element = $this->compileNode($node);
 
-        return $this->compileNode($node);
+        if ($element && !($element instanceof ElementInterface)) {
+            throw new CompilerException(
+                get_class($node).
+                ' compiled into a value that does not implement ElementInterface: '.
+                (is_object($element) ? get_class($element) : gettype($element))
+            );
+        }
+
+        return $element;
     }
 
     /**
-     * Returns DocumentElement from pug input file.
+     * Returns ElementInterface from pug input file.
      *
      * @param string $fileName path of the compiled source
      *
-     * @return DocumentElement
+     * @return ElementInterface
      */
     public function compileFileIntoElement($fileName)
     {

@@ -2,7 +2,7 @@
 
 namespace Phug\Compiler;
 
-use Phug\Compiler;
+use Phug\CompilerInterface;
 use Phug\Formatter\Element\DocumentElement;
 
 class Layout
@@ -13,11 +13,11 @@ class Layout
     private $document;
 
     /**
-     * @var Compiler
+     * @var CompilerInterface
      */
     private $compiler;
 
-    public function __construct(DocumentElement $document, Compiler $compiler)
+    public function __construct(DocumentElement $document, CompilerInterface $compiler)
     {
         $this->document = $document;
         $this->compiler = $compiler;
