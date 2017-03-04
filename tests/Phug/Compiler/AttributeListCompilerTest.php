@@ -13,14 +13,17 @@ use Phug\Test\AbstractCompilerTest;
 class AttributeListCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to attribute list compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
-        $attributelistCompiler = new AttributeListCompiler(new Compiler());
-        $attributelistCompiler->compileNode(new ElementNode());
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to attribute list compiler.'
+        );
+
+        $attributeListCompiler = new AttributeListCompiler(new Compiler());
+        $attributeListCompiler->compileNode(new ElementNode());
     }
 }

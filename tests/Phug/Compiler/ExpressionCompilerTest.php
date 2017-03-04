@@ -13,13 +13,16 @@ use Phug\Test\AbstractCompilerTest;
 class ExpressionCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to expression compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to expression compiler.'
+        );
+
         $expressionCompiler = new ExpressionCompiler(new Compiler());
         $expressionCompiler->compileNode(new ElementNode());
     }

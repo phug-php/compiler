@@ -99,55 +99,67 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   ::__construct
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Passed parser class
-     * @expectedExceptionMessage Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage is not a valid
-     * @expectedExceptionMessage Phug\Parser
+     * @covers            ::__construct
+     * @expectedException \Phug\CompilerException
      */
     public function testParserClassException()
     {
+        self::expectExceptionMessage(
+            'Passed parser class '.
+            'Phug\Parser\Node\ElementNode '.
+            'is not a valid '.
+            'Phug\Parser'
+        );
+
         new Compiler([
             'parser_class_name' => ElementNode::class,
         ]);
     }
 
     /**
-     * @covers                   ::__construct
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Passed formatter class
-     * @expectedExceptionMessage Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage is not a valid
-     * @expectedExceptionMessage Phug\Formatter
+     * @covers            ::__construct
+     * @expectedException \Phug\CompilerException
      */
     public function testFormatterClassException()
     {
+        self::expectExceptionMessage(
+            'Passed formatter class '.
+            'Phug\Parser\Node\ElementNode '.
+            'is not a valid '.
+            'Phug\Formatter'
+        );
+
         new Compiler([
             'formatter_class_name' => ElementNode::class,
         ]);
     }
 
     /**
-     * @covers                   ::setNodeCompiler
-     * @expectedException        \InvalidArgumentException
-     * @expectedExceptionMessage Passed node compiler needs to implement
-     * @expectedExceptionMessage Phug\CompilerInterface
+     * @covers            ::setNodeCompiler
+     * @expectedException \InvalidArgumentException
      */
     public function testSetNodeCompilerException()
     {
+        self::expectExceptionMessage(
+            'Passed node compiler needs to implement '.
+            'Phug\NodeCompilerInterface'
+        );
+
         $compiler = new Compiler();
         $compiler->setNodeCompiler(ElementNode::class, ElementNode::class);
     }
 
     /**
-     * @covers                   ::compileNode
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage No compiler found able to compile
-     * @expectedExceptionMessage Phug\CompilerInterface
+     * @covers            ::compileNode
+     * @expectedException \Phug\CompilerException
      */
     public function testCompileNodeException()
     {
+        self::expectExceptionMessage(
+            'No compiler found able to compile '.
+            'Phug\Test\TestNode'
+        );
+
         include_once __DIR__.'/Node/TestNode.php';
         $compiler = new Compiler();
         $compiler->compileNode(new TestNode());

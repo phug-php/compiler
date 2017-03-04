@@ -14,13 +14,16 @@ use Phug\Test\TestCompiler;
 class ImportCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to import compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to import compiler.'
+        );
+
         $importCompiler = new ImportCompiler(new Compiler());
         $importCompiler->compileNode(new ElementNode());
     }
@@ -59,14 +62,17 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   \Phug\Compiler::compileIntoElement
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Phug\Parser\Node\DocumentNode
-     * @expectedExceptionMessage compiled into a value that does not
-     * @expectedExceptionMessage implement ElementInterface: string
+     * @covers            \Phug\Compiler::compileIntoElement
+     * @expectedException \Phug\CompilerException
      */
     public function testCompileIntoElementException()
     {
+        self::expectExceptionMessage(
+            'Phug\Parser\Node\DocumentNode '.
+            'compiled into a value that does not '.
+            'implement ElementInterface: string'
+        );
+
         include_once __DIR__.'/../TestCompiler.php';
         $compiler = new TestCompiler();
         $compiler->compile('extends layout');

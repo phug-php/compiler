@@ -25,13 +25,16 @@ class AssignmentCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to assignment compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to assignment compiler.'
+        );
+
         $assignmentCompiler = new AssignmentCompiler(new Compiler());
         $assignmentCompiler->compileNode(new ElementNode());
     }

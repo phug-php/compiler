@@ -13,13 +13,16 @@ use Phug\Test\AbstractCompilerTest;
 class ConditionalCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to conditional compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to conditional compiler.'
+        );
+
         $conditionalCompiler = new ConditionalCompiler(new Compiler());
         $conditionalCompiler->compileNode(new ElementNode());
     }

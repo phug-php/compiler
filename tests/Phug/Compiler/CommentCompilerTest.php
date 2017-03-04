@@ -13,13 +13,16 @@ use Phug\Test\AbstractCompilerTest;
 class CommentCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to comment compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to comment compiler.'
+        );
+
         $commentCompiler = new CommentCompiler(new Compiler());
         $commentCompiler->compileNode(new ElementNode());
     }

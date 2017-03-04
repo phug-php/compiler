@@ -4,8 +4,10 @@ namespace Phug\Test\Compiler;
 
 use Phug\Compiler;
 use Phug\Compiler\AttributeCompiler;
+use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
+use stdClass;
 
 /**
  * @coversDefaultClass \Phug\Compiler\AttributeCompiler
@@ -48,14 +50,35 @@ class AttributeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to attribute compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to attribute compiler.'
+        );
+
         $attributeCompiler = new AttributeCompiler(new Compiler());
         $attributeCompiler->compileNode(new ElementNode());
+    }
+
+    /**
+     * @group i
+     * @covers            ::compileValue
+     * @expectedException \Phug\CompilerException
+     */
+    public function testAttributeException()
+    {
+        self::expectExceptionMessage(
+            'Attribute value can only be a string or an expression, '.
+            'stdClass given.'
+        );
+
+        $attributeCompiler = new AttributeCompiler(new Compiler());
+        $node = new AttributeNode();
+        $node->setValue(new stdClass());
+        $attributeCompiler->compileNode($node);
     }
 }

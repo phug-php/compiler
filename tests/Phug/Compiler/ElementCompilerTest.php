@@ -21,13 +21,16 @@ class ElementCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\DoNode
-     * @expectedExceptionMessage given to element compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\DoNode '.
+            'given to element compiler.'
+        );
+
         $elementCompiler = new ElementCompiler(new Compiler());
         $elementCompiler->compileNode(new DoNode());
     }

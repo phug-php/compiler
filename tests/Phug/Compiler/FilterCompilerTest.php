@@ -13,13 +13,16 @@ use Phug\Test\AbstractCompilerTest;
 class FilterCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to filter compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to filter compiler.'
+        );
+
         $filterCompiler = new FilterCompiler(new Compiler());
         $filterCompiler->compileNode(new ElementNode());
     }

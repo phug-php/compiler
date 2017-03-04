@@ -14,13 +14,16 @@ use Phug\Test\AbstractCompilerTest;
 class BlockCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to block compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to block compiler.'
+        );
+
         $blockCompiler = new BlockCompiler(new Compiler());
         $blockCompiler->compileNode(new ElementNode());
     }
@@ -46,12 +49,15 @@ class BlockCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers                   \Phug\Compiler::compileBlocks
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected block for the name foo
+     * @covers            \Phug\Compiler::compileBlocks
+     * @expectedException \Phug\CompilerException
      */
     public function testCompileBlocksException()
     {
+        self::expectExceptionMessage(
+            'Unexpected block for the name foo'
+        );
+
         include_once __DIR__.'/TestBlockCompiler.php';
         $compiler = new Compiler([
             'node_compilers' => [

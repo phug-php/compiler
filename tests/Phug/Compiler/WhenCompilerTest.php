@@ -13,13 +13,16 @@ use Phug\Test\AbstractCompilerTest;
 class WhenCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers                   ::<public>
-     * @expectedException        \Phug\CompilerException
-     * @expectedExceptionMessage Unexpected Phug\Parser\Node\ElementNode
-     * @expectedExceptionMessage given to when compiler.
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
      */
     public function testException()
     {
+        self::expectExceptionMessage(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to when compiler.'
+        );
+
         $whenCompiler = new WhenCompiler(new Compiler());
         $whenCompiler->compileNode(new ElementNode());
     }
