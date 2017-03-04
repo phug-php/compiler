@@ -2,6 +2,7 @@
 
 namespace Phug\Test;
 
+use Exception;
 use Phug\Compiler;
 
 abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
@@ -19,7 +20,7 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        $this->setExpectedException(null, $message, null);
+        $this->setExpectedException(Exception::class, $message, null);
     }
 
     public function setUp()

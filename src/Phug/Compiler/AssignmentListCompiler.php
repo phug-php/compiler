@@ -18,11 +18,13 @@ class AssignmentListCompiler extends AbstractNodeCompiler
             );
         }
 
+        // @codeCoverageIgnoreStart
         /**
          * @var AssignmentListNode $assignmentList
          */
         $assignmentList = $node;
 
         return new MarkupElement('to-do-assignement-list');
+        // @codeCoverageIgnoreEnd
     }
 }

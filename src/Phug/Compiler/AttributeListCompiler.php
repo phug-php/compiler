@@ -18,6 +18,8 @@ class AttributeListCompiler extends AbstractNodeCompiler
             );
         }
 
+        // @codeCoverageIgnoreStart
         return new MarkupElement('to-do-attribute-list');
+        // @codeCoverageIgnoreEnd
     }
 }
