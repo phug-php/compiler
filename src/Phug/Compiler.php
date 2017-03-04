@@ -228,7 +228,10 @@ class Compiler implements CompilerInterface
     {
         if (!is_subclass_of($handler, NodeCompilerInterface::class)) {
             throw new \InvalidArgumentException(
-                'Passed node compiler needs to implement '.NodeCompilerInterface::class
+                'Passed node compiler needs to implement '.
+                NodeCompilerInterface::class.'. '.
+                (is_object($handler) ? get_class($handler) : $handler).
+                ' given.'
             );
         }
 

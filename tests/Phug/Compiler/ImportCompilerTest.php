@@ -6,6 +6,7 @@ use Phug\Compiler;
 use Phug\Compiler\ImportCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
+use Phug\Test\TestCompiler;
 
 /**
  * @coversDefaultClass \Phug\Compiler\ImportCompiler
@@ -37,8 +38,15 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
+     * @covers \Phug\Compiler::__clone
+     * @covers \Phug\Compiler::setLayout
+     * @covers \Phug\Compiler::getBlocksByName
+     * @covers \Phug\Compiler::compileBlocks
+     * @covers \Phug\Compiler::compile
+     * @covers \Phug\Compiler::compileFile
+     * @covers \Phug\Compiler::compileFileIntoElement
+     * @covers \Phug\Compiler::getFileName
      * @covers \Phug\Compiler\Block::<public>
      * @covers \Phug\Compiler\Layout::<public>
      */
@@ -48,5 +56,19 @@ class ImportCompilerTest extends AbstractCompilerTest
             '<section>1 A 2 A</section>',
             __DIR__.'/../../templates/page.pug'
         );
+    }
+
+    /**
+     * @covers                   \Phug\Compiler::compileIntoElement
+     * @expectedException        \Phug\CompilerException
+     * @expectedExceptionMessage Phug\Parser\Node\DocumentNode
+     * @expectedExceptionMessage compiled into a value that does not
+     * @expectedExceptionMessage implement ElementInterface: string
+     */
+    public function testCompileIntoElementException()
+    {
+        include_once __DIR__.'/../TestCompiler.php';
+        $compiler = new TestCompiler();
+        $compiler->compile('extends layout');
     }
 }

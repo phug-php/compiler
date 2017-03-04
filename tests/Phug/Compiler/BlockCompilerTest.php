@@ -4,6 +4,7 @@ namespace Phug\Test\Compiler;
 
 use Phug\Compiler;
 use Phug\Compiler\BlockCompiler;
+use Phug\Parser\Node\BlockNode;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
@@ -42,5 +43,21 @@ class BlockCompilerTest extends AbstractCompilerTest
                 '    p Foo',
             ]
         );
+    }
+
+    /**
+     * @covers                   \Phug\Compiler::compileBlocks
+     * @expectedException        \Phug\CompilerException
+     * @expectedExceptionMessage Unexpected block for the name foo
+     */
+    public function testCompileBlocksException()
+    {
+        include_once __DIR__.'/TestBlockCompiler.php';
+        $compiler = new Compiler([
+            'node_compilers' => [
+                BlockNode::class => TestBlockCompiler::class,
+            ]
+        ]);
+        $compiler->compile('block foo');
     }
 }
