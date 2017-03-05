@@ -7,14 +7,14 @@ use Phug\Parser\NodeInterface;
 
 abstract class AbstractStatementNodeCompiler extends AbstractNodeCompiler
 {
-    protected function wrapStatement(NodeInterface $node, $statement, $subject = null)
+    protected function wrapStatement(NodeInterface $node, $statement, $subject = null, $noChildrenEnd = ' {}')
     {
         if ($subject !== null && $subject !== '') {
             $statement .= ' ('.$subject.')';
         }
 
         if (!$node->hasChildren()) {
-            $statement .= ' {}';
+            $statement .= $noChildrenEnd;
         }
 
         $code = new CodeElement($statement);

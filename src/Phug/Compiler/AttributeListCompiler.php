@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AttributeListNode;
 use Phug\Parser\NodeInterface;
@@ -20,7 +19,7 @@ class AttributeListCompiler extends AbstractNodeCompiler
         }
 
         // @codeCoverageIgnoreStart
-        return new MarkupElement('to-do-attribute-list');
+        return null;
         // @codeCoverageIgnoreEnd
     }
 }

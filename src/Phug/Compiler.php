@@ -29,7 +29,6 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
-use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;

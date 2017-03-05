@@ -2,14 +2,14 @@
 
 namespace Phug\Compiler;
 
-use Phug\AbstractNodeCompiler;
+use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\DoNode;
 use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 
-class WhileCompiler extends AbstractNodeCompiler
+class WhileCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
@@ -19,6 +19,18 @@ class WhileCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-while');
+        /**
+         * @var WhileNode $node
+         */
+        $subject = $node->getSubject();
+        $linkedToDoStatement = $node->getPreviousSibling() instanceof DoNode;
+        if ($linkedToDoStatement && $node->hasChildren()) {
+            throw new CompilerException(
+                'While statement cannot have children and come after a do statement.'
+            );
+        }
+        $whileEnd = $linkedToDoStatement ? ';' : ' {}';
+
+        return $this->wrapStatement($node, 'while', $subject, $whileEnd);
     }
 }

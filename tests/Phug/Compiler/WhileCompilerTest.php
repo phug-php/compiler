@@ -26,4 +26,55 @@ class WhileCompilerTest extends AbstractCompilerTest
         $whileCompiler = new WhileCompiler(new Compiler());
         $whileCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\WhileCompiler::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            [
+                '<?php do { ?>',
+                '<p>foo</p>',
+                '<?php } while ($foo > 20); ?>',
+            ],
+            [
+                'do'."\n",
+                '  p foo'."\n",
+                'while $foo > 20',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php while ($foo > 20) { ?>',
+                '<p>foo</p>',
+                '<?php } ?>',
+            ],
+            [
+                'while $foo > 20'."\n",
+                '  p foo',
+            ]
+        );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @covers            \Phug\Compiler\WhileCompiler::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testDoAndWhileSeededException()
+    {
+        $this->expectMessageToBeThrown(
+            'While statement cannot have children and come after a do statement.'
+        );
+
+        $compiler = new Compiler();
+        $compiler->compile(
+            'do'."\n".
+            '  div A'."\n".
+            'while a()'."\n".
+            '  div B'
+        );
+    }
 }

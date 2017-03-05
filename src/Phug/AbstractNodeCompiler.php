@@ -3,7 +3,6 @@
 namespace Phug;
 
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node\CodeNode;
 use Phug\Parser\NodeInterface;
 
 abstract class AbstractNodeCompiler implements NodeCompilerInterface
