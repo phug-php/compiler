@@ -2,14 +2,13 @@
 
 namespace Phug\Compiler;
 
-use Phug\AbstractNodeCompiler;
+use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\EachNode;
 use Phug\Parser\NodeInterface;
 
-class EachCompiler extends AbstractNodeCompiler
+class EachCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
@@ -19,6 +18,11 @@ class EachCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-each');
+        /**
+         * @var EachNode $node
+         */
+        $subject = $node->getSubject();
+
+        return $this->wrapStatement($node, 'foreach', $subject);
     }
 }

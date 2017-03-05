@@ -28,7 +28,6 @@ class CommentCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      */
     public function testCompile()

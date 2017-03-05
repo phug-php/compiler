@@ -36,11 +36,9 @@ class CaseCompilerTest extends AbstractCompilerTest
         $this->assertCompile(
             [
                 '<?php switch ($foo) { ?>',
-                '<?php case 0: ?>',
-                '<?php case 1: ?>',
+                '<?php case 0: case 1: ?>',
                 '<p>Hello</p>',
-                '<?php break; ?>',
-                '<?php default: ?>',
+                '<?php break; default: ?>',
                 '<p>Bye</p>',
                 '<?php } ?>',
             ],

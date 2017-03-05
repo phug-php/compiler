@@ -6,6 +6,11 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+      Design/EvalExpression:
+        enabled: false
+      UnusedFormalParameter:
+        enabled: false
 ratings:
   paths:
   - "**.inc"
