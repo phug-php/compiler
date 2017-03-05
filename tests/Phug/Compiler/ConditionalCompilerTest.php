@@ -42,10 +42,6 @@ class ConditionalCompilerTest extends AbstractCompilerTest
                 '<p>Medium foo</p>',
                 '<?php } else { ?>',
                 '<p>Small foo</p>',
-                '<?php } if (!($foo % 1)) { ?>',
-                '<p>Even foo</p>',
-                '<?php } else { ?>',
-                '<p>Odd foo</p>',
                 '<?php } ?>',
             ],
             [
@@ -56,7 +52,18 @@ class ConditionalCompilerTest extends AbstractCompilerTest
                 'elseif $foo > 10'."\n",
                 '  p Medium foo'."\n",
                 'else'."\n",
-                '  p Small foo'."\n",
+                '  p Small foo',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php if (!($foo % 1)) { ?>',
+                '<p>Even foo</p>',
+                '<?php } else { ?>',
+                '<p>Odd foo</p>',
+                '<?php } ?>',
+            ],
+            [
                 'unless $foo % 1'."\n",
                 '  p Even foo'."\n",
                 'else'."\n",

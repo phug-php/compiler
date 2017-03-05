@@ -60,7 +60,7 @@ class WhileCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers            ::<public>
-     * @covers            \Phug\Compiler\WhileCompiler::<public>
+     * @covers            \Phug\Compiler\DoCompiler::<public>
      * @expectedException \Phug\CompilerException
      */
     public function testDoAndWhileSeededException()

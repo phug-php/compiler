@@ -21,7 +21,11 @@ class EachCompiler extends AbstractStatementNodeCompiler
         /**
          * @var EachNode $node
          */
-        $subject = $node->getSubject();
+        $subject = $node->getSubject().' as ';
+        if ($key = $node->getKey()) {
+            $subject .= $key.' => ';
+        }
+        $subject .= '$'.$node->getItem();
 
         return $this->wrapStatement($node, 'foreach', $subject);
     }

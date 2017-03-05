@@ -4,7 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ExpressionNode;
 use Phug\Parser\NodeInterface;
@@ -19,6 +19,14 @@ class ExpressionCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-expression');
+        /**
+         * @var ExpressionNode $element
+         */
+        $value = $node->getValue();
+        $expression = new ExpressionElement($value);
+        $expression->setIsChecked($node->isChecked());
+        $expression->setIsEscaped($node->isEscaped());
+
+        return $expression;
     }
 }

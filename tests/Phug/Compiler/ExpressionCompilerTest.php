@@ -26,4 +26,19 @@ class ExpressionCompilerTest extends AbstractCompilerTest
         $expressionCompiler = new ExpressionCompiler(new Compiler());
         $expressionCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            '<p><?= $foo ?></p>',
+            'p?!=$foo'
+        );
+        $this->assertCompile(
+            '<p><?= htmlspecialchars((isset($foo) ? $foo : \'\')) ?></p>',
+            'p=$foo'
+        );
+    }
 }

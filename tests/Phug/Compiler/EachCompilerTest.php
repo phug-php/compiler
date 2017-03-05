@@ -26,4 +26,23 @@ class EachCompilerTest extends AbstractCompilerTest
         $eachCompiler = new EachCompiler(new Compiler());
         $eachCompiler->compileNode(new ElementNode());
     }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $item) { ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'each $item in $items'."\n",
+                '  p?!=$item',
+            ]
+        );
+    }
 }
