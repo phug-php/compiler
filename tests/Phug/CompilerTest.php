@@ -5,8 +5,10 @@ namespace Phug\Test;
 use Phug\Compiler;
 use Phug\Formatter;
 use Phug\Formatter\Element\MarkupElement;
+use Phug\Formatter\ElementInterface;
 use Phug\Parser;
 use Phug\Parser\Node\ElementNode;
+use Phug\Parser\NodeInterface;
 
 /**
  * @coversDefaultClass \Phug\Compiler
@@ -163,5 +165,31 @@ class CompilerTest extends AbstractCompilerTest
         include_once __DIR__.'/Node/TestNode.php';
         $compiler = new Compiler();
         $compiler->compileNode(new TestNode());
+    }
+
+    /**
+     * @covers ::walkOption
+     * @covers ::compileNode
+     */
+    public function testHooks()
+    {
+        $compiler = new Compiler([
+            'pre_compile'  => [
+                function (NodeInterface $node) {
+                    if ($node instanceof ElementNode) {
+                        $node->setName($node->getName().'b');
+                    }
+                },
+            ],
+            'post_compile' => [
+                function (ElementInterface $element) {
+                    if ($element instanceof MarkupElement) {
+                        $element->setName($element->getName().'c');
+                    }
+                },
+            ],
+        ]);
+
+        self::assertSame('<abc></abc>', $compiler->compile('a'));
     }
 }
