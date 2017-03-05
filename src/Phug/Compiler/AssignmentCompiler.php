@@ -7,7 +7,9 @@ use Phug\CompilerException;
 use Phug\Formatter\Element\AssignmentElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentNode;
+use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\NodeInterface;
+use SplObjectStorage;
 
 class AssignmentCompiler extends AbstractNodeCompiler
 {
@@ -23,7 +25,11 @@ class AssignmentCompiler extends AbstractNodeCompiler
          * @var AssignmentNode $node
          */
         $name = $node->getName();
-        $attributes = $node->getAttributes();
+        $attributes = new SplObjectStorage();
+        $input = iterator_to_array($node->getAttributes());
+        array_walk($input, function (AttributeNode $attribute) use ($attributes, $parent) {
+            $attributes->attach($this->getCompiler()->compileNode($attribute, $parent));
+        });
 
         return new AssignmentElement($name, $attributes);
     }

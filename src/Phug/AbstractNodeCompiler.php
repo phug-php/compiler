@@ -3,10 +3,14 @@
 namespace Phug;
 
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\CodeNode;
 use Phug\Parser\NodeInterface;
 
 abstract class AbstractNodeCompiler implements NodeCompilerInterface
 {
+    /**
+     * @var CompilerInterface
+     */
     private $compiler;
 
     public function __construct(CompilerInterface $compiler)
@@ -21,12 +25,12 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
 
     public function compileNodeChildren(NodeInterface $node, ElementInterface $element)
     {
-        $compiler = $this->getCompiler();
-        foreach ($node->getChildren() ?: [] as $childNode) {
-            $childElement = $compiler->compileNode($childNode, $element);
+        $children = $node->getChildren();
+        array_walk($children, function (NodeInterface $childNode) use ($element) {
+            $childElement = $this->getCompiler()->compileNode($childNode, $element);
             if ($childElement) {
                 $element->appendChild($childElement);
             }
-        }
+        });
     }
 }

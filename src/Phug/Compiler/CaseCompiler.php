@@ -2,14 +2,13 @@
 
 namespace Phug\Compiler;
 
-use Phug\AbstractNodeCompiler;
+use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CaseNode;
 use Phug\Parser\NodeInterface;
 
-class CaseCompiler extends AbstractNodeCompiler
+class CaseCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
@@ -22,12 +21,8 @@ class CaseCompiler extends AbstractNodeCompiler
         /**
          * @var CaseNode $node
          */
-        $value = $node->getSubject();
+        $subject = $node->getSubject();
 
-        $code = new CodeElement('switch ('.$value.')');
-
-        $this->compileNodeChildren($node, $code);
-
-        return $code;
+        return $this->wrapStatement($node, 'switch', $subject);
     }
 }

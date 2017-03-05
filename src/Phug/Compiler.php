@@ -29,6 +29,7 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
+use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;
@@ -101,6 +102,8 @@ class Compiler implements CompilerInterface
         $this->setOptionsRecursive([
             'basedir'              => null,
             'extensions'           => ['', '.pug', '.jade'],
+            'pre_compile'          => [],
+            'post_compile'         => [],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
@@ -283,6 +286,12 @@ class Compiler implements CompilerInterface
         return $this->namedBlocks;
     }
 
+    protected function walkOption($option, callable $handler)
+    {
+        $array = $this->getOption($option);
+        array_walk($array, $handler);
+    }
+
     /**
      * Returns PHTML from pug node input.
      *
@@ -295,13 +304,24 @@ class Compiler implements CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
+        $this->walkOption('pre_compile', function (callable $preCompile) use ($node) {
+            $preCompile($node);
+        });
         foreach ($this->nodeCompilers as $className => $compiler) {
             if (is_a($node, $className)) {
                 if (!($compiler instanceof NodeCompilerInterface)) {
                     $compiler = $this->getNamedCompiler($compiler);
                 }
 
-                return $compiler->compileNode($node, $parent);
+                $element = $compiler->compileNode($node, $parent);
+
+                if ($element instanceof ElementInterface && !($element instanceof Block)) {
+                    $this->walkOption('post_compile', function (callable $postCompile) use ($element) {
+                        $postCompile($element);
+                    });
+                }
+
+                return $element;
             }
         }
 

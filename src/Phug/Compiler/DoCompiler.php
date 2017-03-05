@@ -2,14 +2,13 @@
 
 namespace Phug\Compiler;
 
-use Phug\AbstractNodeCompiler;
+use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\DoNode;
 use Phug\Parser\NodeInterface;
 
-class DoCompiler extends AbstractNodeCompiler
+class DoCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
@@ -19,6 +18,6 @@ class DoCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-do');
+        return $this->wrapStatement($node, 'do');
     }
 }
