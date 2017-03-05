@@ -29,6 +29,7 @@ class ConditionalCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\AbstractStatementNodeCompiler::<public>
      */
     public function testCompile()
     {

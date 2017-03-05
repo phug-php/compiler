@@ -30,6 +30,8 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @covers \Phug\Compiler\ImportCompiler::resolvePath
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */
@@ -43,6 +45,8 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @covers \Phug\Compiler\ImportCompiler::resolvePath
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
@@ -78,5 +82,20 @@ class ImportCompilerTest extends AbstractCompilerTest
         include_once __DIR__.'/../TestCompiler.php';
         $compiler = new TestCompiler();
         $compiler->compile('extends layout');
+    }
+
+    /**
+     * @covers            \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @expectedException \Phug\CompilerException
+     */
+    public function testBasedirException()
+    {
+        $this->expectMessageToBeThrown(
+            'The "basedir" option is required to use '.
+            'includes and extends with "absolute" paths.'
+        );
+
+        $compiler = new Compiler();
+        $compiler->compile('extends /layout');
     }
 }

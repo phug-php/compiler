@@ -29,6 +29,7 @@ class WhileCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\AbstractStatementNodeCompiler::<public>
      * @covers \Phug\Compiler\WhileCompiler::<public>
      */
     public function testCompile()

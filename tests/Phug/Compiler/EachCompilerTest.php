@@ -28,8 +28,8 @@ class EachCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
+     * @covers \Phug\AbstractStatementNodeCompiler::<public>
      */
     public function testCompile()
     {
@@ -41,6 +41,17 @@ class EachCompilerTest extends AbstractCompilerTest
             ],
             [
                 'each $item in $items'."\n",
+                '  p?!=$item',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $key => $item) { ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'each $item, $key in $items'."\n",
                 '  p?!=$item',
             ]
         );

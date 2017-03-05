@@ -23,7 +23,7 @@ class EachCompiler extends AbstractStatementNodeCompiler
          */
         $subject = $node->getSubject().' as ';
         if ($key = $node->getKey()) {
-            $subject .= $key.' => ';
+            $subject .= '$'.$key.' => ';
         }
         $subject .= '$'.$node->getItem();
 

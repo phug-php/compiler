@@ -30,6 +30,7 @@ class CaseCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::<public>
      * @covers \Phug\Compiler\WhenCompiler::<public>
+     * @covers \Phug\AbstractStatementNodeCompiler::<public>
      */
     public function testCompile()
     {
