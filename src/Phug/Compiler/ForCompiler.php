@@ -3,7 +3,6 @@
 namespace Phug\Compiler;
 
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ForNode;
 use Phug\Parser\NodeInterface;
