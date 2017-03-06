@@ -14,7 +14,8 @@ class EachCompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers ::<public>
-     * @covers \Phug\AbstractStatementNodeCompiler::<public>
+     * @covers ::compileLoop
+     * @covers \Phug\AbstractStatementNodeCompiler::wrapStatement
      */
     public function testCompile()
     {

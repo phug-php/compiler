@@ -15,10 +15,15 @@ class ForCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::<public>
      * @covers \Phug\Compiler\EachCompiler::<public>
-     * @covers \Phug\AbstractStatementNodeCompiler::<public>
+     * @covers \Phug\Compiler\EachCompiler::compileLoop
+     * @covers \Phug\AbstractStatementNodeCompiler::wrapStatement
      */
     public function testCompile()
     {
+        $this->assertCompile(
+            '<?php foreach ($items as $item) {} ?>',
+            'for $item in $items'
+        );
         $this->assertCompile(
             [
                 '<?php foreach ($items as $item) { ?>',
