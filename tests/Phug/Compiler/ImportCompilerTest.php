@@ -98,4 +98,34 @@ class ImportCompilerTest extends AbstractCompilerTest
         $compiler = new Compiler();
         $compiler->compile('extends /layout');
     }
+
+    /**
+     * @covers            \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @expectedException \Phug\CompilerException
+     */
+    public function testRelativePathException()
+    {
+        $this->expectMessageToBeThrown(
+            'No source file path provided to get relative paths from it.'
+        );
+
+        $compiler = new Compiler();
+        $compiler->compile('extends ./relative');
+    }
+
+    /**
+     * @covers            \Phug\Compiler\ImportCompiler::resolvePath
+     * @expectedException \Phug\CompilerException
+     */
+    public function testFileNotFoundException()
+    {
+        $this->expectMessageToBeThrown(
+            "File not found at path '/missing'"
+        );
+
+        $compiler = new Compiler([
+            'basedir' => __DIR__.'/../../templates',
+        ]);
+        $compiler->compile('include /missing');
+    }
 }

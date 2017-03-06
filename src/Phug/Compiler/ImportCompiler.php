@@ -48,7 +48,7 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         throw new CompilerException(
-            'file not found at path '.var_export($path, true).'.'
+            'File not found at path '.var_export($path, true).'.'
         );
     }
 
