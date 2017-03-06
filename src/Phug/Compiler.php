@@ -103,6 +103,7 @@ class Compiler implements CompilerInterface
             'extensions'           => ['', '.pug', '.jade'],
             'pre_compile'          => [],
             'post_compile'         => [],
+            'filters'              => [],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
@@ -303,7 +304,7 @@ class Compiler implements CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        $this->walkOption('pre_compile', function (callable $preCompile) use ($node) {
+        $this->walkOption('pre_compile', function (callable $preCompile) use (&$node) {
             $preCompile($node);
         });
         foreach ($this->nodeCompilers as $className => $compiler) {
@@ -315,7 +316,7 @@ class Compiler implements CompilerInterface
                 $element = $compiler->compileNode($node, $parent);
 
                 if ($element instanceof ElementInterface && !($element instanceof Block)) {
-                    $this->walkOption('post_compile', function (callable $postCompile) use ($element) {
+                    $this->walkOption('post_compile', function (callable $postCompile) use (&$element) {
                         $postCompile($element);
                     });
                 }
