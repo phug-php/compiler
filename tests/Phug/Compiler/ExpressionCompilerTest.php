@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class ExpressionCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to expression compiler.'
-        );
-
-        $expressionCompiler = new ExpressionCompiler(new Compiler());
-        $expressionCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      */
     public function testCompile()
@@ -40,5 +25,20 @@ class ExpressionCompilerTest extends AbstractCompilerTest
             '<p><?= htmlspecialchars((isset($foo) ? $foo : \'\')) ?></p>',
             'p=$foo'
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to expression compiler.'
+        );
+
+        $expressionCompiler = new ExpressionCompiler(new Compiler());
+        $expressionCompiler->compileNode(new ElementNode());
     }
 }

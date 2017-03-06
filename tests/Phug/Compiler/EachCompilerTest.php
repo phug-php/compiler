@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class EachCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to each compiler.'
-        );
-
-        $eachCompiler = new EachCompiler(new Compiler());
-        $eachCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
      */
@@ -55,5 +40,20 @@ class EachCompilerTest extends AbstractCompilerTest
                 '  p?!=$item',
             ]
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to each compiler.'
+        );
+
+        $eachCompiler = new EachCompiler(new Compiler());
+        $eachCompiler->compileNode(new ElementNode());
     }
 }

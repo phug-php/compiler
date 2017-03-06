@@ -10,6 +10,17 @@ use Phug\Parser\NodeInterface;
 
 class EachCompiler extends AbstractStatementNodeCompiler
 {
+    protected function compileLoop(NodeInterface $node, $items, $key, $item)
+    {
+        $subject = $items.' as ';
+        if ($key) {
+            $subject .= '$'.$key.' => ';
+        }
+        $subject .= '$'.$item;
+
+        return $this->wrapStatement($node, 'foreach', $subject);
+    }
+
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof EachNode)) {
@@ -21,12 +32,10 @@ class EachCompiler extends AbstractStatementNodeCompiler
         /**
          * @var EachNode $node
          */
-        $subject = $node->getSubject().' as ';
-        if ($key = $node->getKey()) {
-            $subject .= '$'.$key.' => ';
-        }
-        $subject .= '$'.$node->getItem();
+        $subject = $node->getSubject();
+        $key = $node->getKey();
+        $item = $node->getItem();
 
-        return $this->wrapStatement($node, 'foreach', $subject);
+        return $this->compileLoop($node, $subject, $key, $item);
     }
 }

@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class CaseCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to case compiler.'
-        );
-
-        $caseCompiler = new CaseCompiler(new Compiler());
-        $caseCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      * @covers \Phug\Compiler\WhenCompiler::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
@@ -52,5 +37,20 @@ class CaseCompilerTest extends AbstractCompilerTest
                 '    p Bye',
             ]
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to case compiler.'
+        );
+
+        $caseCompiler = new CaseCompiler(new Compiler());
+        $caseCompiler->compileNode(new ElementNode());
     }
 }

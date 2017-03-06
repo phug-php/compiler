@@ -13,6 +13,21 @@ use Phug\Test\AbstractCompilerTest;
 class DoctypeCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            [
+                '<!DOCTYPE html>',
+            ],
+            [
+                'doctype html',
+            ]
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */

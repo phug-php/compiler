@@ -14,21 +14,6 @@ use Phug\Test\AbstractCompilerTest;
 class BlockCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to block compiler.'
-        );
-
-        $blockCompiler = new BlockCompiler(new Compiler());
-        $blockCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      * @covers ::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
@@ -47,6 +32,21 @@ class BlockCompilerTest extends AbstractCompilerTest
                 '    p Foo',
             ]
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to block compiler.'
+        );
+
+        $blockCompiler = new BlockCompiler(new Compiler());
+        $blockCompiler->compileNode(new ElementNode());
     }
 
     /**

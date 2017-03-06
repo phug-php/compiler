@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class WhileCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to while compiler.'
-        );
-
-        $whileCompiler = new WhileCompiler(new Compiler());
-        $whileCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
      * @covers \Phug\Compiler\WhileCompiler::<public>
@@ -57,6 +42,21 @@ class WhileCompilerTest extends AbstractCompilerTest
                 '  p foo',
             ]
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to while compiler.'
+        );
+
+        $whileCompiler = new WhileCompiler(new Compiler());
+        $whileCompiler->compileNode(new ElementNode());
     }
 
     /**

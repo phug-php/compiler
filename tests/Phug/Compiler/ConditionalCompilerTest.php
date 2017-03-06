@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class ConditionalCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to conditional compiler.'
-        );
-
-        $conditionalCompiler = new ConditionalCompiler(new Compiler());
-        $conditionalCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
      */
@@ -71,5 +56,20 @@ class ConditionalCompilerTest extends AbstractCompilerTest
                 '  p Odd foo',
             ]
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to conditional compiler.'
+        );
+
+        $conditionalCompiler = new ConditionalCompiler(new Compiler());
+        $conditionalCompiler->compileNode(new ElementNode());
     }
 }

@@ -13,6 +13,14 @@ use Phug\Test\AbstractCompilerTest;
 class TextCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @covers ::<public>
+     */
+    public function testText()
+    {
+        $this->assertCompile('Hello', '| Hello');
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
@@ -25,10 +33,5 @@ class TextCompilerTest extends AbstractCompilerTest
 
         $textCompiler = new TextCompiler(new Compiler());
         $textCompiler->compileNode(new ElementNode());
-    }
-
-    public function testText()
-    {
-        $this->assertCompile('Hello', '| Hello');
     }
 }

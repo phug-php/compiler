@@ -13,6 +13,70 @@ use Phug\Test\AbstractCompilerTest;
 class ForCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\EachCompiler::<public>
+     * @covers \Phug\AbstractStatementNodeCompiler::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $item) { ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $item in $items'."\n",
+                '  p?!=$item',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $key => $item) { ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $item, $key in $items'."\n",
+                '  p?!=$item',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $key => $__none) { ?>',
+                '<p><?= $key ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $key of $items'."\n",
+                '  p?!=$key',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php foreach ($items as $key => $item) { ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $key, $item of $items'."\n",
+                '  p?!=$item',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php for ($i = 0; $i < 5; $i++) { ?>',
+                '<p><?= $i ?></p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $i = 0; $i < 5; $i++'."\n",
+                '  p?!=$i',
+            ]
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */

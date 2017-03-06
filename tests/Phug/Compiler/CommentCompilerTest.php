@@ -13,21 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class CommentCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
-     * @expectedException \Phug\CompilerException
-     */
-    public function testException()
-    {
-        $this->expectMessageToBeThrown(
-            'Unexpected Phug\Parser\Node\ElementNode '.
-            'given to comment compiler.'
-        );
-
-        $commentCompiler = new CommentCompiler(new Compiler());
-        $commentCompiler->compileNode(new ElementNode());
-    }
-
-    /**
      * @covers ::<public>
      */
     public function testCompile()
@@ -40,5 +25,20 @@ class CommentCompilerTest extends AbstractCompilerTest
             '',
             '//- Comment'
         );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testException()
+    {
+        $this->expectMessageToBeThrown(
+            'Unexpected Phug\Parser\Node\ElementNode '.
+            'given to comment compiler.'
+        );
+
+        $commentCompiler = new CommentCompiler(new Compiler());
+        $commentCompiler->compileNode(new ElementNode());
     }
 }
