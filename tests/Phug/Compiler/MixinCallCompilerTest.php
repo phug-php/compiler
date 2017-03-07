@@ -13,6 +13,22 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCallCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::<public>
+     * @covers \Phug\Compiler\MixinCompiler::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertRenderFile(
+            [
+                '<section></section>',
+            ],
+            __DIR__.'/../../templates/mixins-test.pug'
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */

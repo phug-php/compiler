@@ -19,6 +19,6 @@ class MixinCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-mixin');
+        return null;
     }
 }
