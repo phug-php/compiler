@@ -71,7 +71,6 @@ class FilterCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers            ::compileText
      * @expectedException \Phug\CompilerException
      */

@@ -13,6 +13,31 @@ use Phug\Test\AbstractCompilerTest;
 class VariableCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @covers ::<public>
+     */
+    public function testCompile()
+    {
+        $this->assertCompile('<?php $answer=42 ?>', '$answer != 42');
+        $this->assertCompile(
+            '<?php $answer=htmlspecialchars($foo) ?>',
+            '$answer ?= $foo'
+        );
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testExpressionException()
+    {
+        $this->expectMessageToBeThrown(
+            'Variable should be followed by exactly 1 expression.'
+        );
+
+        $this->assertCompile('', '$answer');
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
