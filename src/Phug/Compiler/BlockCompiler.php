@@ -40,10 +40,17 @@ class BlockCompiler extends AbstractNodeCompiler
             );
         }
 
+        /**
+         * @var BlockNode $node
+         */
         $name = $node->getName();
 
         if (!$name) {
-            return new MarkupElement('to-do-anonymous-block');
+            $compiler = $this->getCompiler();
+            $block = $compiler->getMixinBlock($name);
+            $block->import($node);
+
+            return $block;
         }
 
         return $this->compileNamedBlock($name, $node);

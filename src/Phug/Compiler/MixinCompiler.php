@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
@@ -18,6 +17,14 @@ class MixinCompiler extends AbstractNodeCompiler
                 'Unexpected '.get_class($node).' given to mixin compiler.'
             );
         }
+
+        /**
+         * @var MixinNode $node
+         */
+        $name = $node->getName();
+        $compiler = $this->getCompiler();
+        $mixins = $compiler->getMixins();
+        $mixins->attach($node);
 
         return null;
     }

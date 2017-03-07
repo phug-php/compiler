@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\MixinCallNode;
 use Phug\Parser\NodeInterface;
@@ -19,6 +18,21 @@ class MixinCallCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new MarkupElement('to-do-mixin-call');
+        /**
+         * @var MixinCallNode $node
+         */
+        $name = $node->getName();
+        $compiler = $this->getCompiler();
+        $mixins = $compiler->getMixins();
+        $declaration = $mixins->findFirstByName($name);
+        if (!$declaration) {
+            throw new CompilerException(
+                'Unknown '.$name.' mixin called.'
+            );
+        }
+        $block = $compiler->getMixinBlock($name);
+        $block->proceedNodeChildren($node, 'replace');
+
+        return null;
     }
 }

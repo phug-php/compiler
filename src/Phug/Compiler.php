@@ -55,6 +55,7 @@ use Phug\Parser\Node\WhenNode;
 use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 // Utils
+use Phug\Util\AssociativeStorage;
 use Phug\Util\Partial\OptionTrait;
 
 class Compiler implements CompilerInterface
@@ -92,9 +93,19 @@ class Compiler implements CompilerInterface
     private $namedBlocks;
 
     /**
+     * @var array[Block]
+     */
+    private $mixinBlocks;
+
+    /**
      * @var Layout
      */
     private $layout;
+
+    /**
+     * @var AssociativeStorage
+     */
+    private $mixins;
 
     public function __construct(array $options = null)
     {
@@ -108,6 +119,7 @@ class Compiler implements CompilerInterface
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
+            'mixins_storage_mode'  => AssociativeStorage::REPLACE,
             'node_compilers'       => [
                 AssignmentListNode::class  => AssignmentListCompiler::class,
                 AssignmentNode::class      => AssignmentCompiler::class,
@@ -164,6 +176,11 @@ class Compiler implements CompilerInterface
         foreach ($this->getOption('node_compilers') as $className => $handler) {
             $this->setNodeCompiler($className, $handler);
         }
+
+        $this->mixins = new AssociativeStorage(
+            'mixin',
+            $this->getOption('mixins_storage_mode')
+        );
     }
 
     /**
@@ -220,6 +237,14 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * @return AssociativeStorage
+     */
+    public function getMixins()
+    {
+        return $this->mixins;
+    }
+
+    /**
      * Set the node compiler for a givent node class name.
      *
      * @param string                       $className node class name
@@ -258,6 +283,22 @@ class Compiler implements CompilerInterface
         }
 
         return $this->namedCompilers[$compiler];
+    }
+
+    /**
+     * Return the block of a given mixin.
+     *
+     * @param $mixinName
+     *
+     * @return Block
+     */
+    public function &getMixinBlock($mixinName)
+    {
+        if (!isset($this->namedBlocks[$mixinName])) {
+            $this->namedBlocks[$mixinName] = new Block();
+        }
+
+        return $this->namedBlocks[$mixinName];
     }
 
     /**
@@ -410,6 +451,7 @@ class Compiler implements CompilerInterface
     {
         $this->fileName = $fileName;
         $this->namedBlocks = [];
+        $this->mixinBlocks = [];
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
 

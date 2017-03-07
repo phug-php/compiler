@@ -60,6 +60,9 @@ class FilterCompiler extends AbstractNodeCompiler
 
         $text = $this->compileText($name, $node->getChildren(), 0);
 
-        return new TextElement(call_user_func($filters[$name], $text));
+        return new TextElement(call_user_func(
+            $filters[$name],
+            $text
+        ));
     }
 }

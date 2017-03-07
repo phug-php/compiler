@@ -2,20 +2,22 @@
 
 namespace Phug;
 
+use Phug\Compiler\Block;
 use Phug\Compiler\Layout;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\NodeInterface;
+use Phug\Util\AssociativeStorage;
 use Phug\Util\OptionInterface;
 
 interface CompilerInterface extends OptionInterface
 {
     /**
-     * @return \Phug\Parser
+     * @return Parser
      */
     public function getParser();
 
     /**
-     * @return \Phug\Formatter
+     * @return Formatter
      */
     public function getFormatter();
 
@@ -25,6 +27,11 @@ interface CompilerInterface extends OptionInterface
     public function getLayout();
 
     /**
+     * @return AssociativeStorage
+     */
+    public function getMixins();
+
+    /**
      * @param Layout $layout
      *
      * @return mixed
@@ -32,8 +39,8 @@ interface CompilerInterface extends OptionInterface
     public function setLayout(Layout $layout);
 
     /**
-     * @param string                      $className
-     * @param \Phug\NodeCompilerInterface $handler
+     * @param string                $className
+     * @param NodeCompilerInterface $handler
      *
      * @return null|ElementInterface
      */
@@ -45,6 +52,13 @@ interface CompilerInterface extends OptionInterface
      * @return array
      */
     public function &getBlocksByName($name);
+
+    /**
+     * @param string $mixinName
+     *
+     * @return Block
+     */
+    public function &getMixinBlock($mixinName);
 
     /**
      * @return array
