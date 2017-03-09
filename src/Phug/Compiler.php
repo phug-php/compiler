@@ -391,7 +391,7 @@ class Compiler implements CompilerInterface
                 foreach ($block->getChildren() as $child) {
                     $children[] = $this->compileNode($child);
                 }
-                foreach (array_reverse($children) as $child) {
+                foreach (array_filter(array_reverse($children)) as $child) {
                     $block->getParent()->insertAfter($block, $child);
                 }
                 $block->remove();

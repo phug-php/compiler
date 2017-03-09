@@ -3,6 +3,7 @@ extends base
 include mixins
 
 append article
+  article append
   +foo("a", "b")
     h1 1
 
@@ -10,6 +11,7 @@ mixin foo()
   p footer-foo
 
 prepend footer
+  article prepend
   +foo()(do="not care")
     h2 2
   +bar().biz

@@ -31,7 +31,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
             );
         }
         $block = $compiler->getMixinBlock($name);
-        $block->proceedNodeChildren($node, 'replace');
+        $block->proceedNodeChildren($declaration, 'replace');
 
         return null;
     }

@@ -22,7 +22,16 @@ class MixinCallCompilerTest extends AbstractCompilerTest
     {
         $this->assertRenderFile(
             [
-                '<section></section>',
+                '<section>',
+                '<p><a>a</a><b>b</b></p>',
+                '<div><h1>1</h1></div>',
+                '<p>footer-foo</p>',
+                '<p class="biz">bar</p>',
+                '</section>',
+                'bar',
+                '<article>append</article>',
+                '<article>prepend</article>',
+                'footer',
             ],
             __DIR__.'/../../templates/mixins-test.pug'
         );
