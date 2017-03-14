@@ -8,7 +8,9 @@ use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\Node\MixinCallNode;
+use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 
 class MixinCallCompiler extends AbstractNodeCompiler
@@ -27,6 +29,9 @@ class MixinCallCompiler extends AbstractNodeCompiler
         $name = $node->getName();
         $compiler = $this->getCompiler();
         $mixins = $compiler->getMixins();
+        /**
+         * @var MixinNode $declaration
+         */
         $declaration = $mixins->findFirstByName($name);
         if (!$declaration) {
             throw new CompilerException(
@@ -34,14 +39,14 @@ class MixinCallCompiler extends AbstractNodeCompiler
             );
         }
         $arguments = [];
-        $atttributes = [];
+        $attributes = [];
         foreach ($node->getAttributes() as $attribute) {
-            $store = is_null($attribute->getName()) ? 'arguments' : 'atttributes';
+            $store = is_null($attribute->getName()) ? 'arguments' : 'attributes';
             array_push($$store, $attribute);
         }
-        $attributes = '['.implode(', ', array_map(function ($attribute) {
+        $attributes = '['.implode(', ', array_map(function (AttributeNode $attribute) {
             return var_export($attribute->getName(), true).' => '.$attribute->getValue();
-        }, $atttributes)).']';
+        }, $attributes)).']';
         $variables = [
             'attributes' => new ExpressionElement($attributes),
         ];
@@ -58,9 +63,10 @@ class MixinCallCompiler extends AbstractNodeCompiler
             $document->appendChild($this->createVariable($name, $value));
         }
         $mixinBlocks = $compiler->getMixinBlocks();
+        echo spl_object_hash($mixinBlocks).' : '.$mixinBlocks->count()."\n\n";
         if ($mixinBlocks->offsetExists($declaration)) {
             $block = $mixinBlocks->offsetGet($declaration);
-            $block->proceedNodeChildren($node, 'replace');
+            $compiler->replaceBlock($block, $node->getChildren());
         }
         $this->compileNodeChildren($declaration, $document);
         $document->appendChild(new CodeElement('extract($'.$scopeName.')'));

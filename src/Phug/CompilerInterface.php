@@ -8,6 +8,7 @@ use Phug\Formatter\ElementInterface;
 use Phug\Parser\NodeInterface;
 use Phug\Util\AssociativeStorage;
 use Phug\Util\OptionInterface;
+use SplObjectStorage;
 
 interface CompilerInterface extends OptionInterface
 {
@@ -61,10 +62,27 @@ interface CompilerInterface extends OptionInterface
     public function &getMixinBlock($mixinName);
 
     /**
+     * @return SplObjectStorage
+     */
+    public function getMixinBlocks();
+
+
+    /**
      * @return array
      */
     public function getBlocks();
 
+    /**
+     * @param Block $block
+     * @param array $nodes
+     */
+    public function replaceBlock(Block $block, array $nodes);
+
+    /**
+     * @throws CompilerException
+     *
+     * @return $this
+     */
     public function compileBlocks();
 
     /**
