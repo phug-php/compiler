@@ -57,6 +57,7 @@ use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
 use Phug\Util\Partial\OptionTrait;
+use SplObjectStorage;
 
 class Compiler implements CompilerInterface
 {
@@ -93,7 +94,7 @@ class Compiler implements CompilerInterface
     private $namedBlocks;
 
     /**
-     * @var array[Block]
+     * @var SplObjectStorage
      */
     private $mixinBlocks;
 
@@ -328,6 +329,16 @@ class Compiler implements CompilerInterface
         return $this->namedBlocks;
     }
 
+    /**
+     * Returns lists of mixins blocks attadched to their declaration.
+     *
+     * @return SplObjectStorage
+     */
+    public function getMixinBlocks()
+    {
+        return $this->mixinBlocks;
+    }
+
     protected function walkOption($option, callable $handler)
     {
         $array = $this->getOption($option);
@@ -452,7 +463,7 @@ class Compiler implements CompilerInterface
     {
         $this->fileName = $fileName;
         $this->namedBlocks = [];
-        $this->mixinBlocks = [];
+        $this->mixinBlocks = new SplObjectStorage();
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
 

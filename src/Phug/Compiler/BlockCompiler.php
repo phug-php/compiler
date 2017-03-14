@@ -7,6 +7,7 @@ use Phug\CompilerException;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\BlockNode;
+use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 
 class BlockCompiler extends AbstractNodeCompiler
@@ -47,8 +48,21 @@ class BlockCompiler extends AbstractNodeCompiler
 
         if (!$name) {
             $compiler = $this->getCompiler();
-            $block = $compiler->getMixinBlock($name);
+            $block = new Block();
             $block->import($node);
+            $declaration = null;
+            while ($node->hasParent() && !($node instanceof MixinNode)) {
+                $node = $node->getParent();
+            }
+            if ($node instanceof MixinNode) {
+                $declaration = $node;
+            }
+            if (!$declaration) {
+                throw new CompilerException(
+                    'Anonymous block should only be in a mixin declaration.'
+                );
+            }
+            $compiler->getMixinBlocks()->attach($declaration, $block);
 
             return $block;
         }

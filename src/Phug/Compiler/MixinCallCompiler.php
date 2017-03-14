@@ -37,7 +37,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
         $atttributes = [];
         foreach ($node->getAttributes() as $attribute) {
             $store = is_null($attribute->getName()) ? 'arguments' : 'atttributes';
-            $$store[] = $attribute;
+            array_push($$store, $attribute);
         }
         $attributes = '['.implode(', ', array_map(function ($attribute) {
             return var_export($attribute->getName(), true).' => '.$attribute->getValue();
@@ -57,8 +57,11 @@ class MixinCallCompiler extends AbstractNodeCompiler
         foreach ($variables as $name => $value) {
             $document->appendChild($this->createVariable($name, $value));
         }
-        // $block = $compiler->getMixinBlock($name);
-        // $block->proceedNodeChildren($declaration, 'replace');
+        $mixinBlocks = $compiler->getMixinBlocks();
+        if ($mixinBlocks->offsetExists($declaration)) {
+            $block = $mixinBlocks->offsetGet($declaration);
+            $block->proceedNodeChildren($node, 'replace');
+        }
         $this->compileNodeChildren($declaration, $document);
         $document->appendChild(new CodeElement('extract($'.$scopeName.')'));
 
