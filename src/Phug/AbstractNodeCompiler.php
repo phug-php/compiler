@@ -2,6 +2,8 @@
 
 namespace Phug;
 
+use Phug\Formatter\Element\CodeElement;
+use Phug\Formatter\Element\VariableElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\NodeInterface;
 
@@ -31,5 +33,12 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
                 $element->appendChild($childElement);
             }
         });
+    }
+
+    public function createVariable($name, $value)
+    {
+        $variable = new CodeElement('$'.$name);
+
+        return new VariableElement($variable, $value);
     }
 }

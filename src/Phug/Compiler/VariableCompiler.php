@@ -4,8 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\CodeElement;
-use Phug\Formatter\Element\VariableElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ExpressionNode;
 use Phug\Parser\Node\VariableNode;
@@ -33,8 +31,10 @@ class VariableCompiler extends AbstractNodeCompiler
         }
 
         $compiler = $this->getCompiler();
-        $variable = new CodeElement('$'.$node->getName());
 
-        return new VariableElement($variable, $compiler->compileNode($child));
+        return $this->createVariable(
+            $node->getName(),
+            $compiler->compileNode($child, $parent)
+        );
     }
 }

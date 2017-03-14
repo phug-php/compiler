@@ -20,21 +20,23 @@ class ElementCompiler extends AbstractNodeCompiler
             );
         }
 
+        $compiler = $this->getCompiler();
+
         /**
-         * @var ElementNode $element
+         * @var ElementNode $node
          */
-        $element = $node;
+        $name = $node->getName() ?: $compiler->getOption('default_tag');
 
         $attributes = new SplObjectStorage();
-        foreach ($element->getAttributes() as $attribute) {
-            $attributes->attach($this->getCompiler()->compileNode($attribute));
+        foreach ($node->getAttributes() as $attribute) {
+            $attributes->attach($compiler->compileNode($attribute, $parent));
         }
-        $markup = new MarkupElement($element->getName(), $attributes);
-        foreach ($element->getAssignments() as $assignment) {
-            $markup->addAssignment($this->getCompiler()->compileNode($assignment));
+        $markup = new MarkupElement($name, $attributes);
+        foreach ($node->getAssignments() as $assignment) {
+            $markup->addAssignment($compiler->compileNode($assignment, $parent));
         }
 
-        $this->compileNodeChildren($element, $markup);
+        $this->compileNodeChildren($node, $markup);
 
         return $markup;
     }

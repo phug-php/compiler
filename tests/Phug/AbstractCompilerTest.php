@@ -50,20 +50,24 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         return $this->assertSameLines($expected, $this->compiler->compileFile($actual));
     }
 
-    protected function assertRender($expected, $actual)
+    protected function assertRender($expected, $actual, array $options = [])
     {
+        $compiler = $this->compiler;
+        $compiler->getFormatter()->setOptionsRecursive($options);
         ob_start();
-        eval('?>'.$this->compiler->compile($this->implodeLines($actual)));
+        eval('?>'.$compiler->compile($this->implodeLines($actual)));
         $actual = ob_get_contents();
         ob_end_clean();
 
         return $this->assertSameLines($expected, $actual);
     }
 
-    protected function assertRenderFile($expected, $actual)
+    protected function assertRenderFile($expected, $actual, array $options = [])
     {
+        $compiler = $this->compiler;
+        $compiler->getFormatter()->setOptionsRecursive($options);
         ob_start();
-        eval('?>'.$this->compiler->compileFile($actual));
+        eval('?>'.$compiler->compileFile($actual));
         $actual = ob_get_contents();
         ob_end_clean();
 

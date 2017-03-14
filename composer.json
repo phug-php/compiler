@@ -22,20 +22,10 @@
     "require": {
         "php": ">=5.5.0",
         "phug/util": "^0.1.1",
-        "phug/formatter": "dev-master",
-        "phug/dependency-injection": "dev-master",
+        "phug/formatter": "^0.1.6",
+        "phug/dependency-injection": "^1.0.1",
         "phug/parser": "^0.1.1"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/phug-php/formatter"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/phug-php/dependency-injection"
-        }
-    ],
     "require-dev": {
         "phug/dev-tool": "^0.1.0"
     },

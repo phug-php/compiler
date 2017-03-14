@@ -12,10 +12,10 @@ use Phug\Parser\NodeInterface;
 
 class FilterCompiler extends AbstractNodeCompiler
 {
-    protected function compileText($name, $children, $indentLevel)
+    protected function compileText($name, $children, $parent, $indentLevel)
     {
-        return implode("\n", array_map(function (TextNode $node) use ($name, $indentLevel) {
-            $element = $this->getCompiler()->compileNode($node);
+        return implode("\n", array_map(function (TextNode $node) use ($name, $indentLevel, $parent) {
+            $element = $this->getCompiler()->compileNode($node, $parent);
             if (!($element instanceof TextElement)) {
                 throw new CompilerException(
                     'Unexpected '.get_class($element).' in '.$name.' filter.'
@@ -31,6 +31,7 @@ class FilterCompiler extends AbstractNodeCompiler
                     $this->compileText(
                         $name,
                         $node->getChildren(),
+                        $parent,
                         $childrenIndent
                     );
             }
@@ -58,7 +59,7 @@ class FilterCompiler extends AbstractNodeCompiler
             );
         }
 
-        $text = $this->compileText($name, $node->getChildren(), 0);
+        $text = $this->compileText($name, $node->getChildren(), $parent, 0);
 
         return new TextElement(call_user_func(
             $filters[$name],

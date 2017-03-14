@@ -112,6 +112,7 @@ class Compiler implements CompilerInterface
         $this->setOptionsRecursive([
             'basedir'              => null,
             'extensions'           => ['', '.pug', '.jade'],
+            'default_tag'          => 'div',
             'pre_compile'          => [],
             'post_compile'         => [],
             'filters'              => [],
@@ -389,7 +390,7 @@ class Compiler implements CompilerInterface
                 }
                 $children = [];
                 foreach ($block->getChildren() as $child) {
-                    $children[] = $this->compileNode($child);
+                    $children[] = $this->compileNode($child, $block->getParent());
                 }
                 foreach (array_filter(array_reverse($children)) as $child) {
                     $block->getParent()->insertAfter($block, $child);
