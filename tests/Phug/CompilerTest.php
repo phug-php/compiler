@@ -4,6 +4,7 @@ namespace Phug\Test;
 
 use Phug\Compiler;
 use Phug\Formatter;
+use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser;
@@ -77,7 +78,9 @@ class CompilerTest extends AbstractCompilerTest
         // Doctype
         $this->assertCompile(
             '<!DOCTYPE html><html><input></html>',
-            "doctype html\nhtml\n  input"
+            "doctype html\n".
+            "html\n".
+            "  input"
         );
         $this->assertCompile([
             '<!DOCTYPE html>',
@@ -98,6 +101,30 @@ class CompilerTest extends AbstractCompilerTest
             "doctype 1.1\n",
             "html: input\n",
         ]);
+    }
+
+    /**
+     * @group i
+     * @covers \Phug\AbstractNodeCompiler::<public>
+     */
+    public function testGetCompiledChildren()
+    {
+        $forCompiler = new Compiler\ForCompiler($this->compiler);
+        $elementNode = new ElementNode();
+        $elementNode->setName('section');
+        $for = new CodeElement('foreach ($groups as $$group)', [
+            new MarkupElement('article'),
+            $elementNode
+        ]);
+        $compiledChildren = $forCompiler->getCompiledChildren($for, null);
+
+        self::assertSame(1, count($compiledChildren));
+        self::assertInstanceOf(MarkupElement::class, $compiledChildren[0]);
+        /**
+         * @var MarkupElement $markup
+         */
+        $markup = $compiledChildren[0];
+        self::assertSame('section', $markup->getName());
     }
 
     /**

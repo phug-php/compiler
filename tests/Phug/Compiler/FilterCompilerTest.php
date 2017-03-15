@@ -30,16 +30,16 @@ class FilterCompilerTest extends AbstractCompilerTest
         ]);
         self::assertSame(
             "<body><script>\n".
-            "function foo() {\n".
+            "(function () {\n".
             "  console.log(\"Foo\");\n".
-            "}\n".
+            "})()\n".
             '</script></body>',
             $compiler->compile(
                 'body'."\n".
                 '  :js'."\n".
-                '    function foo() {'."\n".
+                '    (function () {'."\n".
                 '      console.log("Foo");'."\n".
-                '    }'
+                '    })()'
             )
         );
     }
@@ -64,9 +64,9 @@ class FilterCompilerTest extends AbstractCompilerTest
         $compiler->compile(
             'body'."\n".
             '  :j-s'."\n".
-            '    function foo() {'."\n".
+            '    (function () {'."\n".
             '      console.log("Foo");'."\n".
-            '    }'
+            '    })()'
         );
     }
 
