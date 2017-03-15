@@ -57,7 +57,6 @@ use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
 use Phug\Util\Partial\OptionTrait;
-use SplObjectStorage;
 
 class Compiler implements CompilerInterface
 {
