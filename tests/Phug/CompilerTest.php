@@ -80,7 +80,7 @@ class CompilerTest extends AbstractCompilerTest
             '<!DOCTYPE html><html><input></html>',
             "doctype html\n".
             "html\n".
-            "  input"
+            '  input'
         );
         $this->assertCompile([
             '<!DOCTYPE html>',
@@ -112,9 +112,9 @@ class CompilerTest extends AbstractCompilerTest
         $forCompiler = new Compiler\ForCompiler($this->compiler);
         $elementNode = new ElementNode();
         $elementNode->setName('section');
-        $for = new CodeElement('foreach ($groups as $$group)', [
+        $for = new CodeElement('foreach ($groups as $group)', [
             new MarkupElement('article'),
-            $elementNode
+            $elementNode,
         ]);
         $compiledChildren = $forCompiler->getCompiledChildren($for, null);
 
