@@ -11,6 +11,26 @@ use Phug\Parser\NodeInterface;
 
 class BlockCompiler extends AbstractNodeCompiler
 {
+    protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent)
+    {
+        $block = new Block($parent);
+        $block->setChildren($this->getCompiledChildren($node, $parent));
+        $declaration = null;
+        while ($node->hasParent() && !($node instanceof MixinNode)) {
+            $node = $node->getParent();
+        }
+        if ($node instanceof MixinNode) {
+            $declaration = $node;
+        }
+        if (!$declaration) {
+            throw new CompilerException(
+                'Anonymous block should only be in a mixin declaration.'
+            );
+        }
+
+        return $block;
+    }
+
     protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent)
     {
         $compiler = $this->getCompiler();
@@ -51,26 +71,8 @@ class BlockCompiler extends AbstractNodeCompiler
          */
         $name = $node->getName();
 
-        if (!$name) {
-            $compiler = $this->getCompiler();
-            $block = new Block($parent);
-            $block->setChildren($this->getCompiledChildren($node, $parent));
-            $declaration = null;
-            while ($node->hasParent() && !($node instanceof MixinNode)) {
-                $node = $node->getParent();
-            }
-            if ($node instanceof MixinNode) {
-                $declaration = $node;
-            }
-            if (!$declaration) {
-                throw new CompilerException(
-                    'Anonymous block should only be in a mixin declaration.'
-                );
-            }
-
-            return $block;
-        }
-
-        return $this->compileNamedBlock($name, $node, $parent);
+        return $name
+            ? $this->compileNamedBlock($name, $node, $parent)
+            : $this->compileAnonymousBlock($node, $parent);
     }
 }
