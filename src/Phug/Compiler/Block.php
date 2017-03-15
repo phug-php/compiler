@@ -2,9 +2,7 @@
 
 namespace Phug\Compiler;
 
-use Phug\Ast\NodeInterface;
 use Phug\Formatter\AbstractElement;
-use Phug\Parser\Node\BlockNode;
 
 class Block extends AbstractElement
 {

@@ -8,7 +8,6 @@ use Phug\Formatter\ElementInterface;
 use Phug\Parser\NodeInterface;
 use Phug\Util\AssociativeStorage;
 use Phug\Util\OptionInterface;
-use SplObjectStorage;
 
 interface CompilerInterface extends OptionInterface
 {
