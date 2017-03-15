@@ -16,6 +16,8 @@ class MixinCallCompilerTest extends AbstractCompilerTest
      * @covers ::<public>
      * @covers ::proceedBlocks
      * @covers \Phug\Compiler\BlockCompiler::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\MixinCompiler::<public>
      * @covers \Phug\Compiler::getMixins
      * @covers \Phug\Compiler::replaceBlock

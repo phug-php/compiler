@@ -50,7 +50,7 @@ class BlockCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers            ::<public>
+     * @covers            ::compileAnonymousBlock
      * @expectedException \Phug\CompilerException
      */
     public function testAnonymousBlockException()
