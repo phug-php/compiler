@@ -11,7 +11,7 @@ use Phug\Parser\NodeInterface;
 
 class BlockCompiler extends AbstractNodeCompiler
 {
-    protected function compileNamedBlock($name, BlockNode $node)
+    protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent)
     {
         $compiler = $this->getCompiler();
         $layout = $compiler->getLayout();
@@ -19,17 +19,23 @@ class BlockCompiler extends AbstractNodeCompiler
         if ($layout) {
             $blocks = &$layout->getCompiler()->getBlocksByName($name);
             array_walk($blocks, function (Block $block) use ($node) {
-                $block->proceedNode($node);
+                $block->proceedChildren(
+                    $this->getCompiledChildren($node, $block->getParent()),
+                    $node->getMode()
+                );
             });
 
             return null;
         }
 
-        $block = new Block();
+        $block = new Block($parent);
         $blocks = &$compiler->getBlocksByName($name);
         $blocks[] = $block;
 
-        return $block->proceedNode($node);
+        return $block->proceedChildren(
+            $this->getCompiledChildren($node, $parent),
+            $node->getMode()
+        );
     }
 
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
@@ -47,8 +53,8 @@ class BlockCompiler extends AbstractNodeCompiler
 
         if (!$name) {
             $compiler = $this->getCompiler();
-            $block = new Block();
-            $block->import($node);
+            $block = new Block($parent);
+            $block->setChildren($this->getCompiledChildren($node, $parent));
             $declaration = null;
             while ($node->hasParent() && !($node instanceof MixinNode)) {
                 $node = $node->getParent();
@@ -61,11 +67,10 @@ class BlockCompiler extends AbstractNodeCompiler
                     'Anonymous block should only be in a mixin declaration.'
                 );
             }
-            $compiler->getMixinBlocks()->attach($declaration, $block);
 
             return $block;
         }
 
-        return $this->compileNamedBlock($name, $node);
+        return $this->compileNamedBlock($name, $node, $parent);
     }
 }

@@ -8,39 +8,20 @@ use Phug\Parser\Node\BlockNode;
 
 class Block extends AbstractElement
 {
-    /**
-     * @var array
-     */
-    private $children = [];
-
-    public function import(NodeInterface $node)
-    {
-        $this->children = $node->getChildren();
-    }
-
-    public function proceedNodeChildren(NodeInterface $node, $mode)
+    public function proceedChildren(array $newChildren, $mode)
     {
         $offset = 0;
         $length = 0;
+        $children = $this->getChildren();
 
         if ($mode === 'replace') {
-            $length = count($this->children);
+            $length = count($children);
         } elseif ($mode === 'append') {
-            $offset = count($this->children);
+            $offset = count($children);
         }
 
-        array_splice($this->children, $offset, $length, $node->getChildren());
+        array_splice($children, $offset, $length, $newChildren);
 
-        return $this;
-    }
-
-    public function proceedNode(BlockNode $node)
-    {
-        return $this->proceedNodeChildren($node, $node->getMode());
-    }
-
-    public function getChildren()
-    {
-        return $this->children;
+        return $this->setChildren($children);
     }
 }

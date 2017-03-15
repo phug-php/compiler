@@ -55,19 +55,6 @@ interface CompilerInterface extends OptionInterface
     public function &getBlocksByName($name);
 
     /**
-     * @param string $mixinName
-     *
-     * @return Block
-     */
-    public function &getMixinBlock($mixinName);
-
-    /**
-     * @return SplObjectStorage
-     */
-    public function getMixinBlocks();
-
-
-    /**
      * @return array
      */
     public function getBlocks();
@@ -76,7 +63,7 @@ interface CompilerInterface extends OptionInterface
      * @param Block $block
      * @param array $nodes
      */
-    public function replaceBlock(Block $block, array $nodes);
+    public function replaceBlock(Block $block);
 
     /**
      * @throws CompilerException

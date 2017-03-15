@@ -18,9 +18,8 @@ class MixinCompiler extends AbstractNodeCompiler
             );
         }
 
+        $node->setChildren($this->getCompiledChildren($node, $parent));
         $this->getCompiler()->getMixins()->attach($node);
-        echo spl_object_hash($this->getCompiler()->getMixins()).' : '.
-            $this->getCompiler()->getMixins()->count()."\n\n";
 
         return null;
     }

@@ -94,11 +94,6 @@ class Compiler implements CompilerInterface
     private $namedBlocks;
 
     /**
-     * @var SplObjectStorage
-     */
-    private $mixinBlocks;
-
-    /**
      * @var Layout
      */
     private $layout;
@@ -110,8 +105,6 @@ class Compiler implements CompilerInterface
 
     public function __construct(array $options = null)
     {
-        $this->mixinBlocks = new SplObjectStorage();
-        echo 'new '.spl_object_hash($this->mixinBlocks)."\n\n";
         $this->setOptionsRecursive([
             'basedir'              => null,
             'extensions'           => ['', '.pug', '.jade'],
@@ -194,7 +187,6 @@ class Compiler implements CompilerInterface
     {
         $this->layout = null;
         $this->namedCompilers = [];
-        echo 'clone '.spl_object_hash($this->mixinBlocks)."\n\n";
     }
 
     /**
@@ -291,22 +283,6 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Return the block of a given mixin.
-     *
-     * @param $mixinName
-     *
-     * @return Block
-     */
-    public function &getMixinBlock($mixinName)
-    {
-        if (!isset($this->namedBlocks[$mixinName])) {
-            $this->namedBlocks[$mixinName] = new Block();
-        }
-
-        return $this->namedBlocks[$mixinName];
-    }
-
-    /**
      * Return list of blocks for a given name.
      *
      * @param $name
@@ -330,16 +306,6 @@ class Compiler implements CompilerInterface
     public function getBlocks()
     {
         return $this->namedBlocks;
-    }
-
-    /**
-     * Returns lists of mixins blocks attached to their declaration.
-     *
-     * @return SplObjectStorage
-     */
-    public function getMixinBlocks()
-    {
-        return $this->mixinBlocks;
     }
 
     protected function walkOption($option, callable $handler)
@@ -387,18 +353,14 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Replace a block by nodes after compiling them.
+     * Replace a block by its nodes.
      *
      * @param Block $block
      * @param array $nodes
      */
-    public function replaceBlock(Block $block, array $nodes)
+    public function replaceBlock(Block $block, array $children = null)
     {
-        $children = [];
-        foreach ($nodes as $child) {
-            $children[] = $this->compileNode($child, $block->getParent());
-        }
-        foreach (array_filter(array_reverse($children)) as $child) {
+        foreach (array_reverse($children ?: $block->getChildren()) as $child) {
             $block->getParent()->insertAfter($block, $child);
         }
         $block->remove();
@@ -420,7 +382,7 @@ class Compiler implements CompilerInterface
                         'Unexpected block for the name '.$name
                     );
                 }
-                $this->replaceBlock($block, $block->getChildren());
+                $this->replaceBlock($block);
             }
         }
 

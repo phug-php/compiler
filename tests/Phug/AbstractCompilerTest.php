@@ -66,8 +66,6 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     {
         $compiler = $this->compiler;
         $compiler->getFormatter()->setOptionsRecursive($options);
-        $compiler->compileFile($actual);
-        exit;
         ob_start();
         eval('?>'.$compiler->compileFile($actual));
         $actual = ob_get_contents();
