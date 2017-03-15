@@ -104,7 +104,7 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
+     * @covers \Phug\AbstractNodeCompiler::compileParserNode
      * @covers \Phug\AbstractNodeCompiler::<public>
      */
     public function testGetCompiledChildren()
