@@ -18,13 +18,8 @@ class MixinCompiler extends AbstractNodeCompiler
             );
         }
 
-        /**
-         * @var MixinNode $node
-         */
-        $name = $node->getName();
-        $compiler = $this->getCompiler();
-        $mixins = $compiler->getMixins();
-        $mixins->attach($node);
+        $node->setChildren($this->getCompiledChildren($node, $parent));
+        $this->getCompiler()->getMixins()->attach($node);
 
         return null;
     }

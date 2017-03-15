@@ -54,17 +54,21 @@ interface CompilerInterface extends OptionInterface
     public function &getBlocksByName($name);
 
     /**
-     * @param string $mixinName
-     *
-     * @return Block
-     */
-    public function &getMixinBlock($mixinName);
-
-    /**
      * @return array
      */
     public function getBlocks();
 
+    /**
+     * @param Block $block
+     * @param array $nodes
+     */
+    public function replaceBlock(Block $block);
+
+    /**
+     * @throws CompilerException
+     *
+     * @return $this
+     */
     public function compileBlocks();
 
     /**

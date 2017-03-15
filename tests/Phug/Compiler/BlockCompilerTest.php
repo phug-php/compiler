@@ -50,6 +50,19 @@ class BlockCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testAnonymousBlockException()
+    {
+        $this->expectMessageToBeThrown(
+            'Anonymous block should only be in a mixin declaration.'
+        );
+
+        (new Compiler())->compile('block');
+    }
+
+    /**
      * @covers            \Phug\Compiler::compileBlocks
      * @expectedException \Phug\CompilerException
      */

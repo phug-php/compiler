@@ -13,35 +13,37 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCallCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @group i
      * @covers ::<public>
+     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\BlockCompiler::<public>
      * @covers \Phug\Compiler\MixinCompiler::<public>
+     * @covers \Phug\Compiler::getMixins
+     * @covers \Phug\Compiler::replaceBlock
      */
     public function testCompile()
     {
         $this->assertRenderFile(
             [
-                '<section>'."\n",
-                '  <div class="ab">'."\n",
-                '    <div class="a"></div>'."\n",
-                '    <div class="b"></div>'."\n",
-                '  </div>'."\n",
-                '  <div></div>'."\n",
-                '</section>'."\n",
-                '<div>bar</div>'."\n",
-                '<article>append</article>'."\n",
-                '<div class="ab">'."\n",
-                '  <div class="a">a</div>'."\n",
-                '  <div class="b">b</div>'."\n",
-                '</div>'."\n",
-                '<div>'."\n",
-                '  <h1>1</h1>'."\n",
-                '</div>'."\n",
-                '<article>prepend</article>'."\n",
-                '<p>footer-foo</p>'."\n",
-                '<p class="biz">bar</p>'."\n",
-                '<div>footer</div>'."\n",
+                '<section>'.PHP_EOL,
+                '  <div class="ab">'.PHP_EOL,
+                '    <div class="a"></div>'.PHP_EOL,
+                '    <div class="b"></div>'.PHP_EOL,
+                '  </div>'.PHP_EOL,
+                '  <div></div>'.PHP_EOL,
+                '</section>'.PHP_EOL,
+                '<div>bar</div>'.PHP_EOL,
+                '<article>append</article>'.PHP_EOL,
+                '<div class="ab">'.PHP_EOL,
+                '  <div class="a">a</div>'.PHP_EOL,
+                '  <div class="b">b</div>'.PHP_EOL,
+                '</div>'.PHP_EOL,
+                '<div>'.PHP_EOL,
+                '  <h1>1</h1>'.PHP_EOL,
+                '</div>'.PHP_EOL,
+                '<article>prepend</article>'.PHP_EOL,
+                '<p>footer-foo</p>'.PHP_EOL,
+                '<p class="biz">bar</p>'.PHP_EOL,
+                '<div>footer</div>'.PHP_EOL,
             ],
             __DIR__.'/../../templates/mixins-test.pug',
             [
@@ -63,5 +65,18 @@ class MixinCallCompilerTest extends AbstractCompilerTest
 
         $mixinCallCompiler = new MixinCallCompiler(new Compiler());
         $mixinCallCompiler->compileNode(new ElementNode());
+    }
+
+    /**
+     * @covers            ::<public>
+     * @expectedException \Phug\CompilerException
+     */
+    public function testUnknownMixin()
+    {
+        $this->expectMessageToBeThrown(
+            'Unknown undef mixin called.'
+        );
+
+        (new Compiler())->compile('+undef()');
     }
 }

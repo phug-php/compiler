@@ -57,7 +57,6 @@ use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
 use Phug\Util\Partial\OptionTrait;
-use SplObjectStorage;
 
 class Compiler implements CompilerInterface
 {
@@ -92,11 +91,6 @@ class Compiler implements CompilerInterface
      * @var array[array[Block]]
      */
     private $namedBlocks;
-
-    /**
-     * @var SplObjectStorage
-     */
-    private $mixinBlocks;
 
     /**
      * @var Layout
@@ -247,7 +241,7 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Set the node compiler for a givent node class name.
+     * Set the node compiler for a given node class name.
      *
      * @param string                       $className node class name
      * @param NodeCompilerInterface|string $handler   handler
@@ -288,22 +282,6 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Return the block of a given mixin.
-     *
-     * @param $mixinName
-     *
-     * @return Block
-     */
-    public function &getMixinBlock($mixinName)
-    {
-        if (!isset($this->namedBlocks[$mixinName])) {
-            $this->namedBlocks[$mixinName] = new Block();
-        }
-
-        return $this->namedBlocks[$mixinName];
-    }
-
-    /**
      * Return list of blocks for a given name.
      *
      * @param $name
@@ -327,16 +305,6 @@ class Compiler implements CompilerInterface
     public function getBlocks()
     {
         return $this->namedBlocks;
-    }
-
-    /**
-     * Returns lists of mixins blocks attadched to their declaration.
-     *
-     * @return SplObjectStorage
-     */
-    public function getMixinBlocks()
-    {
-        return $this->mixinBlocks;
     }
 
     protected function walkOption($option, callable $handler)
@@ -384,6 +352,20 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Replace a block by its nodes.
+     *
+     * @param Block $block
+     * @param array $nodes
+     */
+    public function replaceBlock(Block $block, array $children = null)
+    {
+        foreach (array_reverse($children ?: $block->getChildren()) as $child) {
+            $block->getParent()->insertAfter($block, $child);
+        }
+        $block->remove();
+    }
+
+    /**
      * Replace each block by its compiled children.
      *
      * @throws CompilerException
@@ -399,14 +381,7 @@ class Compiler implements CompilerInterface
                         'Unexpected block for the name '.$name
                     );
                 }
-                $children = [];
-                foreach ($block->getChildren() as $child) {
-                    $children[] = $this->compileNode($child, $block->getParent());
-                }
-                foreach (array_filter(array_reverse($children)) as $child) {
-                    $block->getParent()->insertAfter($block, $child);
-                }
-                $block->remove();
+                $this->replaceBlock($block);
             }
         }
 
@@ -463,7 +438,6 @@ class Compiler implements CompilerInterface
     {
         $this->fileName = $fileName;
         $this->namedBlocks = [];
-        $this->mixinBlocks = new SplObjectStorage();
         $node = $this->parser->parse($pugInput);
         $element = $this->compileNode($node);
 
