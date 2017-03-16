@@ -358,7 +358,7 @@ class Compiler implements CompilerInterface
      * Replace a block by its nodes.
      *
      * @param Block $block
-     * @param array $nodes
+     * @param array $children
      */
     public function replaceBlock(Block $block, array $children = null)
     {

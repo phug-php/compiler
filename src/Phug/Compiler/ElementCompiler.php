@@ -4,6 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\AssignmentElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ElementNode;
@@ -33,7 +34,10 @@ class ElementCompiler extends AbstractNodeCompiler
         }
         $markup = new MarkupElement($name, $attributes);
         foreach ($node->getAssignments() as $assignment) {
-            $markup->addAssignment($compiler->compileNode($assignment, $parent));
+            $compiledAssignment = $compiler->compileNode($assignment, $parent);
+            if ($compiledAssignment instanceof AssignmentElement) {
+                $markup->addAssignment($compiledAssignment);
+            }
         }
 
         $this->compileNodeChildren($node, $markup);

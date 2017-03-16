@@ -60,9 +60,9 @@ interface CompilerInterface extends OptionInterface
 
     /**
      * @param Block $block
-     * @param array $nodes
+     * @param array $children
      */
-    public function replaceBlock(Block $block);
+    public function replaceBlock(Block $block, array $children = null);
 
     /**
      * @throws CompilerException
