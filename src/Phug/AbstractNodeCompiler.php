@@ -6,6 +6,7 @@ use Phug\Ast\NodeInterface;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\VariableElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\TextNode;
 
 abstract class AbstractNodeCompiler implements NodeCompilerInterface
 {
@@ -17,6 +18,13 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
     public function __construct(CompilerInterface $compiler)
     {
         $this->compiler = $compiler;
+    }
+
+    protected function getTextChildren($node)
+    {
+        return implode("\n", array_map(function (TextNode $text) {
+            return $text->getValue();
+        }, $node->getChildren()));
     }
 
     public function getCompiler()

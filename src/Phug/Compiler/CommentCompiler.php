@@ -7,7 +7,6 @@ use Phug\CompilerException;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CommentNode;
-use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
 
 class CommentCompiler extends AbstractNodeCompiler
@@ -24,9 +23,7 @@ class CommentCompiler extends AbstractNodeCompiler
             return null;
         }
 
-        $comment = implode("\n", array_map(function (TextNode $text) {
-            return $text->getValue();
-        }, $node->getChildren()));
+        $comment = $this->getTextChildren($node);
 
         return new TextElement('<!-- '.$comment.' -->');
     }

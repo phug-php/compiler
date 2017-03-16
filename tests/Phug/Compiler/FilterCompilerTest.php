@@ -18,6 +18,7 @@ class FilterCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::compileText
      * @covers ::<public>
+     * @covers \Phug\AbstractNodeCompiler::getTextChildren
      */
     public function testCompile()
     {
@@ -29,10 +30,10 @@ class FilterCompilerTest extends AbstractCompilerTest
             ],
         ]);
         self::assertSame(
-            "<body><script>\n".
-            "function foo() {\n".
-            "  console.log(\"Foo\");\n".
-            "}\n".
+            '<body><script>'."\n".
+            'function foo() {'."\n".
+            '  console.log("Foo");'."\n".
+            '}'."\n".
             '</script></body>',
             $compiler->compile(
                 'body'."\n".

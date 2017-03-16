@@ -10,6 +10,7 @@ use Phug\Compiler\AttributeListCompiler;
 use Phug\Compiler\Block;
 use Phug\Compiler\BlockCompiler;
 use Phug\Compiler\CaseCompiler;
+use Phug\Compiler\CodeCompiler;
 use Phug\Compiler\CommentCompiler;
 use Phug\Compiler\ConditionalCompiler;
 use Phug\Compiler\DoCompiler;
@@ -36,6 +37,7 @@ use Phug\Parser\Node\AttributeListNode;
 use Phug\Parser\Node\AttributeNode;
 use Phug\Parser\Node\BlockNode;
 use Phug\Parser\Node\CaseNode;
+use Phug\Parser\Node\CodeNode;
 use Phug\Parser\Node\CommentNode;
 use Phug\Parser\Node\ConditionalNode;
 use Phug\Parser\Node\DoctypeNode;
@@ -123,6 +125,7 @@ class Compiler implements CompilerInterface
                 AttributeNode::class       => AttributeCompiler::class,
                 BlockNode::class           => BlockCompiler::class,
                 CaseNode::class            => CaseCompiler::class,
+                CodeNode::class            => CodeCompiler::class,
                 CommentNode::class         => CommentCompiler::class,
                 ConditionalNode::class     => ConditionalCompiler::class,
                 DoctypeNode::class         => DoctypeCompiler::class,
