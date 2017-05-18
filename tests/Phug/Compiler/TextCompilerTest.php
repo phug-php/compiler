@@ -18,6 +18,19 @@ class TextCompilerTest extends AbstractCompilerTest
     public function testText()
     {
         $this->assertCompile('Hello', '| Hello');
+        $this->assertCompile(
+            [
+                '<pre>',
+                'article'."\n",
+                '  p Name'."\n",
+                '</pre>',
+            ],
+            [
+                'pre.'."\n",
+                '  article'."\n",
+                '    p Name'."\n",
+            ]
+        );
     }
 
     /**
