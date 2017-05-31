@@ -88,7 +88,7 @@ class CompilerTest extends AbstractCompilerTest
             '<!DOCTYPE foobar>',
             '<html><input /></html>',
             '<?xml version="1.0" encoding="utf-8" ?>',
-            '<html><input /></html>',
+            '<html><input></input></html>',
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
             '<html><input /></html>',
         ], [

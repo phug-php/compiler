@@ -18,6 +18,8 @@ class ElementCompilerTest extends AbstractCompilerTest
     public function testCompile()
     {
         $this->assertCompile('<section><input /></section>', 'section: input');
+        $this->assertCompile('<section></section>', 'section');
+        $this->assertCompile('<section />', 'section/');
     }
 
     /**
