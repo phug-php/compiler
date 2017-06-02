@@ -77,7 +77,7 @@ class ImportCompiler extends AbstractNodeCompiler
             return $element;
         }
 
-        if ($node->getName() === 'extends') {
+        if ($node->getName() === 'extend') {
             $compiler->setLayout(new Layout($element, $subCompiler));
         }
 
