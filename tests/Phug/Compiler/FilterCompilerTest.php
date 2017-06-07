@@ -8,6 +8,8 @@ use Phug\Compiler\FilterCompiler;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Parser\Node\ElementNode;
+use Phug\Parser\Node\FilterNode;
+use Phug\Parser\Node\TextNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
@@ -42,6 +44,25 @@ class FilterCompilerTest extends AbstractCompilerTest
                 '      console.log("Foo");'."\n".
                 '    })()'
             )
+        );
+        $filter = new FilterNode();
+        $filter->setName('js');
+        $text1 = new TextNode();
+        $text1->setValue('(function () {');
+        $text2 = new TextNode();
+        $text2->setValue('console.log("Foo");');
+        $text3 = new TextNode();
+        $text3->setValue('})()');
+        $text1->appendChild($text2);
+        $filter->appendChild($text1);
+        $filter->appendChild($text3);
+        self::assertSame(
+            "<script>\n".
+            "(function () {\n".
+            "  console.log(\"Foo\");\n".
+            "})()\n".
+            '</script>',
+            $compiler->compileNode($filter)->getValue()
         );
     }
 
