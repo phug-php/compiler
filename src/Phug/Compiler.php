@@ -349,7 +349,7 @@ class Compiler implements CompilerInterface
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         $this->walkOption('pre_compile_node', function (callable $preCompile) use (&$node) {
-            $preCompile($node);
+            $preCompile($node, $this);
         });
         foreach ($this->nodeCompilers as $className => $compiler) {
             if (is_a($node, $className)) {
@@ -361,7 +361,7 @@ class Compiler implements CompilerInterface
 
                 if ($element instanceof ElementInterface && !($element instanceof Block)) {
                     $this->walkOption('post_compile_node', function (callable $postCompile) use (&$element) {
-                        $postCompile($element);
+                        $postCompile($element, $this);
                     });
                 }
 
@@ -422,7 +422,7 @@ class Compiler implements CompilerInterface
     public function compile($pugInput, $fileName = null)
     {
         $this->walkOption('pre_compile', function (callable $preCompile) use (&$pugInput) {
-            $pugInput = $preCompile($pugInput);
+            $pugInput = $preCompile($pugInput, $this);
         });
         $element = $this->compileIntoElement($pugInput, $fileName);
         $layout = $this->getLayout();
@@ -436,7 +436,7 @@ class Compiler implements CompilerInterface
         $phtml = $this->formatter->format($element);
         $phtml = $this->formatter->formatDependencies().$phtml;
         $this->walkOption('post_compile', function (callable $preCompile) use (&$phtml) {
-            $phtml = $preCompile($phtml);
+            $phtml = $preCompile($phtml, $this);
         });
 
         return $phtml;
