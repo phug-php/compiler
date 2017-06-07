@@ -226,12 +226,12 @@ class CompilerTest extends AbstractCompilerTest
         $compiler = new Compiler([
             'pre_compile'  => [
                 function ($pugCode) {
-                    return $pugCode . ' Hello';
+                    return $pugCode.' Hello';
                 },
             ],
             'post_compile' => [
                 function ($phpCode) {
-                    return '<p>' . $phpCode . '</p>';
+                    return '<p>'.$phpCode.'</p>';
                 },
             ],
         ]);
