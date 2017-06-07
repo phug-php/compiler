@@ -2,6 +2,7 @@
 
 namespace Phug\Test;
 
+use JsPhpize\JsPhpize;
 use Phug\Compiler;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
@@ -195,20 +196,23 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group hooks
      * @covers ::walkOption
      * @covers ::compileNode
+     * @covers ::compile
+     * @covers ::addHook
      */
     public function testHooks()
     {
         $compiler = new Compiler([
-            'pre_compile'  => [
+            'pre_compile_node'  => [
                 function (NodeInterface $node) {
                     if ($node instanceof ElementNode) {
                         $node->setName($node->getName().'b');
                     }
                 },
             ],
-            'post_compile' => [
+            'post_compile_node' => [
                 function (ElementInterface $element) {
                     if ($element instanceof MarkupElement) {
                         $element->setName($element->getName().'c');
@@ -218,5 +222,56 @@ class CompilerTest extends AbstractCompilerTest
         ]);
 
         self::assertSame('<abc></abc>', $compiler->compile('a'));
+
+        $compiler = new Compiler([
+            'pre_compile'  => [
+                function ($pugCode) {
+                    return $pugCode . ' Hello';
+                },
+            ],
+            'post_compile' => [
+                function ($phpCode) {
+                    return '<p>' . $phpCode . '</p>';
+                },
+            ],
+        ]);
+
+        self::assertSame('<p><a>Hello</a></p>', $compiler->compile('a'));
+
+        $compiler = new Compiler([
+            'formatter_options' => [
+                'patterns' => [
+                    'transform_expression' => function ($jsCode) use (&$compiler) {
+                        /** @var JsPhpize $jsPhpize */
+                        $jsPhpize = $compiler->getOption('jsphpize_engine');
+
+                        return $jsPhpize->compile($jsCode);
+                    },
+                ],
+            ],
+        ]);
+        $compiler->addHook('pre_compile', 'jsphpize', function ($pugCode) use (&$compiler) {
+            $compiler->setOption('jsphpize_engine', new JsPhpize([
+                'catchDependencies' => true,
+            ]));
+
+            return $pugCode;
+        });
+        $compiler->addHook('post_compile', 'jsphpize', function ($phpCode) use (&$compiler) {
+            /** @var JsPhpize $jsPhpize */
+            $jsPhpize = $compiler->getOption('jsphpize_engine');
+            $phpCode = $compiler->getFormatter()->handleCode($jsPhpize->compileDependencies()).$phpCode;
+            $jsPhpize->flushDependencies();
+            $compiler->unsetOption('jsphpize_engine');
+
+            return $phpCode;
+        });
+        $this->compiler = $compiler;
+
+        $this->assertRender('<p>Hello</p>', 'p=foo.bar', [], [
+            'foo' => [
+                'bar' => 'Hello',
+            ],
+        ]);
     }
 }

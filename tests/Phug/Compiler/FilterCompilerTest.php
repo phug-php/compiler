@@ -82,7 +82,7 @@ class FilterCompilerTest extends AbstractCompilerTest
         );
 
         $compiler = new Compiler([
-            'post_compile' => [
+            'post_compile_node' => [
                 function (NodeInterface &$element) {
                     if ($element instanceof TextElement) {
                         $element = new DocumentElement();

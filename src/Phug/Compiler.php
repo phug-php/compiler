@@ -111,7 +111,9 @@ class Compiler implements CompilerInterface
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'pre_compile'          => [],
+            'pre_compile_node'     => [],
             'post_compile'         => [],
+            'post_compile_node'    => [],
             'filters'              => [],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
@@ -310,6 +312,24 @@ class Compiler implements CompilerInterface
         return $this->namedBlocks;
     }
 
+    /**
+     * Append a named hook in a option list.
+     *
+     * @param string   $event   event listened
+     * @param string   $name    hook name
+     * @param callable $handler action called
+     *
+     * @return $this
+     */
+    public function addHook($event, $name, callable $handler)
+    {
+        if (is_array($this->getOption($event))) {
+            $this->setOption([$event, $name], $handler);
+        }
+
+        return $this;
+    }
+
     protected function walkOption($option, callable $handler)
     {
         $array = $this->getOption($option);
@@ -328,7 +348,7 @@ class Compiler implements CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        $this->walkOption('pre_compile', function (callable $preCompile) use (&$node) {
+        $this->walkOption('pre_compile_node', function (callable $preCompile) use (&$node) {
             $preCompile($node);
         });
         foreach ($this->nodeCompilers as $className => $compiler) {
@@ -340,7 +360,7 @@ class Compiler implements CompilerInterface
                 $element = $compiler->compileNode($node, $parent);
 
                 if ($element instanceof ElementInterface && !($element instanceof Block)) {
-                    $this->walkOption('post_compile', function (callable $postCompile) use (&$element) {
+                    $this->walkOption('post_compile_node', function (callable $postCompile) use (&$element) {
                         $postCompile($element);
                     });
                 }
@@ -401,6 +421,9 @@ class Compiler implements CompilerInterface
      */
     public function compile($pugInput, $fileName = null)
     {
+        $this->walkOption('pre_compile', function (callable $preCompile) use (&$pugInput) {
+            $pugInput = $preCompile($pugInput);
+        });
         $element = $this->compileIntoElement($pugInput, $fileName);
         $layout = $this->getLayout();
         $blocksCompiler = $this;
@@ -411,8 +434,12 @@ class Compiler implements CompilerInterface
         $blocksCompiler->compileBlocks();
         $this->formatter->initDependencies();
         $phtml = $this->formatter->format($element);
+        $phtml = $this->formatter->formatDependencies().$phtml;
+        $this->walkOption('post_compile', function (callable $preCompile) use (&$phtml) {
+            $phtml = $preCompile($phtml);
+        });
 
-        return $this->formatter->formatDependencies().$phtml;
+        return $phtml;
     }
 
     /**
