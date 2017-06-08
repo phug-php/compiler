@@ -13,6 +13,7 @@ use Phug\Test\AbstractCompilerTest;
 class WhileCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @group i
      * @covers ::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
      * @covers \Phug\Compiler\WhileCompiler::<public>
@@ -40,6 +41,24 @@ class WhileCompilerTest extends AbstractCompilerTest
             [
                 'while $foo > 20'."\n",
                 '  p foo',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php var x = 1; ?>',
+                '<ul>',
+                '<?php while (x < 10) { ?>',
+                '<?php x++; ?>',
+                '<li><?= htmlspecialchars(x) ?></li>',
+                '<?php } ?>',
+                '</ul>',
+            ],
+            [
+                "- var x = 1;\n",
+                "ul\n",
+                "  while x < 10\n",
+                "    - x++;\n",
+                "    li= x\n",
             ]
         );
     }
