@@ -22,9 +22,9 @@
     "require": {
         "php": ">=5.5.0",
         "phug/util": "^0.1.1",
-        "phug/formatter": "^0.1.6",
+        "phug/formatter": "^0.1.14",
         "phug/dependency-injection": "^1.0.1",
-        "phug/parser": "^0.1.1"
+        "phug/parser": "^0.1.10"
     },
     "require-dev": {
         "phug/dev-tool": "^0.1.0",
