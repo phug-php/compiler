@@ -26,12 +26,15 @@ class AttributeCompilerTest extends AbstractCompilerTest
         $this->assertCompile('<input (name)="a" />', 'input((name)="a")');
         $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
         $this->assertCompile('<input name="<a>" />', 'input(name!="<a>")');
+        $this->assertCompile('<input name="name" />', 'input(name)');
         $this->assertCompile('<input name="&lt;a&gt;" />', 'input(name="<a>")');
         $this->assertCompile([
             '<img ',
-            'src="<?= htmlspecialchars("foo.$png") ?>" ',
+            'src="<?= htmlspecialchars((is_array($_pug_temp = "foo.$png") || is_object($_pug_temp) ',
+            '? json_encode($_pug_temp) : $_pug_temp)) ?>" ',
             'alt="$bar" ',
-            'width="<?= htmlspecialchars(get_width("foo.png")) ?>" ',
+            'width="<?= htmlspecialchars((is_array($_pug_temp = get_width("foo.png")) || is_object($_pug_temp) ',
+            '? json_encode($_pug_temp) : $_pug_temp)) ?>" ',
             'height="30" ',
             'data-ratio="0.54" ',
             'data-code="16205" />',
@@ -45,8 +48,13 @@ class AttributeCompilerTest extends AbstractCompilerTest
             'data-code=0x3f4d)',
         ]);
         $this->assertCompile(
-            '<img src="<?= (isset($image) ? $image : \'\') ?>" />',
+            '<img src="<?= (is_array($_pug_temp = (isset($image) ? $image : \'\')) || is_object($_pug_temp) '.
+            '? json_encode($_pug_temp) : $_pug_temp) ?>" />',
             'img(src!=$image)'
+        );
+        $this->assertRender(
+            '<a class="1 2 3" data-class="[1,2,3]"></a>',
+            'a(class=[1,2,3], data-class=[1,2,3])'
         );
     }
 
@@ -72,7 +80,7 @@ class AttributeCompilerTest extends AbstractCompilerTest
     public function testAttributeException()
     {
         $this->expectMessageToBeThrown(
-            'Attribute value can only be a string or an expression, '.
+            'Attribute value can only be a string, a boolean or an expression, '.
             'stdClass given.'
         );
 

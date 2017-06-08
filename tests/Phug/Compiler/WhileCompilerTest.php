@@ -13,7 +13,6 @@ use Phug\Test\AbstractCompilerTest;
 class WhileCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\AbstractStatementNodeCompiler::<public>
      * @covers \Phug\Compiler\WhileCompiler::<public>

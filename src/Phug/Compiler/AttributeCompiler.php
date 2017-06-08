@@ -37,13 +37,17 @@ class AttributeCompiler extends AbstractNodeCompiler
             return $value;
         }
 
+        if (is_null($value)) {
+            $value = 'true';
+        }
+
         if (is_string($value)) {
             $value = new ExpressionElement($value);
         }
 
         if (!($value instanceof ExpressionElement)) {
             throw new CompilerException(
-                'Attribute value can only be a string or an expression, '.
+                'Attribute value can only be a string, a boolean or an expression, '.
                 get_class($value).' given.'
             );
         }
