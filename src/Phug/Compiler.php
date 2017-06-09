@@ -58,10 +58,13 @@ use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
+use Phug\Util\ModulesContainerInterface;
+use Phug\Util\Partial\ModuleTrait;
 use Phug\Util\Partial\OptionTrait;
 
-class Compiler implements CompilerInterface
+class Compiler implements ModulesContainerInterface, CompilerInterface
 {
+    use ModuleTrait;
     use OptionTrait;
 
     /**
@@ -120,6 +123,7 @@ class Compiler implements CompilerInterface
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
             'mixins_storage_mode'  => AssociativeStorage::REPLACE,
+            'modules'              => [],
             'node_compilers'       => [
                 AssignmentListNode::class  => AssignmentListCompiler::class,
                 AssignmentNode::class      => AssignmentCompiler::class,
@@ -182,6 +186,9 @@ class Compiler implements CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+
+        $this->setExpectedModuleType(CompilerModuleInterface::class);
+        $this->addModules($this->getOption('modules'));
     }
 
     /**

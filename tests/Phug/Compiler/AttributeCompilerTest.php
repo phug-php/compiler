@@ -30,11 +30,13 @@ class AttributeCompilerTest extends AbstractCompilerTest
         $this->assertCompile('<input name="&lt;a&gt;" />', 'input(name="<a>")');
         $this->assertCompile([
             '<img ',
-            'src="<?= htmlspecialchars((is_array($_pug_temp = "foo.$png") || is_object($_pug_temp) ',
-            '? json_encode($_pug_temp) : $_pug_temp)) ?>" ',
+            'src="<?= htmlspecialchars((is_array($_pug_temp = "foo.$png") || ',
+            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? ',
+            'json_encode($_pug_temp) : strval($_pug_temp))) ?>" ',
             'alt="$bar" ',
-            'width="<?= htmlspecialchars((is_array($_pug_temp = get_width("foo.png")) || is_object($_pug_temp) ',
-            '? json_encode($_pug_temp) : $_pug_temp)) ?>" ',
+            'width="<?= htmlspecialchars((is_array($_pug_temp = get_width("foo.png")) || ',
+            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? ',
+            'json_encode($_pug_temp) : strval($_pug_temp))) ?>" ',
             'height="30" ',
             'data-ratio="0.54" ',
             'data-code="16205" />',
@@ -48,8 +50,9 @@ class AttributeCompilerTest extends AbstractCompilerTest
             'data-code=0x3f4d)',
         ]);
         $this->assertCompile(
-            '<img src="<?= (is_array($_pug_temp = (isset($image) ? $image : \'\')) || is_object($_pug_temp) '.
-            '? json_encode($_pug_temp) : $_pug_temp) ?>" />',
+            '<img src="<?= (is_array($_pug_temp = (isset($image) ? $image : \'\')) || '.
+            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? '.
+            'json_encode($_pug_temp) : strval($_pug_temp)) ?>" />',
             'img(src!=$image)'
         );
         $this->assertRender(
