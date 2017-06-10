@@ -153,6 +153,9 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
         ]);
         $this->setOptionsRecursive($options ?: []);
 
+        $this->setExpectedModuleType(CompilerModuleInterface::class);
+        $this->addModules($this->getOption('modules'));
+
         $parserClassName = $this->getOption('parser_class_name');
 
         if ($parserClassName !== Parser::class && !is_a($parserClassName, Parser::class, true)) {
@@ -186,9 +189,6 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
-
-        $this->setExpectedModuleType(CompilerModuleInterface::class);
-        $this->addModules($this->getOption('modules'));
     }
 
     /**
