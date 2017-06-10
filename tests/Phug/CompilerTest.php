@@ -245,7 +245,22 @@ class CompilerTest extends AbstractCompilerTest
                         /** @var JsPhpize $jsPhpize */
                         $jsPhpize = $compiler->getOption('jsphpize_engine');
 
-                        return $jsPhpize->compile($jsCode);
+                        try {
+                            return rtrim(trim(preg_replace(
+                                '/\{\s*\}$/',
+                                '',
+                                trim($jsPhpize->compile($jsCode))
+                            )), ';');
+                        } catch (Exception $e) {
+                            if ($e instanceof LexerException ||
+                                $e instanceof ParserException ||
+                                $e instanceof CompilerException
+                            ) {
+                                return $jsCode;
+                            }
+
+                            throw $e;
+                        }
                     },
                 ],
             ],
@@ -260,7 +275,10 @@ class CompilerTest extends AbstractCompilerTest
         $compiler->addHook('post_compile', 'jsphpize', function ($phpCode) use (&$compiler) {
             /** @var JsPhpize $jsPhpize */
             $jsPhpize = $compiler->getOption('jsphpize_engine');
-            $phpCode = $compiler->getFormatter()->handleCode($jsPhpize->compileDependencies()).$phpCode;
+            $dependencies = $jsPhpize->compileDependencies();
+            if ($dependencies !== '') {
+                $phpCode = $compiler->getFormatter()->handleCode($dependencies) . $phpCode;
+            }
             $jsPhpize->flushDependencies();
             $compiler->unsetOption('jsphpize_engine');
 
