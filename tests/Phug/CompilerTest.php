@@ -277,7 +277,7 @@ class CompilerTest extends AbstractCompilerTest
             $jsPhpize = $compiler->getOption('jsphpize_engine');
             $dependencies = $jsPhpize->compileDependencies();
             if ($dependencies !== '') {
-                $phpCode = $compiler->getFormatter()->handleCode($dependencies) . $phpCode;
+                $phpCode = $compiler->getFormatter()->handleCode($dependencies).$phpCode;
             }
             $jsPhpize->flushDependencies();
             $compiler->unsetOption('jsphpize_engine');
