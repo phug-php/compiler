@@ -4,6 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\EachNode;
 use Phug\Parser\NodeInterface;
@@ -12,7 +13,7 @@ class EachCompiler extends AbstractStatementNodeCompiler
 {
     protected function compileLoop(NodeInterface $node, $items, $key, $item)
     {
-        $subject = $items.' as ';
+        $subject = $this->getCompiler()->getFormatter()->formatCode($items).' as ';
         if ($key) {
             $subject .= '$'.$key.' => ';
         }
