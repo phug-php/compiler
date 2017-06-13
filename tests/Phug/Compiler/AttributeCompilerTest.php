@@ -62,6 +62,26 @@ class AttributeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     */
+    public function testUnescapedAttributes()
+    {
+        $this->assertRenderFile(
+            [
+                '<script type="text/x-template">'.PHP_EOL,
+                '  <div id="user-<%= user.id %>">'.PHP_EOL,
+                '    <h1><%= user.title %></h1>'.PHP_EOL,
+                '  </div>'.PHP_EOL,
+                '</script>'.PHP_EOL,
+            ],
+            __DIR__.'/../../templates/attrs.unescaped.pug',
+            [
+                'pretty' => '  ',
+            ]
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
