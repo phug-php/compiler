@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
-use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\EachNode;
 use Phug\Parser\NodeInterface;
