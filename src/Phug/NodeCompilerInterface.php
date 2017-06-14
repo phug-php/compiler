@@ -10,6 +10,14 @@ use Phug\Parser\NodeInterface as ParserNodeInterface;
 interface NodeCompilerInterface
 {
     /**
+     * @param array            $node
+     * @param ElementInterface $parent
+     *
+     * @return array
+     */
+    public function getCompiledNodeList($nodeList, ElementInterface $parent = null);
+
+    /**
      * @param NodeInterface    $node
      * @param ElementInterface $parent
      *

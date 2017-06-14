@@ -6,6 +6,7 @@ use Phug\Ast\NodeInterface;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\VariableElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\CommentNode;
 use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface as ParserNodeInterface;
 
@@ -30,9 +31,13 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
 
     protected function getTextChildren($node)
     {
+        $children = array_filter($node->getChildren(), function (NodeInterface $node) {
+            return !($node instanceof CommentNode);
+        });
+
         return implode("\n", array_map(function (TextNode $text) {
             return $text->getValue();
-        }, $node->getChildren()));
+        }, $children));
     }
 
     public function getCompiler()
@@ -40,14 +45,19 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
         return $this->compiler;
     }
 
-    public function getCompiledChildren(NodeInterface $node, ElementInterface $element = null)
+    public function getCompiledNodeList($nodeList, ElementInterface $element = null)
     {
         return array_values(array_filter(array_map(
             function (NodeInterface $childNode) use ($element) {
                 return $this->compileParserNode($childNode, $element);
             },
-            array_filter($node->getChildren())
+            array_filter($nodeList)
         )));
+    }
+
+    public function getCompiledChildren(NodeInterface $node, ElementInterface $element = null)
+    {
+        return $this->getCompiledNodeList($node->getChildren(), $element);
     }
 
     public function compileNodeChildren(NodeInterface $node, ElementInterface $element = null)
