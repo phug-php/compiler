@@ -23,6 +23,17 @@ class ElementCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     */
+    public function testExpansionCompile()
+    {
+        $this->assertCompile(
+            '<ul><li class="list-item"><div class="foo"><div id="bar">baz</div></div></li></ul>',
+            "ul\n  li.list-item: .foo: #bar baz"
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */

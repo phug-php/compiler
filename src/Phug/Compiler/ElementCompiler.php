@@ -42,6 +42,14 @@ class ElementCompiler extends AbstractNodeCompiler
 
         $this->compileNodeChildren($node, $markup);
 
+        $outer = $node->getOuterNode();
+        if ($outer) {
+            $outerMarkup = $compiler->compileNode($outer);
+            $outerMarkup->appendChild($markup);
+
+            return $outerMarkup;
+        }
+
         return $markup;
     }
 }
