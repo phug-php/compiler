@@ -48,8 +48,12 @@ class ForCompiler extends EachCompiler
 
             /** @var CodeElement $loop */
             $loop = $this->compileLoop($node, $subject, $key, $item);
+            $next = $node->getNextSibling();
 
-            for ($next = $node->getNextSibling(); $next && $next instanceof CommentNode; $next = $node->getNextSibling());
+            while ($next && $next instanceof CommentNode) {
+                $next = $node->getNextSibling();
+            }
+
             if ($next instanceof ConditionalNode && $next->getName() === 'else') {
                 $next->setName('if');
                 $next->setSubject('$__pug_temp_empty');
