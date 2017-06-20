@@ -4,7 +4,10 @@ namespace Phug\Compiler;
 
 use Phug\AbstractStatementNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\CommentNode;
+use Phug\Parser\Node\ConditionalNode;
 use Phug\Parser\Node\EachNode;
 use Phug\Parser\NodeInterface;
 
@@ -29,13 +32,21 @@ class EachCompiler extends AbstractStatementNodeCompiler
             );
         }
 
-        /**
-         * @var EachNode $node
-         */
+        /** @var EachNode $node */
         $subject = $node->getSubject();
         $key = $node->getKey();
         $item = $node->getItem();
+        /** @var CodeElement $loop */
+        $loop = $this->compileLoop($node, $subject, $key, $item);
 
-        return $this->compileLoop($node, $subject, $key, $item);
+        for ($next = $node->getNextSibling(); $next && $next instanceof CommentNode; $next = $node->getNextSibling());
+        if ($next instanceof ConditionalNode && $next->getName() === 'else') {
+            $next->setName('if');
+            $next->setSubject('$__pug_temp_empty');
+            $loop->setValue('$__pug_temp_empty = true; '.$loop->getValue());
+            $loop->prependChild(new CodeElement('$__pug_temp_empty = false'));
+        }
+
+        return $loop;
     }
 }
