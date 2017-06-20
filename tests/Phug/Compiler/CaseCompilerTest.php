@@ -39,6 +39,36 @@ class CaseCompilerTest extends AbstractCompilerTest
                 '    p Bye',
             ]
         );
+        $this->assertCompile(
+            [
+                '<!DOCTYPE html>',
+                '<html>',
+                '<body>',
+                '<?php $s = "this" ?>',
+                '<?php switch ($s) { ?>',
+                '<?php case "this": ?>',
+                '<p>It\'s this!</p>',
+                '<?php break; ?>',
+                '<?php case "that": ?>',
+                '<p>It\'s that!</p>',
+                '<?php break; ?>',
+                '<?php } ?>',
+                '</body>',
+                '</html>',
+            ],
+            [
+                'doctype html'."\n",
+                'html'."\n",
+                '  body'."\n",
+                '   - $s = "this"'."\n".
+                '   case $s'."\n".
+                '     //- Comment'."\n",
+                '     when "this"'."\n",
+                '       p It\'s this!'."\n",
+                '     when "that"'."\n",
+                '       p It\'s that!'."\n",
+            ]
+        );
     }
 
     /**
