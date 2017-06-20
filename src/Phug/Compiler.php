@@ -113,6 +113,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'basedir'              => null,
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
+            'default_doctype'      => 'html',
             'pre_compile'          => [],
             'pre_compile_node'     => [],
             'post_compile'         => [],

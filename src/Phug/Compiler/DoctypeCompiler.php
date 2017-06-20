@@ -19,6 +19,8 @@ class DoctypeCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new DoctypeElement($node->getName());
+        $name = $node->getName() ?: $this->getCompiler()->getOption('default_doctype');
+
+        return new DoctypeElement($name);
     }
 }
