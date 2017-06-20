@@ -37,6 +37,23 @@ class ForCompilerTest extends AbstractCompilerTest
         );
         $this->assertCompile(
             [
+                '<?php $__pug_temp_empty = true; foreach ($items as $item) { ?>',
+                '<?php $__pug_temp_empty = false ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+                '<?php if ($__pug_temp_empty) { ?>',
+                '<p>no items</p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $item in $items'."\n",
+                '  p?!=$item'."\n",
+                'else'."\n",
+                '  p no items',
+            ]
+        );
+        $this->assertCompile(
+            [
                 '<?php foreach ($items as $key => $item) { ?>',
                 '<p><?= $item ?></p>',
                 '<?php } ?>',
