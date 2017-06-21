@@ -60,10 +60,18 @@ class FilterCompiler extends AbstractNodeCompiler
         }
 
         $text = $this->compileText($name, $node->getChildren(), $parent, 0);
+        $options = [];
+        foreach ($node->getAttributes() as $attribute) {
+            $__pug_eval_attribute = $attribute->getValue();
+            $options[$attribute->getName()] = call_user_func(function () use ($__pug_eval_attribute) {
+                return eval('return '.$__pug_eval_attribute.';');
+            });
+        }
 
         return new TextElement(call_user_func(
             $filters[$name],
-            $text
+            $text,
+            $options
         ));
     }
 }

@@ -93,6 +93,27 @@ class FilterCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group i
+     * @covers ::<public>
+     */
+    public function testFilterOption()
+    {
+        $compiler = new Compiler([
+            'filters' => [
+                'foo' => function ($contents, $options) {
+                    return $contents.$options['opt'];
+                },
+            ],
+        ]);
+        self::assertSame(
+            '21',
+            $compiler->compile(
+                ':foo(opt=1) 2'
+            )
+        );
+    }
+
+    /**
      * @covers            ::compileText
      * @expectedException \Phug\CompilerException
      */
