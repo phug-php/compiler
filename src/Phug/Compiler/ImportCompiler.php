@@ -6,6 +6,7 @@ use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ImportNode;
+use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
 
 class ImportCompiler extends AbstractNodeCompiler
@@ -69,8 +70,17 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         $compiler = $this->getCompiler();
-        $subCompiler = clone $compiler;
         $path = $this->resolvePath($node->getPath());
+
+        if ($filter = $node->getFilter()) {
+            $node->appendChild(new TextNode(file_get_contents($path)));
+            $element = $compiler->compileNode($node, $parent);
+            $node->remove();
+
+            return $element;
+        }
+
+        $subCompiler = clone $compiler;
         $element = $subCompiler->compileFileIntoElement($path);
 
         if ($node->getName() === 'include') {
