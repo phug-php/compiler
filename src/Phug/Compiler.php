@@ -401,14 +401,29 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     /**
      * Replace each block by its compiled children.
      *
+     * @param NodeInterface $fallbackNode
+     *
      * @throws CompilerException
      *
      * @return $this
      */
-    public function compileBlocks()
+    public function compileBlocks(NodeInterface $fallbackNode = null)
     {
         foreach ($this->getBlocks() as $name => $blocks) {
             foreach ($blocks as $block) {
+                if ($name === '' && $fallbackNode) {
+                    if (!($block instanceof Block)) {
+                        throw new CompilerException(
+                            'Unexpected anonymous block'
+                        );
+                    }
+
+                    $children = [];
+                    foreach ($fallbackNode->getChildren() as $child) {
+                        $children[] = $this->compileNode($child, $block->getParent());
+                    }
+                    $this->replaceBlock($block, $children);
+                }
                 if (!($block instanceof Block)) {
                     throw new CompilerException(
                         'Unexpected block for the name '.$name

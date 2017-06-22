@@ -15,17 +15,12 @@ class BlockCompiler extends AbstractNodeCompiler
     {
         $block = new Block($parent);
         $block->setChildren($this->getCompiledChildren($node, $parent));
-        $declaration = null;
-        while ($node->hasParent() && !($node instanceof MixinNode)) {
-            $node = $node->getParent();
+        $mixin = $node;
+        while ($mixin->hasParent() && !($mixin instanceof MixinNode)) {
+            $mixin = $mixin->getParent();
         }
-        if ($node instanceof MixinNode) {
-            $declaration = $node;
-        }
-        if (!$declaration) {
-            throw new CompilerException(
-                'Anonymous block should only be in a mixin declaration.'
-            );
+        if (!($mixin instanceof MixinNode)) {
+            return $this->compileNamedBlock('', $node, $parent);
         }
 
         return $block;

@@ -65,11 +65,13 @@ interface CompilerInterface extends OptionInterface
     public function replaceBlock(Block $block, array $children = null);
 
     /**
+     * @param NodeInterface $fallbackNode
+     *
      * @throws CompilerException
      *
      * @return $this
      */
-    public function compileBlocks();
+    public function compileBlocks(NodeInterface $fallbackNode = null);
 
     /**
      * @param NodeInterface         $node
