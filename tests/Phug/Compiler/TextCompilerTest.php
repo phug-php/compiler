@@ -43,6 +43,22 @@ class TextCompilerTest extends AbstractCompilerTest
                 '    #[p Name]'."\n",
             ]
         );
+        $this->assertCompile(
+            [
+                '<ul>'."\n",
+                '  <li>foo</li>'."\n",
+                '  <li>bar</li>'."\n",
+                '  <li>baz</li>'."\n",
+                '</ul>',
+            ],
+            [
+                '<ul>'."\n",
+                '  <li>foo</li>'."\n",
+                '  <li>bar</li>' . "\n",
+                '  <li>baz</li>'."\n",
+                '</ul>',
+            ]
+        );
     }
 
     /**
