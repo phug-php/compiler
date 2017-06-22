@@ -48,6 +48,10 @@ class FilterCompiler extends AbstractNodeCompiler
             );
         }
 
+        if ($node->getImport()) {
+            return null;
+        }
+
         /**
          * @var FilterNode $node
          */
