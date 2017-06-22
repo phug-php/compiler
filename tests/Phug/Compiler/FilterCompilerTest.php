@@ -93,7 +93,6 @@ class FilterCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      */
     public function testFilterOption()
