@@ -390,10 +390,12 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function replaceBlock(Block $block, array $children = null)
     {
-        foreach (array_reverse($children ?: $block->getChildren()) as $child) {
-            $block->getParent()->insertAfter($block, $child);
+        if ($parent = $block->getParent()) {
+            foreach (array_reverse($children ?: $block->getChildren()) as $child) {
+                $parent->insertAfter($block, $child);
+            }
+            $block->remove();
         }
-        $block->remove();
     }
 
     /**

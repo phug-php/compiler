@@ -68,6 +68,19 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @covers \Phug\Compiler\ImportCompiler::resolvePath
+     */
+    public function testExtendsInInclude()
+    {
+        $this->assertCompileFile(
+            '<section>1 A 2 A</section>',
+            __DIR__.'/../../templates/inc-page.pug'
+        );
+    }
+
+    /**
      * @covers            \Phug\Compiler::compileIntoElement
      * @expectedException \Phug\CompilerException
      */
