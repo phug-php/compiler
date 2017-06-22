@@ -54,7 +54,7 @@ class TextCompilerTest extends AbstractCompilerTest
             [
                 '<ul>'."\n",
                 '  <li>foo</li>'."\n",
-                '  <li>bar</li>' . "\n",
+                '  <li>bar</li>'."\n",
                 '  <li>baz</li>'."\n",
                 '</ul>',
             ]
