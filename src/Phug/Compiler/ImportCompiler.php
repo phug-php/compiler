@@ -5,6 +5,7 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ImportNode;
 use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
@@ -72,10 +73,15 @@ class ImportCompiler extends AbstractNodeCompiler
         $compiler = $this->getCompiler();
         $path = $this->resolvePath($node->getPath());
 
+        /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
-            $node->appendChild(new TextNode(file_get_contents($path)));
-            $element = $compiler->compileNode($node, $parent);
-            $node->remove();
+            $text = new TextNode();
+            $text->setValue(file_get_contents($path));
+            $filter->appendChild($text);
+            $import = $filter->getImport();
+            $filter->setImport(null);
+            $element = $compiler->compileNode($filter, $parent);
+            $filter->setImport($import);
 
             return $element;
         }

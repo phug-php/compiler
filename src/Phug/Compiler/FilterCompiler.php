@@ -48,30 +48,41 @@ class FilterCompiler extends AbstractNodeCompiler
             );
         }
 
+        if ($node->getImport()) {
+            return null;
+        }
+
         /**
          * @var FilterNode $node
          */
         $name = $node->getName();
         $filters = $this->getCompiler()->getOption('filters');
-        if (!isset($filters[$name])) {
-            throw new CompilerException(
-                'Unknown filter '.$name.'.'
+
+        $text = $this->compileText($name, $node->getChildren(), $parent, 0);
+        $names = explode(':', $name);
+
+        while ($name = array_pop($names)) {
+            if (!isset($filters[$name])) {
+                throw new CompilerException(
+                    'Unknown filter '.$name.'.'
+                );
+            }
+
+            $options = [];
+            foreach ($node->getAttributes() as $attribute) {
+                $__pug_eval_attribute = $attribute->getValue();
+                $options[$attribute->getName()] = call_user_func(function () use ($__pug_eval_attribute) {
+                    return eval('return '.$__pug_eval_attribute.';');
+                });
+            }
+
+            $text = call_user_func(
+                $filters[$name],
+                $text,
+                $options
             );
         }
 
-        $text = $this->compileText($name, $node->getChildren(), $parent, 0);
-        $options = [];
-        foreach ($node->getAttributes() as $attribute) {
-            $__pug_eval_attribute = $attribute->getValue();
-            $options[$attribute->getName()] = call_user_func(function () use ($__pug_eval_attribute) {
-                return eval('return '.$__pug_eval_attribute.';');
-            });
-        }
-
-        return new TextElement(call_user_func(
-            $filters[$name],
-            $text,
-            $options
-        ));
+        return new TextElement($text);
     }
 }

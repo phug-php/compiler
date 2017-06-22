@@ -30,8 +30,8 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
-     * @covers \Phug\Compiler\ImportCompiler::resolvePath
+     * @covers ::getBaseDirectoryForPath
+     * @covers ::resolvePath
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */
@@ -41,12 +41,19 @@ class ImportCompilerTest extends AbstractCompilerTest
             '<section><div>sample</div></section>',
             'section: include /inc.pug'
         );
+        $this->compiler->setOption(['filters', 'upper'], function ($contents) {
+            return strtoupper($contents);
+        });
+        $this->assertCompile(
+            '<section>UPPER</section>',
+            'section: include:upper /lower.txt'
+        );
     }
 
     /**
      * @covers ::<public>
-     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
-     * @covers \Phug\Compiler\ImportCompiler::resolvePath
+     * @covers ::getBaseDirectoryForPath
+     * @covers ::resolvePath
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
@@ -98,7 +105,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers            \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @covers            ::getBaseDirectoryForPath
      * @expectedException \Phug\CompilerException
      */
     public function testBasedirException()
@@ -113,7 +120,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers            \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
+     * @covers            ::getBaseDirectoryForPath
      * @expectedException \Phug\CompilerException
      */
     public function testRelativePathException()
@@ -127,7 +134,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers            \Phug\Compiler\ImportCompiler::resolvePath
+     * @covers            ::resolvePath
      * @expectedException \Phug\CompilerException
      */
     public function testFileNotFoundException()
