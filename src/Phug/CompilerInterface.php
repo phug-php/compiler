@@ -72,6 +72,13 @@ interface CompilerInterface extends OptionInterface
     public function compileBlocks();
 
     /**
+     * @param array $blocks
+     *
+     * @return $this
+     */
+    public function importBlocks(array $blocks);
+
+    /**
      * @param NodeInterface         $node
      * @param ElementInterface|null $parent
      *

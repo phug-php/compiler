@@ -440,6 +440,21 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     }
 
     /**
+     * Import blocks named lists into the compiler.
+     *
+     * @param array $blocks
+     */
+    public function importBlocks(array $blocks)
+    {
+        foreach ($blocks as $name => $list) {
+            $blocks = &$this->getBlocksByName($name);
+            foreach ($list as $block) {
+                $blocks[] = $block;
+            }
+        }
+    }
+
+    /**
      * Replace each block by its compiled children.
      *
      * @throws CompilerException

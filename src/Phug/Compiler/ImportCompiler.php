@@ -3,6 +3,7 @@
 namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
+use Phug\Ast\NodeInterface as AstNodeInterface;
 use Phug\CompilerException;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\TextElement;
@@ -71,6 +72,19 @@ class ImportCompiler extends AbstractNodeCompiler
         return true;
     }
 
+    protected function getBlocksInTree(AstNodeInterface $element)
+    {
+        if ($element instanceof Block) {
+            yield $element;
+        }
+
+        foreach ($element->getChildren() as $child) {
+            foreach ($this->getBlocksInTree($child) as $block) {
+                yield $block;
+            }
+        }
+    }
+
     /**
      * @param NodeInterface    $node
      * @param ElementInterface $parent
@@ -110,11 +124,16 @@ class ImportCompiler extends AbstractNodeCompiler
         $subCompiler = clone $compiler;
         $subCompiler->setImportNode($node);
         $element = $subCompiler->compileFileIntoElement($path);
+        $compiler->importBlocks($subCompiler->getBlocks());
+        $compileBlocks = function (Layout &$layout) {
+            $layoutCompiler = $layout->getCompiler();
+            $layoutCompiler->compileBlocks(true);
+        };
 
         if ($node->getName() === 'include') {
             if ($layout = $subCompiler->getLayout()) {
                 $element = $layout->getDocument();
-                $layout->getCompiler()->compileBlocks();
+                $compileBlocks($layout);
             }
             if (!$subCompiler->isImportNodeYielded()) {
                 $yield = $element;
@@ -130,7 +149,7 @@ class ImportCompiler extends AbstractNodeCompiler
         if ($node->getName() === 'extend') {
             if ($layout = $subCompiler->getLayout()) {
                 $element = $layout->getDocument();
-                $layout->getCompiler()->compileBlocks();
+                $compileBlocks($layout);
             }
             $compiler->setLayout(new Layout($element, $subCompiler));
         }
