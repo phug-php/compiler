@@ -107,6 +107,11 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     private $mixins;
 
+    /**
+     * @var NodeInterface
+     */
+    private $importNode;
+
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
@@ -190,6 +195,26 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+    }
+
+    /**
+     * @param NodeInterface $importNode
+     *
+     * @return $this
+     */
+    public function setImportNode(NodeInterface $importNode)
+    {
+        $this->importNode = $importNode;
+
+        return $this;
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getImportNode()
+    {
+        return $this->importNode;
     }
 
     /**
@@ -400,6 +425,8 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
 
     /**
      * Replace each block by its compiled children.
+     *
+     * @param NodeInterface $fallbackNode
      *
      * @throws CompilerException
      *

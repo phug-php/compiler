@@ -113,4 +113,16 @@ interface CompilerInterface extends OptionInterface
      * @return null|string
      */
     public function getFileName();
+
+    /**
+     * @return NodeInterface
+     */
+    public function getImportNode();
+
+    /**
+     * @param NodeInterface $defaultYieldChildren
+     *
+     * @return $this
+     */
+    public function setImportNode(NodeInterface $defaultYieldChildren);
 }

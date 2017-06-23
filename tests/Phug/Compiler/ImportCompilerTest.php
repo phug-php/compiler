@@ -54,7 +54,6 @@ class ImportCompilerTest extends AbstractCompilerTest
      * @covers ::<public>
      * @covers ::getBaseDirectoryForPath
      * @covers ::resolvePath
-     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
@@ -63,6 +62,7 @@ class ImportCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::compileFile
      * @covers \Phug\Compiler::compileFileIntoElement
      * @covers \Phug\Compiler::getFileName
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      * @covers \Phug\Compiler\Layout::<public>
      */
@@ -84,6 +84,20 @@ class ImportCompilerTest extends AbstractCompilerTest
         $this->assertCompileFile(
             '<section>1 A 2 A</section><section>1 A 2 A</section>',
             __DIR__.'/../../templates/inc-page.pug'
+        );
+    }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\Block::<public>
+     */
+    public function testYieldInInclude()
+    {
+        $this->assertCompileFile(
+            '<div>foo<p>Hello</p>bar</div>',
+            __DIR__.'/../../templates/inc-yield.pug'
         );
     }
 
