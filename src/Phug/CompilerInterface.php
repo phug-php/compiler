@@ -125,4 +125,9 @@ interface CompilerInterface extends OptionInterface
      * @return $this
      */
     public function setImportNode(NodeInterface $defaultYieldChildren);
+
+    /**
+     * @return bool
+     */
+    public function isImportNodeYielded();
 }

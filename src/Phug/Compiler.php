@@ -112,6 +112,11 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     private $importNode;
 
+    /**
+     * @var bool
+     */
+    private $importNodeYielded;
+
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
@@ -205,8 +210,17 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     public function setImportNode(NodeInterface $importNode)
     {
         $this->importNode = $importNode;
+        $this->importNodeYielded = false;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isImportNodeYielded()
+    {
+        return !!$this->importNodeYielded;
     }
 
     /**
@@ -214,6 +228,8 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function getImportNode()
     {
+        $this->importNodeYielded = true;
+
         return $this->importNode;
     }
 

@@ -4,6 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ImportNode;
@@ -94,6 +95,13 @@ class ImportCompiler extends AbstractNodeCompiler
             if ($layout = $subCompiler->getLayout()) {
                 $element = $layout->getDocument();
                 $layout->getCompiler()->compileBlocks();
+            }
+            if (!$this->getCompiler()->isImportNodeYielded()) {
+                $yield = $element;
+                if ($yield instanceof DocumentElement && $yield->getChildCount()) {
+                    $yield = $yield->getChildAt($yield->getChildCount() - 1);
+                }
+                $this->compileNodeChildren($node, $yield);
             }
 
             return $element;

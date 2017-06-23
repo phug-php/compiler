@@ -88,7 +88,6 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
@@ -98,6 +97,20 @@ class ImportCompilerTest extends AbstractCompilerTest
         $this->assertCompileFile(
             '<div>foo<p>Hello</p>bar</div>',
             __DIR__.'/../../templates/inc-yield.pug'
+        );
+    }
+
+    /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\Block::<public>
+     */
+    public function testIncludeChildren()
+    {
+        $this->assertCompileFile(
+            '<section><div>sample<p>A</p><p>B</p></div></section>',
+            __DIR__.'/../../templates/inc-children.pug'
         );
     }
 
