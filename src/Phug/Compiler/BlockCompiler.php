@@ -20,7 +20,11 @@ class BlockCompiler extends AbstractNodeCompiler
             $mixin = $mixin->getParent();
         }
         if (!($mixin instanceof MixinNode)) {
-            return $this->compileNamedBlock('', $node, $parent);
+            if ($importNode = $this->getCompiler()->getImportNode()) {
+                $this->compileNodeChildren($importNode, $parent);
+            }
+
+            return null;
         }
 
         return $block;

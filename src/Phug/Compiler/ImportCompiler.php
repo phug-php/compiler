@@ -87,12 +87,13 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         $subCompiler = clone $compiler;
+        $subCompiler->setImportNode($node);
         $element = $subCompiler->compileFileIntoElement($path);
 
         if ($node->getName() === 'include') {
             if ($layout = $subCompiler->getLayout()) {
                 $element = $layout->getDocument();
-                $layout->getCompiler()->compileBlocks($node);
+                $layout->getCompiler()->compileBlocks();
             }
 
             return $element;

@@ -65,13 +65,11 @@ interface CompilerInterface extends OptionInterface
     public function replaceBlock(Block $block, array $children = null);
 
     /**
-     * @param NodeInterface $fallbackNode
-     *
      * @throws CompilerException
      *
      * @return $this
      */
-    public function compileBlocks(NodeInterface $fallbackNode = null);
+    public function compileBlocks();
 
     /**
      * @param NodeInterface         $node
@@ -115,4 +113,16 @@ interface CompilerInterface extends OptionInterface
      * @return null|string
      */
     public function getFileName();
+
+    /**
+     * @return NodeInterface
+     */
+    public function getImportNode();
+
+    /**
+     * @param NodeInterface $defaultYieldChildren
+     *
+     * @return $this
+     */
+    public function setImportNode(NodeInterface $defaultYieldChildren);
 }

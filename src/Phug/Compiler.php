@@ -107,6 +107,11 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     private $mixins;
 
+    /**
+     * @var NodeInterface
+     */
+    private $importNode;
+
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
@@ -190,6 +195,26 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+    }
+
+    /**
+     * @param NodeInterface $importNode
+     *
+     * @return $this
+     */
+    public function setImportNode(NodeInterface $importNode)
+    {
+        $this->importNode = $importNode;
+
+        return $this;
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getImportNode()
+    {
+        return $this->importNode;
     }
 
     /**
@@ -407,23 +432,10 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      *
      * @return $this
      */
-    public function compileBlocks(NodeInterface $fallbackNode = null)
+    public function compileBlocks()
     {
         foreach ($this->getBlocks() as $name => $blocks) {
             foreach ($blocks as $block) {
-                if ($name === '' && $fallbackNode) {
-                    if (!($block instanceof Block)) {
-                        throw new CompilerException(
-                            'Unexpected anonymous block'
-                        );
-                    }
-
-                    $children = [];
-                    foreach ($fallbackNode->getChildren() as $child) {
-                        $children[] = $this->compileNode($child, $block->getParent());
-                    }
-                    $this->replaceBlock($block, $children);
-                }
                 if (!($block instanceof Block)) {
                     throw new CompilerException(
                         'Unexpected block for the name '.$name
