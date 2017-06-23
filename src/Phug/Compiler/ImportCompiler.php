@@ -96,7 +96,7 @@ class ImportCompiler extends AbstractNodeCompiler
                 $element = $layout->getDocument();
                 $layout->getCompiler()->compileBlocks();
             }
-            if (!$this->getCompiler()->isImportNodeYielded()) {
+            if (!$subCompiler->isImportNodeYielded()) {
                 $yield = $element;
                 if ($yield instanceof DocumentElement && $yield->getChildCount()) {
                     $yield = $yield->getChildAt($yield->getChildCount() - 1);
