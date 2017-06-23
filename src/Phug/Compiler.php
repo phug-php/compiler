@@ -442,8 +442,6 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     /**
      * Replace each block by its compiled children.
      *
-     * @param NodeInterface $fallbackNode
-     *
      * @throws CompilerException
      *
      * @return $this

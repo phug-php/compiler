@@ -128,6 +128,10 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         if ($node->getName() === 'extend') {
+            if ($layout = $subCompiler->getLayout()) {
+                $element = $layout->getDocument();
+                $layout->getCompiler()->compileBlocks();
+            }
             $compiler->setLayout(new Layout($element, $subCompiler));
         }
 

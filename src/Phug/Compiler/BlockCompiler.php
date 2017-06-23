@@ -30,12 +30,23 @@ class BlockCompiler extends AbstractNodeCompiler
         return $block;
     }
 
+    protected function hasBlockParent(BlockNode $node)
+    {
+        for ($blockParent = $node->getParent(); $blockParent; $blockParent = $blockParent->getParent()) {
+            if ($blockParent instanceof BlockNode) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent)
     {
         $compiler = $this->getCompiler();
         $layout = $compiler->getLayout();
 
-        if ($layout) {
+        if ($layout && !$this->hasBlockParent($node)) {
             $blocks = &$layout->getCompiler()->getBlocksByName($name);
             array_walk($blocks, function (Block $block) use ($node) {
                 $block->proceedChildren(
