@@ -114,6 +114,19 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\Block::<public>
+     */
+    public function testIncludeRawText()
+    {
+        $this->assertCompileFile(
+            '<pre><code>var x = "\n here is some \n new lined text";'."\n</code></pre>",
+            __DIR__.'/../../templates/includes-with-ext-js.pug'
+        );
+    }
+
+    /**
      * @covers            \Phug\Compiler::compileIntoElement
      * @expectedException \Phug\CompilerException
      */

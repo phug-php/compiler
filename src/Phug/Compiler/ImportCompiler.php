@@ -5,6 +5,7 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
 use Phug\Formatter\Element\DocumentElement;
+use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ImportNode;
@@ -17,7 +18,7 @@ class ImportCompiler extends AbstractNodeCompiler
     {
         $compiler = $this->getCompiler();
 
-        if (substr($path, 0, 1) === '/') {
+        if (mb_substr($path, 0, 1) === '/') {
             $base = $compiler->getOption('basedir');
             if (!$base) {
                 throw new CompilerException(
@@ -55,6 +56,21 @@ class ImportCompiler extends AbstractNodeCompiler
         );
     }
 
+    protected function isRawTextFile($path)
+    {
+        foreach ($this->getCompiler()->getOption('extensions') as $extension) {
+            if ($extension === '' && mb_strpos($path, '.') === false) {
+                return false;
+            }
+
+            if (mb_substr($path, -mb_strlen($extension)) === $extension) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @param NodeInterface    $node
      * @param ElementInterface $parent
@@ -85,6 +101,10 @@ class ImportCompiler extends AbstractNodeCompiler
             $filter->setImport($import);
 
             return $element;
+        }
+
+        if ($this->isRawTextFile($path)) {
+            return new TextElement(file_get_contents($path));
         }
 
         $subCompiler = clone $compiler;
