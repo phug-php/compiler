@@ -101,7 +101,6 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
