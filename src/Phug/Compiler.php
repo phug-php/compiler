@@ -220,7 +220,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function isImportNodeYielded()
     {
-        return !!$this->importNodeYielded;
+        return (bool) $this->importNodeYielded;
     }
 
     /**
