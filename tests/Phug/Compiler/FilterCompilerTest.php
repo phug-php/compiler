@@ -69,7 +69,6 @@ class FilterCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::compileText
      * @covers ::<public>
      * @covers \Phug\AbstractNodeCompiler::getTextChildren
