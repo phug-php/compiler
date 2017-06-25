@@ -11,6 +11,7 @@ use Phug\Parser\Node\ElementNode;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\TextNode;
 use Phug\Test\AbstractCompilerTest;
+use Pug\Filter\CoffeeScript;
 
 /**
  * @coversDefaultClass \Phug\Compiler\FilterCompiler
@@ -63,6 +64,35 @@ class FilterCompilerTest extends AbstractCompilerTest
             "})()\n".
             '</script>',
             $compiler->compileNode($filter)->getValue()
+        );
+        //parse
+    }
+
+    /**
+     * @group i
+     * @covers ::compileText
+     * @covers ::<public>
+     * @covers \Phug\AbstractNodeCompiler::getTextChildren
+     */
+    public function testLegacyFilters()
+    {
+        $compiler = new Compiler([
+            'filters' => [
+                'coffee' => CoffeeScript::class,
+            ],
+        ]);
+        self::assertSame(
+            '<script>'.
+            "(function() {\n".
+            "  return console.log(\"Foo\");\n".
+            "})();\n".
+            '</script>',
+            $compiler->compile(
+                'script'."\n".
+                '  :coffee'."\n".
+                '    do ->'."\n".
+                '      console.log "Foo"'
+            )
         );
     }
 

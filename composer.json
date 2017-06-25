@@ -28,7 +28,8 @@
     },
     "require-dev": {
         "phug/dev-tool": "^0.1.0",
-        "js-phpize/js-phpize": "^1.4"
+        "js-phpize/js-phpize": "^1.4",
+        "pug-php/pug-filter-coffee-script": "^1.2"
     },
     "autoload": {
         "psr-4": {

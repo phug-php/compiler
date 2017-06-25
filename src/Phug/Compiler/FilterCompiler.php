@@ -76,7 +76,7 @@ class FilterCompiler extends AbstractNodeCompiler
                 });
             }
 
-            $text = call_user_func(
+            $text = $this->proceedFilter(
                 $filters[$name],
                 $text,
                 $options
@@ -84,5 +84,22 @@ class FilterCompiler extends AbstractNodeCompiler
         }
 
         return new TextElement($text);
+    }
+
+    public function proceedFilter($filter, $input, $options)
+    {
+        if (!is_callable($filter) && class_exists($filter)) {
+            $filter = new $filter();
+        }
+
+        if (is_object($filter) && method_exists($filter, 'parse')) {
+            $filter = [$filter, 'parse'];
+        }
+
+        return strval(call_user_func(
+            $filter,
+            $input,
+            $options
+        ));
     }
 }
