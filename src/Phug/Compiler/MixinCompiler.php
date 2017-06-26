@@ -18,7 +18,9 @@ class MixinCompiler extends AbstractNodeCompiler
             );
         }
 
-        $node->setChildren($this->getCompiledChildren($node, $parent));
+        $node->mixinConstructor = function () use ($node, $parent) {
+            $node->setChildren($this->getCompiledChildren($node, $parent));
+        };
         $this->getCompiler()->getMixins()->attach($node);
 
         return null;

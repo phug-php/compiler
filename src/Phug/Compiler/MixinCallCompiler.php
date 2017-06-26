@@ -37,21 +37,11 @@ class MixinCallCompiler extends AbstractNodeCompiler
             );
         }
 
-        /**
-         * @var MixinCallNode $node
-         */
+        /** @var MixinCallNode $node */
         $mixinName = $node->getName();
         $compiler = $this->getCompiler();
-        $mixins = $compiler->getMixins();
-        /**
-         * @var MixinNode $declaration
-         */
-        $declaration = $mixins->findFirstByName($mixinName);
-        if (!$declaration) {
-            throw new CompilerException(
-                'Unknown '.$mixinName.' mixin called.'
-            );
-        }
+        /** @var MixinNode $declaration */
+        $declaration = $compiler->requireMixin($mixinName);
         $arguments = [];
         $attributes = [];
         foreach ($node->getAttributes() as $attribute) {

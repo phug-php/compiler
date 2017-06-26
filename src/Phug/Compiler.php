@@ -203,6 +203,28 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     }
 
     /**
+     * @param string $mixinName
+     *
+     * @return MixinNode
+     */
+    public function requireMixin($mixinName)
+    {
+        /** @var MixinNode $declaration */
+        $declaration = $this->getMixins()->findFirstByName($mixinName);
+        if (!$declaration) {
+            throw new CompilerException(
+                'Unknown '.$mixinName.' mixin called.'
+            );
+        }
+        if (isset($declaration->mixinConstructor)) {
+            call_user_func($declaration->mixinConstructor);
+            unset($declaration->mixinConstructor);
+        }
+
+        return $declaration;
+    }
+
+    /**
      * @param NodeInterface $importNode
      *
      * @return $this

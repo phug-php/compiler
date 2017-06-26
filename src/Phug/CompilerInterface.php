@@ -5,6 +5,7 @@ namespace Phug;
 use Phug\Compiler\Block;
 use Phug\Compiler\Layout;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 use Phug\Util\AssociativeStorage;
 use Phug\Util\OptionInterface;
@@ -137,4 +138,11 @@ interface CompilerInterface extends OptionInterface
      * @return bool
      */
     public function isImportNodeYielded();
+
+    /**
+     * @param string $mixinName
+     *
+     * @return MixinNode
+     */
+    public function requireMixin($mixinName);
 }
