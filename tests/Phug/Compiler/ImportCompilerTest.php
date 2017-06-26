@@ -112,7 +112,6 @@ class ImportCompilerTest extends AbstractCompilerTest
         );
     }
 
-
     /**
      * @covers ::<public>
      * @covers \Phug\Compiler\BlockCompiler::compileAnonymousBlock
