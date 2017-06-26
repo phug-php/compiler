@@ -22,6 +22,27 @@ class CodeCompilerTest extends AbstractCompilerTest
             '<?php $foo = 4 ?>',
             '- $foo = 4'
         );
+        $this->assertCompile(
+            [
+                '<?php if ($foo) { ?>',
+                'Foo is true',
+                '<div>Foo is true</div>',
+                '<?php } else { ?>',
+                'Foo is false',
+                '<div>Foo is false</div>',
+                '<?php } ?>',
+            ],
+            [
+                '- if ($foo)'."\n",
+                '  //- Foo is true'."\n",
+                '  | Foo is true'."\n",
+                '  div Foo is true'."\n",
+                '- else'."\n",
+                '  //- Foo is false'."\n",
+                '  | Foo is false'."\n",
+                '  div Foo is false',
+            ]
+        );
     }
 
     /**

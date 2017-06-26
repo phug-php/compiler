@@ -34,6 +34,7 @@ class ImportCompilerTest extends AbstractCompilerTest
      * @covers ::resolvePath
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
+     * @covers \Phug\Compiler\FilterCompiler::compileNode
      */
     public function testInclude()
     {
@@ -57,12 +58,16 @@ class ImportCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
+     * @covers \Phug\Compiler::setImportNode
+     * @covers \Phug\Compiler::isImportNodeYielded
+     * @covers \Phug\Compiler::importBlocks
      * @covers \Phug\Compiler::compileBlocks
      * @covers \Phug\Compiler::compile
      * @covers \Phug\Compiler::compileFile
      * @covers \Phug\Compiler::compileFileIntoElement
      * @covers \Phug\Compiler::getFileName
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\BlockCompiler::hasBlockParent
      * @covers \Phug\Compiler\Block::<public>
      * @covers \Phug\Compiler\Layout::<public>
      */
@@ -76,8 +81,28 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers \Phug\Compiler\ImportCompiler::getBaseDirectoryForPath
-     * @covers \Phug\Compiler\ImportCompiler::resolvePath
+     * @covers \Phug\Compiler\BlockCompiler::hasBlockParent
+     */
+    public function testDoubleInheritance()
+    {
+        $this->assertCompileFile(
+            [
+                '<div class="window">',
+                '<a href="#" class="close">Close</a>',
+                '<div class="dialog">',
+                '<h1>Alert!</h1>',
+                '<p>I\'m an alert!</p>',
+                '</div>',
+                '</div>',
+            ],
+            __DIR__.'/../../templates/inheritance.alert-dialog.pug'
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers ::getBaseDirectoryForPath
+     * @covers ::resolvePath
      */
     public function testExtendsInInclude()
     {
@@ -87,10 +112,13 @@ class ImportCompilerTest extends AbstractCompilerTest
         );
     }
 
+
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
+     * @covers \Phug\Compiler::getImportNode
      */
     public function testYieldInInclude()
     {
@@ -102,6 +130,21 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers ::isRawTextFile
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\Block::<public>
+     */
+    public function testIncludeNoExtension()
+    {
+        $this->assertCompileFile(
+            '<p>Pug</p>',
+            __DIR__.'/../../templates/inc-no-extension.pug'
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers ::isRawTextFile
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */
@@ -115,6 +158,7 @@ class ImportCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers ::isRawTextFile
      * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Block::<public>
      */

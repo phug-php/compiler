@@ -21,7 +21,22 @@ class EachCompiler extends AbstractStatementNodeCompiler
         }
         $subject .= '$'.$item;
 
-        return $this->wrapStatement($node, 'foreach', $subject);
+        /** @var CodeElement $loop */
+        $loop = $this->wrapStatement($node, 'foreach', $subject);
+        $next = $node->getNextSibling();
+
+        while ($next && $next instanceof CommentNode) {
+            $next = $next->getNextSibling();
+        }
+
+        if ($next instanceof ConditionalNode && $next->getName() === 'else') {
+            $next->setName('if');
+            $next->setSubject('$__pug_temp_empty');
+            $loop->setValue('$__pug_temp_empty = true; '.$loop->getValue());
+            $loop->prependChild(new CodeElement('$__pug_temp_empty = false'));
+        }
+
+        return $loop;
     }
 
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
@@ -36,21 +51,7 @@ class EachCompiler extends AbstractStatementNodeCompiler
         $subject = $node->getSubject();
         $key = $node->getKey();
         $item = $node->getItem();
-        /** @var CodeElement $loop */
-        $loop = $this->compileLoop($node, $subject, $key, $item);
-        $next = $node->getNextSibling();
 
-        while ($next && $next instanceof CommentNode) {
-            $next = $node->getNextSibling();
-        }
-
-        if ($next instanceof ConditionalNode && $next->getName() === 'else') {
-            $next->setName('if');
-            $next->setSubject('$__pug_temp_empty');
-            $loop->setValue('$__pug_temp_empty = true; '.$loop->getValue());
-            $loop->prependChild(new CodeElement('$__pug_temp_empty = false'));
-        }
-
-        return $loop;
+        return $this->compileLoop($node, $subject, $key, $item);
     }
 }

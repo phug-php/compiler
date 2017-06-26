@@ -46,22 +46,7 @@ class ForCompiler extends EachCompiler
                 $key = $swap;
             }
 
-            /** @var CodeElement $loop */
-            $loop = $this->compileLoop($node, $subject, $key, $item);
-            $next = $node->getNextSibling();
-
-            while ($next && $next instanceof CommentNode) {
-                $next = $node->getNextSibling();
-            }
-
-            if ($next instanceof ConditionalNode && $next->getName() === 'else') {
-                $next->setName('if');
-                $next->setSubject('$__pug_temp_empty');
-                $loop->setValue('$__pug_temp_empty = true; '.$loop->getValue());
-                $loop->prependChild(new CodeElement('$__pug_temp_empty = false'));
-            }
-
-            return $loop;
+            return $this->compileLoop($node, $subject, $key, $item);
         }
 
         return $this->wrapStatement($node, 'for', $subject);

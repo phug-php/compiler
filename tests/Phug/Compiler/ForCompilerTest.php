@@ -32,6 +32,7 @@ class ForCompilerTest extends AbstractCompilerTest
             ],
             [
                 'for $item in $items'."\n",
+                '  //- for each item of items'."\n",
                 '  p?!=$item',
             ]
         );
@@ -48,6 +49,24 @@ class ForCompilerTest extends AbstractCompilerTest
             [
                 'for $item in $items'."\n",
                 '  p?!=$item'."\n",
+                'else'."\n",
+                '  p no items',
+            ]
+        );
+        $this->assertCompile(
+            [
+                '<?php $__pug_temp_empty = true; foreach ($items as $item) { ?>',
+                '<?php $__pug_temp_empty = false ?>',
+                '<p><?= $item ?></p>',
+                '<?php } ?>',
+                '<?php if ($__pug_temp_empty) { ?>',
+                '<p>no items</p>',
+                '<?php } ?>',
+            ],
+            [
+                'for $item in $items'."\n",
+                '  p?!=$item'."\n",
+                '//- comments does not count'."\n",
                 'else'."\n",
                 '  p no items',
             ]

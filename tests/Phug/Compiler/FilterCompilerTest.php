@@ -36,7 +36,7 @@ class FilterCompilerTest extends AbstractCompilerTest
             "<body><script>\n".
             "(function () {\n".
             "  console.log(\"Foo\");\n".
-            "})()\n".
+            "})()\n\n".
             '</script></body>',
             $compiler->compile(
                 'body'."\n".

@@ -60,7 +60,7 @@ class ImportCompiler extends AbstractNodeCompiler
     protected function isRawTextFile($path)
     {
         foreach ($this->getCompiler()->getOption('extensions') as $extension) {
-            if ($extension === '' && mb_strpos($path, '.') === false) {
+            if ($extension === '' && mb_strpos(basename($path), '.') === false) {
                 return false;
             }
 
@@ -70,19 +70,6 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         return true;
-    }
-
-    protected function getBlocksInTree(AstNodeInterface $element)
-    {
-        if ($element instanceof Block) {
-            yield $element;
-        }
-
-        foreach ($element->getChildren() as $child) {
-            foreach ($this->getBlocksInTree($child) as $block) {
-                yield $block;
-            }
-        }
     }
 
     /**
@@ -125,32 +112,29 @@ class ImportCompiler extends AbstractNodeCompiler
         $subCompiler->setImportNode($node);
         $element = $subCompiler->compileFileIntoElement($path);
         $compiler->importBlocks($subCompiler->getBlocks());
-        $compileBlocks = function (Layout &$layout) {
+        $isIncludeImport = $node->getName() === 'include';
+
+        if ($layout = $subCompiler->getLayout()) {
+            $element = $layout->getDocument();
             $layoutCompiler = $layout->getCompiler();
-            $layoutCompiler->compileBlocks(true);
-        };
-
-        if ($node->getName() === 'include') {
-            if ($layout = $subCompiler->getLayout()) {
-                $element = $layout->getDocument();
-                $compileBlocks($layout);
+            if ($isIncludeImport) {
+                $layoutCompiler->compileBlocks();
             }
-            if (!$subCompiler->isImportNodeYielded()) {
-                $yield = $element;
-                if ($yield instanceof DocumentElement && $yield->getChildCount()) {
-                    $yield = $yield->getChildAt($yield->getChildCount() - 1);
-                }
-                $this->compileNodeChildren($node, $yield);
-            }
+        }
 
+        if (!$subCompiler->isImportNodeYielded()) {
+            $yield = $element;
+            if ($yield instanceof DocumentElement && $yield->getChildCount()) {
+                $yield = $yield->getChildAt($yield->getChildCount() - 1);
+            }
+            $this->compileNodeChildren($node, $yield);
+        }
+
+        if ($isIncludeImport) {
             return $element;
         }
 
         if ($node->getName() === 'extend') {
-            if ($layout = $subCompiler->getLayout()) {
-                $element = $layout->getDocument();
-                $compileBlocks($layout);
-            }
             $compiler->setLayout(new Layout($element, $subCompiler));
         }
 
