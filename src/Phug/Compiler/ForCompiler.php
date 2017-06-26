@@ -3,10 +3,7 @@
 namespace Phug\Compiler;
 
 use Phug\CompilerException;
-use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node\CommentNode;
-use Phug\Parser\Node\ConditionalNode;
 use Phug\Parser\Node\ForNode;
 use Phug\Parser\NodeInterface;
 
