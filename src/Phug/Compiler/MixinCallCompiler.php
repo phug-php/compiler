@@ -7,6 +7,7 @@ use Phug\Ast\NodeInterface;
 use Phug\CompilerException;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
+use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CodeNode;
 use Phug\Parser\Node\MixinCallNode;
@@ -28,6 +29,11 @@ class MixinCallCompiler extends AbstractNodeCompiler
         }
     }
 
+    protected function compileDynamicMixin($mixinName, ParserNodeInterface $node, ElementInterface $parent)
+    {
+        return new TextElement('Dynamic mixin names not yet supported.');
+    }
+
     public function compileNode(ParserNodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof MixinCallNode)) {
@@ -38,6 +44,9 @@ class MixinCallCompiler extends AbstractNodeCompiler
 
         /** @var MixinCallNode $node */
         $mixinName = $node->getName();
+        if (!is_string($mixinName)) {
+            return $this->compileDynamicMixin($mixinName, $node, $parent);
+        }
         $compiler = $this->getCompiler();
         /** @var MixinNode $declaration */
         $declaration = $compiler->requireMixin($mixinName);
