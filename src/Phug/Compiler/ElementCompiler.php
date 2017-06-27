@@ -8,6 +8,7 @@ use Phug\Formatter\Element\AssignmentElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\ElementNode;
+use Phug\Parser\Node\ExpressionNode;
 use Phug\Parser\NodeInterface;
 use SplObjectStorage;
 
@@ -23,10 +24,11 @@ class ElementCompiler extends AbstractNodeCompiler
 
         $compiler = $this->getCompiler();
 
-        /**
-         * @var ElementNode $node
-         */
+        /** @var ElementNode $node */
         $name = $node->getName() ?: $compiler->getOption('default_tag');
+        if ($name instanceof ExpressionNode) {
+            $name = $compiler->compileNode($name);
+        }
 
         $attributes = new SplObjectStorage();
         foreach ($node->getAttributes() as $attribute) {
