@@ -79,8 +79,24 @@ class MixinCallCompiler extends AbstractNodeCompiler
             ));
         }
         foreach ($declaration->getAttributes() as $index => $attribute) {
-            $variables[$attribute->getName()] = new ExpressionElement(
-                isset($arguments[$index]) ? $arguments[$index]->getValue() : 'null'
+            $name = $attribute->getName();
+            if (substr($name, 0, 3) === '...') {
+                $name = substr($name, 3);
+                $value = [];
+                foreach (array_slice($arguments, $index) as $subIndex => $argument) {
+                    $value[] = isset($arguments[$index + $subIndex])
+                        ? $arguments[$index + $subIndex]->getValue()
+                        : 'null';
+                }
+                $variables[$name] = new ExpressionElement(
+                    '['.implode(', ', $value).']'
+                );
+                break;
+            }
+            $variables[$name] = new ExpressionElement(
+                isset($arguments[$index])
+                    ? $arguments[$index]->getValue()
+                    : 'null'
             );
         }
         $scope = new ExpressionElement(sprintf(
