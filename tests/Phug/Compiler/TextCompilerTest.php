@@ -22,7 +22,7 @@ class TextCompilerTest extends AbstractCompilerTest
             [
                 '<pre>',
                 'article'."\n",
-                '  p Name'."\n",
+                '  p Name',
                 '</pre>',
             ],
             [
@@ -34,7 +34,7 @@ class TextCompilerTest extends AbstractCompilerTest
         $this->assertCompile(
             [
                 '<p>article'."\n",
-                '  <p>Name</p>'."\n\n",
+                '  <p>Name</p>'."\n",
                 '</p>',
             ],
             [
@@ -49,7 +49,7 @@ class TextCompilerTest extends AbstractCompilerTest
                 '  <li>foo</li>'."\n",
                 '  <li>bar</li>'."\n",
                 '  <li>baz</li>'."\n",
-                '</ul>'."\n",
+                '</ul>',
             ],
             [
                 '<ul>'."\n",

@@ -19,7 +19,7 @@ class CommentCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompile(
             '<!-- Comment -->',
-            '// Comment'
+            '//Comment'
         );
         $this->assertCompile(
             '',

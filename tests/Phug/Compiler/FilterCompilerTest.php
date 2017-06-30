@@ -33,10 +33,10 @@ class FilterCompilerTest extends AbstractCompilerTest
             ],
         ]);
         self::assertSame(
-            "<body><script>\n".
+            "<body><script>\n\n".
             "(function () {\n".
             "  console.log(\"Foo\");\n".
-            "})()\n\n".
+            "})()\n".
             '</script></body>',
             $compiler->compile(
                 'body'."\n".
