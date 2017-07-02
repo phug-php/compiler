@@ -485,16 +485,23 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function compileBlocks()
     {
-        foreach ($this->getBlocks() as $name => $blocks) {
-            foreach ($blocks as $block) {
-                if (!($block instanceof Block)) {
-                    throw new CompilerException(
-                        'Unexpected block for the name '.$name
-                    );
+        do {
+            $blockProceeded = 0;
+            foreach ($this->getBlocks() as $name => $blocks) {
+                foreach ($blocks as $block) {
+                    /** @var Block $block */
+                    if ($block->hasParent()) {
+                        if (!($block instanceof Block)) {
+                            throw new CompilerException(
+                                'Unexpected block for the name '.$name
+                            );
+                        }
+                        $this->replaceBlock($block);
+                        $blockProceeded++;
+                    }
                 }
-                $this->replaceBlock($block);
             }
-        }
+        } while($blockProceeded);
 
         return $this;
     }
