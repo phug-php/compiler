@@ -30,8 +30,12 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
+use Phug\Formatter\Element\CodeElement;
+use Phug\Formatter\Element\DocumentElement;
+use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
+use Phug\Parser\Node;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\Node\AttributeListNode;
@@ -118,6 +122,11 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     private $importNodeYielded;
 
+    /**
+     * @var bool
+     */
+    private $dynamicMixinsEnabled;
+
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
@@ -201,6 +210,24 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableDynamicMixins()
+    {
+        $this->dynamicMixinsEnabled = true;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDynamicMixinsEnabled()
+    {
+        return $this->dynamicMixinsEnabled;
     }
 
     /**
@@ -356,6 +383,25 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
         }
 
         return $this->namedCompilers[$compiler];
+    }
+
+    private function convertBlocksToDynamicCalls($element)
+    {
+        if ($element instanceof Block) {
+            $expression = new ExpressionElement('$__pug_children');
+            $expression->preventFromTransformation();
+
+            return $expression;
+        }
+
+        if ($element instanceof ElementInterface) {
+            $element->setChildren(array_map(
+                [$this, 'convertBlocksToDynamicCalls'],
+                $element->getChildren()
+            ));
+        }
+
+        return $element;
     }
 
     /**
@@ -553,6 +599,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function compileDocument($pugInput, $fileName = null)
     {
+        $this->formatter->initDependencies();
         $element = $this->compileIntoElement($pugInput, $fileName);
         $layout = $this->getLayout();
         $blocksCompiler = $this;
@@ -561,7 +608,54 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             $blocksCompiler = $layout->getCompiler();
         }
         $blocksCompiler->compileBlocks();
-        $this->formatter->initDependencies();
+        if ($this->isDynamicMixinsEnabled()) {
+            $code = '';
+            foreach ($this->getMixins() as $mixin) {
+                $argumentsNames = [];
+                foreach ($mixin->getAttributes() as $attribute) {
+                    /* @var AttributeNode $attribute */
+                    $argumentsNames[] = var_export(
+                        trim(str_replace('$', '', $attribute->getName())),
+                        true
+                    );
+                }
+                $content = implode("\n", [
+                    'foreach (['.implode(', ', $argumentsNames).'] as $__pug_index => $__pug_name) {',
+                    '    if (mb_substr($__pug_name, 0, 3) === "...") {',
+                    '        ${mb_substr($__pug_name, 3)} = array_slice($__pug_params["arguments"], $__pug_index);',
+                    '        break;',
+                    '    }',
+                    '    $$__pug_name = isset($__pug_params["arguments"][$__pug_index]) '.
+                        '? $__pug_params["arguments"][$__pug_index] '.
+                        ': null;',
+                    '}',
+                    '$__pug_children = $__pug_params["children"];',
+                ]);
+                /* @var MixinNode $mixin */
+                foreach ($mixin->getChildren() as $child) {
+                    /* @var NodeInterface $child */
+                    $childElement = $this->compileNode($child);
+                    $content .= "\n".'?>'.$this->formatter->format(
+                        $this->convertBlocksToDynamicCalls($childElement)
+                    ).'<?php';
+                }
+                $code .= var_export($mixin->getName(), true).
+                    ' => function ($__pug_params) {'."\n".
+                        'foreach ($__pug_params["globals"] as $key => &$value) {'."\n".
+                        '    $$key = &$value;'."\n".
+                        '}'."\n".
+                        '$attributes = $__pug_params["attributes"];'."\n".
+                        $content.
+                    "\n},\n";
+            }
+            $declarations = new CodeElement(
+                '$__pug_mixins = ['."\n".$code.'];'
+            );
+
+            $declarations->preventFromTransformation();
+
+            $element->prependChild($declarations);
+        }
 
         return $element;
     }

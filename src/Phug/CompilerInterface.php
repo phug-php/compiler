@@ -170,4 +170,14 @@ interface CompilerInterface extends OptionInterface
      * @return string
      */
     public function dumpFile($fileName);
+
+    /**
+     * @return $this
+     */
+    public function enableDynamicMixins();
+
+    /**
+     * @return bool
+     */
+    public function isDynamicMixinsEnabled();
 }

@@ -6,6 +6,7 @@ use Phug\AbstractNodeCompiler;
 use Phug\Ast\NodeInterface;
 use Phug\CompilerException;
 use Phug\Formatter\Element\AttributeElement;
+use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
@@ -32,9 +33,61 @@ class MixinCallCompiler extends AbstractNodeCompiler
         }
     }
 
-    protected function compileDynamicMixin($mixinName, ParserNodeInterface $node, ElementInterface $parent)
+    protected function compileDynamicMixin($mixinName, ParserNodeInterface $node, $attributes, array $arguments)
     {
-        return new TextElement('Dynamic mixin names not yet supported.');
+        $compiler = $this->getCompiler()->enableDynamicMixins();
+        $formatter = $compiler->getFormatter();
+        /* @var ExpressionElement $expression */
+        $expression = $compiler->compileNode($mixinName);
+        $children = implode('', array_map(function ($child) use ($formatter) {
+            return $formatter->format($child);
+        }, $this->getCompiledChildren($node, new DocumentElement())));
+        $call = new CodeElement(
+            implode("\n", [
+                '$__pug_vars = [];',
+                'foreach (array_keys(get_defined_vars()) as $key) {',
+                '    if ('.
+                        'mb_substr($key, 0, 6) === \'__pug_\' || '.
+                        'in_array($key, [\'attributes\', \'arguments\'])'.
+                    ') {',
+                '        continue;',
+                '    }',
+                '    $ref = &$GLOBALS[$key];',
+                '    $value = &$$key;',
+                '    if($ref !== $value){',
+                '        $__pug_vars[$key] = &$value;',
+
+                '        continue;',
+                '    }',
+                '    $savedValue = $value;',
+                '    $value = ($value === true) ? false : true;',
+                '    $isGlobalReference = ($value === $ref);',
+                '    $value = $savedValue;',
+
+                '    if (!$isGlobalReference) {',
+                '        $__pug_vars[$key] = &$value;',
+                '    }',
+                '}',
+                '$__pug_mixins['.
+                $formatter->formatCode($expression->getValue()).
+                '](['.
+                    '"attributes" => '.($attributes
+                        ? $formatter->formatCode($attributes->getValue())
+                        : '[]'
+                    ).','.
+                    '"arguments" => ['.implode(', ', array_map(function ($argument) use ($formatter) {
+                        /* @var AttributeElement $argument */
+                        return $formatter->formatCode($argument->getValue());
+                    }, $arguments)).'],'.
+                    '"children" => '.var_export($children, true).','.
+                    '"globals" => $__pug_vars,'.
+                '])',
+            ])
+        );
+
+        $call->preventFromTransformation();
+
+        return $call;
     }
 
     public function compileNode(ParserNodeInterface $node, ElementInterface $parent = null)
@@ -47,12 +100,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
 
         /** @var MixinCallNode $node */
         $mixinName = $node->getName();
-        if (!is_string($mixinName)) {
-            return $this->compileDynamicMixin($mixinName, $node, $parent);
-        }
         $compiler = $this->getCompiler();
-        /** @var MixinNode $declaration */
-        $declaration = $compiler->requireMixin($mixinName);
         $arguments = [];
         $attributes = [];
         foreach ($node->getAttributes() as $attribute) {
@@ -82,6 +130,11 @@ class MixinCallCompiler extends AbstractNodeCompiler
                 implode(', ', $mergeAttributes)
             ));
         }
+        if (!is_string($mixinName)) {
+            return $this->compileDynamicMixin($mixinName, $node, $variables['attributes'], $arguments);
+        }
+        /** @var MixinNode $declaration */
+        $declaration = $compiler->requireMixin($mixinName);
         foreach ($declaration->getAttributes() as $index => $attribute) {
             $name = $attribute->getName();
             if (substr($name, 0, 3) === '...') {

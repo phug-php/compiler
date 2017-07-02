@@ -77,6 +77,54 @@ class MixinCallCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     * @covers ::compileDynamicMixin
+     * @covers \Phug\Compiler::compileDocument
+     * @covers \Phug\Compiler::convertBlocksToDynamicCalls
+     */
+    public function testDynamicMixins()
+    {
+        $this->assertRender(
+            [
+                '<div>bar</div>',
+            ],
+            [
+                'mixin bar'."\n",
+                '  div bar'."\n",
+                '+#{$foo}',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+        $this->setUp();
+        $this->assertRender(
+            [
+                '<div class="foo" bar="biz">',
+                '1#2#3-4<em>Message</em>',
+                '</div>',
+                '<p>42</p>',
+            ],
+            [
+                '- $bar = 41'."\n",
+                'mixin bar(a, b, ...c)'."\n",
+                '  - $bar++'."\n",
+                '  div&attributes($attributes)'."\n",
+                '    =$a."#".$b."#".implode("-", $c)'."\n",
+                '    block'."\n",
+                '+#{$foo}(1, 2, 3, 4).foo(bar="biz")'."\n",
+                '  em Message'."\n",
+                'p=$bar',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */

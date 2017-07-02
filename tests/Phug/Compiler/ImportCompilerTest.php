@@ -74,7 +74,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     public function testExtends()
     {
         $this->assertCompileFile(
-            '<section>1 A2 A</section>',
+            "<section>1\nA2\nA</section>",
             __DIR__.'/../../templates/page.pug'
         );
     }
@@ -117,7 +117,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     public function testExtendsInInclude()
     {
         $this->assertCompileFile(
-            '<section>1 A2 A</section><section>1 A2 A</section>',
+            "<section>1\nA2\nA</section><section>1\nA2\nA</section>",
             __DIR__.'/../../templates/inc-page.pug'
         );
     }
