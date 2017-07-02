@@ -14,6 +14,6 @@ class TestBlockCompiler extends BlockCompiler
         $blocks = &$this->getCompiler()->getBlocksByName('foo');
         $blocks[] = 'bar';
 
-        return new Block($parent);
+        return new Block($parent, 'bar', $this->getCompiler());
     }
 }

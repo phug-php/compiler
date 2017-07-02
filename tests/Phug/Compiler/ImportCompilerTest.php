@@ -74,17 +74,36 @@ class ImportCompilerTest extends AbstractCompilerTest
     public function testExtends()
     {
         $this->assertCompileFile(
-            '<section>1 A 2 A</section>',
+            '<section>1 A2 A</section>',
             __DIR__.'/../../templates/page.pug'
         );
     }
 
     /**
+     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\BlockCompiler::hasBlockParent
      */
     public function testDoubleInheritance()
     {
+//        $element = $this->compiler->compileDocument(implode('', [
+//            '| The message is "'."\n",
+//            'yield'."\n",
+//            '| "'."\n",
+//        ]));
+//        var_dump($element->getChildAt(0)->getValue());
+//        var_dump($element->getChildAt(1)->getValue());
+//        exit;
+        $this->assertCompile(
+            [
+                'The message is ""',
+            ],
+            [
+                '| The message is "'."\n",
+                'yield'."\n",
+                '| "'."\n",
+            ]
+        );
         $this->assertCompileFile(
             [
                 '<div class="window">',
@@ -107,7 +126,7 @@ class ImportCompilerTest extends AbstractCompilerTest
     public function testExtendsInInclude()
     {
         $this->assertCompileFile(
-            '<section>1 A 2 A</section><section>1 A 2 A</section>',
+            '<section>1 A2 A</section><section>1 A2 A</section>',
             __DIR__.'/../../templates/inc-page.pug'
         );
     }

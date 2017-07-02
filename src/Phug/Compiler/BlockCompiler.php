@@ -14,14 +14,15 @@ class BlockCompiler extends AbstractNodeCompiler
 {
     protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent)
     {
-        $block = new Block($parent);
+        $compiler = $this->getCompiler();
+        $block = new Block($parent, $compiler);
         $block->setChildren($this->getCompiledChildren($node, $parent));
         $mixin = $node;
         while ($mixin->hasParent() && !($mixin instanceof MixinNode)) {
             $mixin = $mixin->getParent();
         }
         if (!($mixin instanceof MixinNode)) {
-            if ($importNode = $this->getCompiler()->getImportNode()) {
+            if ($importNode = $compiler->getImportNode()) {
                 $this->compileNodeChildren($importNode, $parent);
             }
 
@@ -59,9 +60,7 @@ class BlockCompiler extends AbstractNodeCompiler
             return null;
         }
 
-        $block = new Block($parent);
-        $blocks = &$compiler->getBlocksByName($name);
-        $blocks[] = $block;
+        $block = new Block($compiler, $parent, $name);
 
         return $block->proceedChildren(
             $this->getCompiledChildren($node, $parent),
@@ -82,17 +81,8 @@ class BlockCompiler extends AbstractNodeCompiler
          */
         $name = $node->getName();
 
-        $block = $name
+        return $name
             ? $this->compileNamedBlock($name, $node, $parent)
             : $this->compileAnonymousBlock($node, $parent);
-
-        if ($block) {
-            $previous = $block->getPreviousSibling();
-            if ($previous instanceof TextElement) {
-                $previous->setEnd(true);
-            }
-        }
-
-        return $block;
     }
 }

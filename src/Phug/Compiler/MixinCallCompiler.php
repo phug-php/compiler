@@ -5,6 +5,7 @@ namespace Phug\Compiler;
 use Phug\AbstractNodeCompiler;
 use Phug\Ast\NodeInterface;
 use Phug\CompilerException;
+use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
@@ -19,7 +20,9 @@ class MixinCallCompiler extends AbstractNodeCompiler
     protected function proceedBlocks(NodeInterface $node, array $children)
     {
         if ($node instanceof Block) {
-            $this->getCompiler()->replaceBlock($node, $children);
+            $this->getCompiler()->replaceBlock($node, array_map(function ($child) {
+                return $child instanceof Block ? $child : clone $child;
+            }, $children));
 
             return;
         }
@@ -67,6 +70,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
         foreach ($node->getAssignments() as $assignment) {
             if ($assignment->getName() === 'attributes') {
                 foreach ($assignment->getAttributes() as $attribute) {
+                    /** @var AttributeElement $attribute */
                     $mergeAttributes[] = $compiler->getFormatter()->formatCode($attribute->getValue());
                 }
             }

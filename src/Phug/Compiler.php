@@ -30,6 +30,7 @@ use Phug\Compiler\VariableCompiler;
 use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
+use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;
@@ -457,6 +458,10 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             foreach (array_reverse($children ?: $block->getChildren()) as $child) {
                 $parent->insertAfter($block, $child);
             }
+            $previous = $block->getPreviousSibling();
+            if ($previous instanceof TextElement) {
+                $previous->setEnd(true);
+            }
             $block->remove();
         }
     }
@@ -469,9 +474,9 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     public function importBlocks(array $blocks)
     {
         foreach ($blocks as $name => $list) {
-            $blocks = &$this->getBlocksByName($name);
             foreach ($list as $block) {
-                $blocks[] = $block;
+                /** @var Block $block */
+                $block->addCompiler($this);
             }
         }
     }
@@ -489,21 +494,76 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             $blockProceeded = 0;
             foreach ($this->getBlocks() as $name => $blocks) {
                 foreach ($blocks as $block) {
+                    if (!($block instanceof Block)) {
+                        throw new CompilerException(
+                            'Unexpected block for the name '.$name
+                        );
+                    }
                     /** @var Block $block */
                     if ($block->hasParent()) {
-                        if (!($block instanceof Block)) {
-                            throw new CompilerException(
-                                'Unexpected block for the name '.$name
-                            );
-                        }
                         $this->replaceBlock($block);
                         $blockProceeded++;
                     }
                 }
             }
-        } while($blockProceeded);
+        } while ($blockProceeded);
 
         return $this;
+    }
+
+    /**
+     * Dump a debug tre for a given pug input.
+     *
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @return string
+     */
+    public function dump($pugInput, $fileName = null)
+    {
+        $element = $this->compileDocument($pugInput, $fileName);
+
+        return $element instanceof ElementInterface
+            ? $element->dump()
+            : var_export($element, true);
+    }
+
+    /**
+     * Dump a debug tre for a given pug input.
+     *
+     * @param string $fileName pug input file
+     *
+     * @return string
+     */
+    public function dumpFile($fileName)
+    {
+        return $this->dump(file_get_contents($fileName), $fileName);
+    }
+
+    /**
+     * Returns ElementInterface from pug input with all layouts and
+     * blocks compiled.
+     *
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @throws CompilerException
+     *
+     * @return null|ElementInterface
+     */
+    public function compileDocument($pugInput, $fileName = null)
+    {
+        $element = $this->compileIntoElement($pugInput, $fileName);
+        $layout = $this->getLayout();
+        $blocksCompiler = $this;
+        if ($layout) {
+            $element = $layout->getDocument();
+            $blocksCompiler = $layout->getCompiler();
+        }
+        $blocksCompiler->compileBlocks();
+        $this->formatter->initDependencies();
+
+        return $element;
     }
 
     /**
@@ -519,15 +579,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
         $this->walkOption('pre_compile', function (callable $preCompile) use (&$pugInput) {
             $pugInput = $preCompile($pugInput, $this);
         });
-        $element = $this->compileIntoElement($pugInput, $fileName);
-        $layout = $this->getLayout();
-        $blocksCompiler = $this;
-        if ($layout) {
-            $element = $layout->getDocument();
-            $blocksCompiler = $layout->getCompiler();
-        }
-        $blocksCompiler->compileBlocks();
-        $this->formatter->initDependencies();
+        $element = $this->compileDocument($pugInput, $fileName);
         $phtml = $this->formatter->format($element);
         $phtml = $this->formatter->formatDependencies().$phtml;
         $this->walkOption('post_compile', function (callable $preCompile) use (&$phtml) {

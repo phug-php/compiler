@@ -111,6 +111,16 @@ interface CompilerInterface extends OptionInterface
     public function compileIntoElement($pugInput, $fileName = null);
 
     /**
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @throws CompilerException
+     *
+     * @return null|ElementInterface
+     */
+    public function compileDocument($pugInput, $fileName = null);
+
+    /**
      * @param string $fileName
      *
      * @return null|ElementInterface
@@ -145,4 +155,19 @@ interface CompilerInterface extends OptionInterface
      * @return MixinNode
      */
     public function requireMixin($mixinName);
+
+    /**
+     * @param string $pugInput pug input
+     * @param string $fileName optional path of the compiled source
+     *
+     * @return string
+     */
+    public function dump($pugInput, $fileName = null);
+
+    /**
+     * @param string $fileName pug input file
+     *
+     * @return string
+     */
+    public function dumpFile($fileName);
 }
