@@ -475,7 +475,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     {
         foreach ($blocks as $name => $list) {
             foreach ($list as $block) {
-                /** @var Block $block */
+                /* @var Block $block */
                 $block->addCompiler($this);
             }
         }

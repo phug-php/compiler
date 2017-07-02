@@ -80,20 +80,11 @@ class ImportCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\BlockCompiler::hasBlockParent
      */
     public function testDoubleInheritance()
     {
-//        $element = $this->compiler->compileDocument(implode('', [
-//            '| The message is "'."\n",
-//            'yield'."\n",
-//            '| "'."\n",
-//        ]));
-//        var_dump($element->getChildAt(0)->getValue());
-//        var_dump($element->getChildAt(1)->getValue());
-//        exit;
         $this->assertCompile(
             [
                 'The message is ""',

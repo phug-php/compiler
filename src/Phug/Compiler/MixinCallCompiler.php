@@ -70,7 +70,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
         foreach ($node->getAssignments() as $assignment) {
             if ($assignment->getName() === 'attributes') {
                 foreach ($assignment->getAttributes() as $attribute) {
-                    /** @var AttributeElement $attribute */
+                    /* @var AttributeElement $attribute */
                     $mergeAttributes[] = $compiler->getFormatter()->formatCode($attribute->getValue());
                 }
             }
