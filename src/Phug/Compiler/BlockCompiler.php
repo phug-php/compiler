@@ -4,6 +4,7 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\CompilerException;
+use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\BlockNode;
 use Phug\Parser\Node\MixinNode;
@@ -81,8 +82,17 @@ class BlockCompiler extends AbstractNodeCompiler
          */
         $name = $node->getName();
 
-        return $name
+        $block = $name
             ? $this->compileNamedBlock($name, $node, $parent)
             : $this->compileAnonymousBlock($node, $parent);
+
+        if ($block) {
+            $previous = $block->getPreviousSibling();
+            if ($previous instanceof TextElement) {
+                $previous->setEnd(true);
+            }
+        }
+
+        return $block;
     }
 }
