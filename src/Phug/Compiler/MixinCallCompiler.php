@@ -9,7 +9,6 @@ use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
-use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\CodeNode;
 use Phug\Parser\Node\MixinCallNode;

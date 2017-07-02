@@ -31,11 +31,9 @@ use Phug\Compiler\WhenCompiler;
 use Phug\Compiler\WhileCompiler;
 // Nodes
 use Phug\Formatter\Element\CodeElement;
-use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node;
 use Phug\Parser\Node\AssignmentListNode;
 use Phug\Parser\Node\AssignmentNode;
 use Phug\Parser\Node\AttributeListNode;
