@@ -56,6 +56,27 @@ class MixinCallCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     * @covers ::proceedBlocks
+     * @covers \Phug\Compiler\BlockCompiler::<public>
+     * @covers \Phug\Compiler\BlockCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\BlockCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\MixinCompiler::<public>
+     * @covers \Phug\Compiler::getMixins
+     * @covers \Phug\Compiler::replaceBlock
+     */
+    public function testDoubleBlock()
+    {
+        $this->assertRenderFile(
+            [
+                '<header>HelloHello</header>',
+                '<footer>ByeBye</footer>',
+            ],
+            __DIR__.'/../../templates/mixin-double-block.pug'
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
