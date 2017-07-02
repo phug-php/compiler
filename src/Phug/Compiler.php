@@ -634,7 +634,9 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
                 /* @var MixinNode $mixin */
                 foreach ($mixin->getChildren() as $child) {
                     /* @var NodeInterface $child */
-                    $childElement = $this->compileNode($child);
+                    $childElement = $child instanceof ElementInterface
+                        ? $child
+                        : $this->compileNode($child);
                     $content .= "\n".'?>'.$this->formatter->format(
                         $this->convertBlocksToDynamicCalls($childElement)
                     ).'<?php';
