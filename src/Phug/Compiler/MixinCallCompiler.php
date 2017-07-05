@@ -40,8 +40,9 @@ class MixinCallCompiler extends AbstractNodeCompiler
         $expression = $compiler->compileNode($mixinName);
         $children = implode('', array_map(function ($child) use ($formatter) {
             return $formatter->format($child);
-        }, $this->getCompiledChildren($node, new DocumentElement())));
+        }, $this->getCompiledChildren($node, new DocumentElement($node))));
         $call = new CodeElement(
+            $node,
             implode("\n", [
                 '$__pug_vars = [];',
                 'foreach (array_keys(get_defined_vars()) as $key) {',
@@ -111,7 +112,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
                 ? $compiler->getFormatter()->formatAttributesList(array_map(function ($node) use ($compiler) {
                     return $compiler->compileNode($node);
                 }, $attributes))
-                : new ExpressionElement('[]'),
+                : new ExpressionElement($node, '[]'),
         ];
         $mergeAttributes = [];
         foreach ($node->getAssignments() as $assignment) {
@@ -145,30 +146,32 @@ class MixinCallCompiler extends AbstractNodeCompiler
                         : 'null';
                 }
                 $variables[$name] = new ExpressionElement(
+                    $node,
                     '['.implode(', ', $value).']'
                 );
                 break;
             }
             $variables[$name] = new ExpressionElement(
+                $node,
                 isset($arguments[$index])
                     ? $arguments[$index]->getValue()
                     : 'null'
             );
         }
-        $scope = new ExpressionElement(sprintf(
+        $scope = new ExpressionElement($node, sprintf(
             'compact(%s)',
             var_export(array_keys($variables), true)
         ));
         $scopeName = 'scope_'.spl_object_hash($node);
-        $document = new DocumentElement();
-        $document->appendChild($this->createVariable($scopeName, $scope));
+        $document = new DocumentElement($node);
+        $document->appendChild($this->createVariable($node, $scopeName, $scope));
         foreach ($variables as $name => $value) {
-            $document->appendChild($this->createVariable($name, $value));
+            $document->appendChild($this->createVariable($node, $name, $value));
         }
         foreach ($declaration->getChildren() as $child) {
             $document->appendChild(clone $child);
         }
-        $node->appendChild(new CodeNode('extract($'.$scopeName.')'));
+        $node->appendChild(new CodeNode($node, 'extract($'.$scopeName.')'));
         $this->proceedBlocks($document, $this->getCompiledChildren($node, $parent));
 
         return $document;

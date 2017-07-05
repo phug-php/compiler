@@ -34,7 +34,7 @@ class ElementCompiler extends AbstractNodeCompiler
         foreach ($node->getAttributes() as $attribute) {
             $attributes->attach($compiler->compileNode($attribute, $parent));
         }
-        $markup = new MarkupElement($name, $node->isAutoClosed(), $attributes);
+        $markup = new MarkupElement($node, $name, $node->isAutoClosed(), $attributes);
         foreach ($node->getAssignments() as $assignment) {
             $compiledAssignment = $compiler->compileNode($assignment, $parent);
             if ($compiledAssignment instanceof AssignmentElement) {

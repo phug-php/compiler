@@ -31,6 +31,6 @@ class AssignmentCompiler extends AbstractNodeCompiler
             $attributes->attach($this->getCompiler()->compileNode($attribute, $parent));
         });
 
-        return new AssignmentElement($name, $attributes);
+        return new AssignmentElement($node, $name, $attributes);
     }
 }

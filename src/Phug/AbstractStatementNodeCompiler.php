@@ -17,7 +17,7 @@ abstract class AbstractStatementNodeCompiler extends AbstractNodeCompiler
             $statement .= $noChildrenEnd;
         }
 
-        $code = new CodeElement($statement);
+        $code = new CodeElement($node, $statement);
 
         $this->compileNodeChildren($node, $code);
 

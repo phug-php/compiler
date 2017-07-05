@@ -113,6 +113,11 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     /**
      * @var NodeInterface
      */
+    private $currentNode;
+
+    /**
+     * @var NodeInterface
+     */
     private $importNode;
 
     /**
@@ -129,6 +134,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     {
         $this->setOptionsRecursive([
             'basedir'              => null,
+            'debug'                => true,
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
@@ -208,6 +214,14 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+    }
+
+    /**
+     * @return NodeInterface
+     */
+    public function getCurrentNode()
+    {
+        return $this->currentNode;
     }
 
     /**
@@ -464,6 +478,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
+        $this->currentNode = $node;
         $this->walkOption('pre_compile_node', function (callable $preCompile) use (&$node) {
             $preCompile($node, $this);
         });

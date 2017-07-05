@@ -83,7 +83,7 @@ class FilterCompiler extends AbstractNodeCompiler
             );
         }
 
-        return new TextElement($text);
+        return new TextElement($node, $text);
     }
 
     public function proceedFilter($filter, $input, $options)

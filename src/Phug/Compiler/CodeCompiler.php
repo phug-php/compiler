@@ -30,10 +30,10 @@ class CodeCompiler extends AbstractNodeCompiler
         });
 
         if (count($texts) === count($children)) {
-            return new CodeElement($this->getTextChildren($node));
+            return new CodeElement($node, $this->getTextChildren($node));
         }
 
-        $code = new CodeElement();
+        $code = new CodeElement($node);
         if ($children[0] instanceof TextNode) {
             $code->setValue($children[0]->getValue());
             $children = array_slice($children, 1);

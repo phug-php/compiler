@@ -71,10 +71,10 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
         });
     }
 
-    public function createVariable($name, $value)
+    public function createVariable($node, $name, $value)
     {
-        $variable = new CodeElement('$'.$name);
+        $variable = new CodeElement($node, '$'.$name);
 
-        return new VariableElement($variable, $value);
+        return new VariableElement($node, $variable, $value);
     }
 }

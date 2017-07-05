@@ -19,7 +19,7 @@ class TextCompiler extends AbstractNodeCompiler
             );
         }
 
-        $text = new TextElement($node->getValue());
+        $text = new TextElement($node, $node->getValue());
         $text->setIsEscaped($node->isEscaped());
 
         return $text;

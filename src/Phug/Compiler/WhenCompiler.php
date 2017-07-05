@@ -25,16 +25,16 @@ class WhenCompiler extends AbstractNodeCompiler
         $value = $node->getSubject();
 
         if ($value === null) {
-            $parent->appendChild(new CodeElement('default:'));
+            $parent->appendChild(new CodeElement($node, 'default:'));
             $this->compileNodeChildren($node, $parent);
 
             return null;
         }
 
-        $parent->appendChild(new CodeElement('case '.$value.':'));
+        $parent->appendChild(new CodeElement($node, 'case '.$value.':'));
         if ($node->hasChildren()) {
             $this->compileNodeChildren($node, $parent);
-            $parent->appendChild(new CodeElement('break;'));
+            $parent->appendChild(new CodeElement($node, 'break;'));
         }
 
         return null;

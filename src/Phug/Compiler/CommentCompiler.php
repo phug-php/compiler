@@ -26,6 +26,6 @@ class CommentCompiler extends AbstractNodeCompiler
 
         $comment = $this->getTextChildren($node);
 
-        return new CommentElement($comment);
+        return new CommentElement($node, $comment);
     }
 }

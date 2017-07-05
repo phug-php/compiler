@@ -5,6 +5,7 @@ namespace Phug\Compiler;
 use Phug\Ast\NodeInterface;
 use Phug\CompilerInterface;
 use Phug\Formatter\AbstractElement;
+use Phug\Parser\NodeInterface as ParserNode;
 use Phug\Util\UnorderedArguments;
 
 class Block extends AbstractElement
@@ -29,12 +30,13 @@ class Block extends AbstractElement
         $blocks[] = $this;
         $this->compilers = [$compiler];
         $this->name = $name;
+        $node = $arguments->optional(ParserNode::class);
         $parent = $arguments->optional(NodeInterface::class);
         $children = $arguments->optional('array');
 
         $arguments->noMoreDefinedArguments();
 
-        parent::__construct($parent, $children);
+        parent::__construct($node, $parent, $children);
     }
 
     /**

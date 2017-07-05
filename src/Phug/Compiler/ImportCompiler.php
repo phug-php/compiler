@@ -92,7 +92,7 @@ class ImportCompiler extends AbstractNodeCompiler
 
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
-            $text = new TextNode();
+            $text = new TextNode($filter);
             $text->setValue(file_get_contents($path));
             $filter->appendChild($text);
             $import = $filter->getImport();
@@ -104,7 +104,7 @@ class ImportCompiler extends AbstractNodeCompiler
         }
 
         if ($this->isRawTextFile($path)) {
-            return new TextElement(file_get_contents($path));
+            return new TextElement($node, file_get_contents($path));
         }
 
         $subCompiler = clone $compiler;

@@ -31,7 +31,7 @@ class AttributeCompiler extends AbstractNodeCompiler
         if ($node->hasStaticValue()) {
             // eval is safe here since pass to it only one valid number or constant string.
             $value = strval(eval('return '.$value.';'));
-            $value = new TextElement($value);
+            $value = new TextElement($node, $value);
             $value->setIsEscaped($node->isEscaped());
 
             return $value;
@@ -42,7 +42,7 @@ class AttributeCompiler extends AbstractNodeCompiler
         }
 
         if (is_string($value)) {
-            $value = new ExpressionElement($value);
+            $value = new ExpressionElement($node, $value);
         }
 
         if (!($value instanceof ExpressionElement)) {
@@ -72,6 +72,6 @@ class AttributeCompiler extends AbstractNodeCompiler
         $name = $this->compileName($node);
         $value = $this->compileValue($node);
 
-        return new AttributeElement($name, $value);
+        return new AttributeElement($name, $value, $node);
     }
 }

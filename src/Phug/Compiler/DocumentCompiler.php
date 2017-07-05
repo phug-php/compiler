@@ -19,7 +19,7 @@ class DocumentCompiler extends AbstractNodeCompiler
             );
         }
 
-        $document = new DocumentElement();
+        $document = new DocumentElement($node);
 
         $this->compileNodeChildren($node, $document);
 

@@ -33,7 +33,7 @@ class EachCompiler extends AbstractStatementNodeCompiler
             $next->setName('if');
             $next->setSubject('$__pug_temp_empty');
             $loop->setValue('$__pug_temp_empty = true; '.$loop->getValue());
-            $loop->prependChild(new CodeElement('$__pug_temp_empty = false'));
+            $loop->prependChild(new CodeElement($next, '$__pug_temp_empty = false'));
         }
 
         return $loop;

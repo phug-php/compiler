@@ -19,11 +19,9 @@ class ExpressionCompiler extends AbstractNodeCompiler
             );
         }
 
-        /**
-         * @var ExpressionNode $element
-         */
+        /** @var ExpressionNode $element */
         $value = $node->getValue();
-        $expression = new ExpressionElement($value);
+        $expression = new ExpressionElement($node, $value);
         $expression->setIsChecked($node->isChecked());
         $expression->setIsEscaped($node->isEscaped());
 

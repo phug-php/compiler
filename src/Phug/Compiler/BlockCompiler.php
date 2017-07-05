@@ -14,7 +14,7 @@ class BlockCompiler extends AbstractNodeCompiler
     protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent)
     {
         $compiler = $this->getCompiler();
-        $block = new Block($parent, $compiler);
+        $block = new Block($node, $parent, $compiler);
         $block->setChildren($this->getCompiledChildren($node, $parent));
         $mixin = $node;
         while ($mixin->hasParent() && !($mixin instanceof MixinNode)) {
@@ -59,7 +59,7 @@ class BlockCompiler extends AbstractNodeCompiler
             return null;
         }
 
-        $block = new Block($compiler, $parent, $name);
+        $block = new Block($node, $compiler, $parent, $name);
 
         return $block->proceedChildren(
             $this->getCompiledChildren($node, $parent),
