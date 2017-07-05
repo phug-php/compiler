@@ -134,7 +134,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     {
         $this->setOptionsRecursive([
             'basedir'              => null,
-            'debug'                => true,
+            'debug'                => false,
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
