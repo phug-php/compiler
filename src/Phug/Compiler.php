@@ -786,7 +786,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      */
     public function throwException($message, $node = null, $code = 0, $previous = null)
     {
-        $pattern = "Failed to lex: %s Line: %s \nOffset: %s";
+        $pattern = "Failed to compile: %s Line: %s \nOffset: %s";
 
         if ($this->fileName) {
             $pattern .= "\nPath: ".$this->fileName;
