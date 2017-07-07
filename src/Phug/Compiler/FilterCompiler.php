@@ -17,8 +17,9 @@ class FilterCompiler extends AbstractNodeCompiler
         return implode("\n", array_map(function (TextNode $node) use ($name, $indentLevel, $parent) {
             $element = $this->getCompiler()->compileNode($node, $parent);
             if (!($element instanceof TextElement)) {
-                throw new CompilerException(
-                    'Unexpected '.get_class($element).' in '.$name.' filter.'
+                $this->getCompiler()->throwException(
+                    'Unexpected '.get_class($element).' in '.$name.' filter.',
+                    $node
                 );
             }
 
@@ -43,8 +44,9 @@ class FilterCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof FilterNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to filter compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to filter compiler.',
+                $node
             );
         }
 
@@ -63,8 +65,9 @@ class FilterCompiler extends AbstractNodeCompiler
 
         while ($name = array_pop($names)) {
             if (!isset($filters[$name])) {
-                throw new CompilerException(
-                    'Unknown filter '.$name.'.'
+                $this->getCompiler()->throwException(
+                    'Unknown filter '.$name.'.',
+                    $node
                 );
             }
 

@@ -13,8 +13,9 @@ class MixinCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof MixinNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to mixin compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to mixin compiler.',
+                $node
             );
         }
 

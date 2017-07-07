@@ -70,8 +70,9 @@ class BlockCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof BlockNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to block compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to block compiler.',
+                $node
             );
         }
 

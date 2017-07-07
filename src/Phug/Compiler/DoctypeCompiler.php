@@ -14,8 +14,9 @@ class DoctypeCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof DoctypeNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to doctype compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to doctype compiler.',
+                $node
             );
         }
 

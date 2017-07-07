@@ -14,8 +14,9 @@ class VariableCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof VariableNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to variable compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to variable compiler.',
+                $node
             );
         }
 
@@ -25,8 +26,9 @@ class VariableCompiler extends AbstractNodeCompiler
         $count = $node->getChildCount();
         $child = $count === 1 ? $node->getChildAt(0) : null;
         if (!($child instanceof ExpressionNode)) {
-            throw new CompilerException(
-                'Variable should be followed by exactly 1 expression.'
+            $this->getCompiler()->throwException(
+                'Variable should be followed by exactly 1 expression.',
+                $node
             );
         }
 

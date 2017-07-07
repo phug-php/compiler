@@ -151,10 +151,11 @@ interface CompilerInterface extends OptionInterface
 
     /**
      * @param string $mixinName
+     * @param NodeInterface $node
      *
      * @return MixinNode
      */
-    public function requireMixin($mixinName);
+    public function requireMixin($mixinName, $node);
 
     /**
      * @param string $pugInput pug input
@@ -180,4 +181,14 @@ interface CompilerInterface extends OptionInterface
      * @return bool
      */
     public function isDynamicMixinsEnabled();
+
+    /**
+     * @param string        $message  A meaningful error message
+     * @param NodeInterface $node     Node generating the error
+     * @param int           $code     Error code
+     * @param \Throwable    $previous Source error
+     *
+     * @throws CompilerException
+     */
+    public function throwException($message, $node = null, $code = 0, $previous = null);
 }

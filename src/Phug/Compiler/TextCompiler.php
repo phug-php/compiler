@@ -14,8 +14,9 @@ class TextCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof TextNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to text compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to text compiler.',
+                $node
             );
         }
 

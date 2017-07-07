@@ -14,8 +14,9 @@ class DocumentCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof DocumentNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to document compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to document compiler.',
+                $node
             );
         }
 

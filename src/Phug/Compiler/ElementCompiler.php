@@ -17,8 +17,9 @@ class ElementCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof ElementNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to element compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to element compiler.',
+                $node
             );
         }
 

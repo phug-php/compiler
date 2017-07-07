@@ -14,8 +14,9 @@ class WhenCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof WhenNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to when compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to when compiler.',
+                $node
             );
         }
 

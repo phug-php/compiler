@@ -42,8 +42,9 @@ class EachCompiler extends AbstractStatementNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof EachNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to each compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to each compiler.',
+                $node
             );
         }
 

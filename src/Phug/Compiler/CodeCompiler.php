@@ -16,8 +16,9 @@ class CodeCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof CodeNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to code compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to code compiler.',
+                $node
             );
         }
 

@@ -14,8 +14,9 @@ class WhileCompiler extends AbstractStatementNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof WhileNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to while compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to while compiler.',
+                $node
             );
         }
 
@@ -25,8 +26,9 @@ class WhileCompiler extends AbstractStatementNodeCompiler
         $subject = $node->getSubject();
         $linkedToDoStatement = $node->getPreviousSibling() instanceof DoNode;
         if ($linkedToDoStatement && $node->hasChildren()) {
-            throw new CompilerException(
-                'While statement cannot have children and come after a do statement.'
+            $this->getCompiler()->throwException(
+                'While statement cannot have children and come after a do statement.',
+                $node
             );
         }
         $whileEnd = $linkedToDoStatement ? ';' : ' {}';

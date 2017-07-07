@@ -64,6 +64,7 @@ use Phug\Util\AssociativeStorage;
 use Phug\Util\ModulesContainerInterface;
 use Phug\Util\Partial\ModuleTrait;
 use Phug\Util\Partial\OptionTrait;
+use Phug\Util\PugFileLocationInterface;
 
 class Compiler implements ModulesContainerInterface, CompilerInterface
 {
@@ -243,17 +244,19 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     }
 
     /**
-     * @param string $mixinName
+     * @param string        $mixinName
+     * @param NodeInterface $node
      *
      * @return MixinNode
      */
-    public function requireMixin($mixinName)
+    public function requireMixin($mixinName, $node)
     {
         /** @var MixinNode $declaration */
         $declaration = $this->getMixins()->findFirstByName($mixinName);
         if (!$declaration) {
-            throw new CompilerException(
-                'Unknown '.$mixinName.' mixin called.'
+            $this->throwException(
+                'Unknown '.$mixinName.' mixin called.',
+                $node
             );
         }
         if (isset($declaration->mixinConstructor)) {
@@ -500,8 +503,9 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             }
         }
 
-        throw new CompilerException(
-            'No compiler found able to compile '.get_class($node)
+        $this->throwException(
+            'No compiler found able to compile '.get_class($node),
+            $node
         );
     }
 
@@ -716,7 +720,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      * @param string $pugInput pug input
      * @param string $fileName optional path of the compiled source
      *
-     * @throws CompilerException
+     * @throws CompilerException|ParserException|LexerException
      *
      * @return null|ElementInterface
      */
@@ -724,14 +728,23 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     {
         $this->fileName = $fileName;
         $this->namedBlocks = [];
-        $node = $this->parser->parse($pugInput);
+        try {
+            $node = $this->parser->parse($pugInput);
+        } catch (PugFileLocationInterface $exception) {
+            if ($fileName && !$exception->getPugFile()) {
+                $exception->setPugFile($fileName);
+            }
+
+            throw $exception;
+        }
         $element = $this->compileNode($node);
 
         if ($element && !($element instanceof ElementInterface)) {
-            throw new CompilerException(
+            $this->throwException(
                 get_class($node).
                 ' compiled into a value that does not implement ElementInterface: '.
-                (is_object($element) ? get_class($element) : gettype($element))
+                (is_object($element) ? get_class($element) : gettype($element)),
+                $node
             );
         }
 
@@ -756,5 +769,41 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     public function getFileName()
     {
         return $this->fileName;
+    }
+
+    /**
+     * Throws a compiler-exception.
+     *
+     * The current file, line and offset of the exception
+     * get automatically appended to the exception
+     *
+     * @param string        $message  A meaningful error message
+     * @param NodeInterface $node     Node generating the error
+     * @param int           $code     Error code
+     * @param \Throwable    $previous Source error
+     *
+     * @throws CompilerException
+     */
+    public function throwException($message, $node = null, $code = 0, $previous = null)
+    {
+        $pattern = "Failed to lex: %s Line: %s \nOffset: %s";
+
+        if ($this->fileName) {
+            $pattern .= "\nPath: ".$this->fileName;
+        }
+        $node = $node instanceof NodeInterface ? $node : null;
+
+        throw new CompilerException(
+            vsprintf($pattern, [
+                $message,
+                $node ? $node->getLine() : '',
+                $node ? $node->getOffset() : '',
+            ]),
+            $code,
+            $previous,
+            $this->fileName,
+            $node ? $node->getLine() : null,
+            $node ? $node->getOffset() : null
+        );
     }
 }

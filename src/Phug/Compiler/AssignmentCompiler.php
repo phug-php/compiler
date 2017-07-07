@@ -16,8 +16,9 @@ class AssignmentCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof AssignmentNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to assignment compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to assignment compiler.',
+                $node
             );
         }
 

@@ -14,8 +14,9 @@ class ExpressionCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof ExpressionNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to expression compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to expression compiler.',
+                $node
             );
         }
 

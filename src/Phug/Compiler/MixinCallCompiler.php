@@ -93,8 +93,9 @@ class MixinCallCompiler extends AbstractNodeCompiler
     public function compileNode(ParserNodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof MixinCallNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to mixin call compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to mixin call compiler.',
+                $node
             );
         }
 
@@ -134,7 +135,7 @@ class MixinCallCompiler extends AbstractNodeCompiler
             return $this->compileDynamicMixin($mixinName, $node, $variables['attributes'], $arguments);
         }
         /** @var MixinNode $declaration */
-        $declaration = $compiler->requireMixin($mixinName);
+        $declaration = $compiler->requireMixin($mixinName, $node);
         foreach ($declaration->getAttributes() as $index => $attribute) {
             $name = $attribute->getName();
             if (substr($name, 0, 3) === '...') {

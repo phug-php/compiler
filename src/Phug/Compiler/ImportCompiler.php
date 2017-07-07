@@ -14,16 +14,17 @@ use Phug\Parser\NodeInterface;
 
 class ImportCompiler extends AbstractNodeCompiler
 {
-    protected function getBaseDirectoryForPath($path)
+    protected function getBaseDirectoryForPath($path, $node)
     {
         $compiler = $this->getCompiler();
 
         if (mb_substr($path, 0, 1) === '/') {
             $base = $compiler->getOption('basedir');
             if (!$base) {
-                throw new CompilerException(
+                $this->getCompiler()->throwException(
                     'The "basedir" option is required to use '.
-                    'includes and extends with "absolute" paths.'
+                    'includes and extends with "absolute" paths.',
+                    $node
                 );
             }
 
@@ -32,17 +33,18 @@ class ImportCompiler extends AbstractNodeCompiler
 
         $base = $compiler->getFileName();
         if (!$base) {
-            throw new CompilerException(
-                'No source file path provided to get relative paths from it.'
+            $this->getCompiler()->throwException(
+                'No source file path provided to get relative paths from it.',
+                $node
             );
         }
 
         return dirname($base);
     }
 
-    protected function resolvePath($path)
+    protected function resolvePath($path, $node)
     {
-        $base = $this->getBaseDirectoryForPath($path);
+        $base = $this->getBaseDirectoryForPath($path, $node);
         $file = rtrim($base, '\\/').DIRECTORY_SEPARATOR.ltrim($path, '\\/');
 
         foreach ($this->getCompiler()->getOption('extensions') as $extension) {
@@ -51,8 +53,9 @@ class ImportCompiler extends AbstractNodeCompiler
             }
         }
 
-        throw new CompilerException(
-            'File not found at path '.var_export($path, true).'.'
+        $this->getCompiler()->throwException(
+            'File not found at path '.var_export($path, true).'.',
+            $node
         );
     }
 
@@ -82,13 +85,14 @@ class ImportCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof ImportNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to import compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to import compiler.',
+                $node
             );
         }
 
         $compiler = $this->getCompiler();
-        $path = $this->resolvePath($node->getPath());
+        $path = $this->resolvePath($node->getPath(), $node);
 
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {

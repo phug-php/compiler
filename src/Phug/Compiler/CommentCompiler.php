@@ -14,8 +14,9 @@ class CommentCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof CommentNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to comment compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to comment compiler.',
+                $node
             );
         }
 

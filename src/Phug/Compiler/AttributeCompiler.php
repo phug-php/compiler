@@ -46,9 +46,10 @@ class AttributeCompiler extends AbstractNodeCompiler
         }
 
         if (!($value instanceof ExpressionElement)) {
-            throw new CompilerException(
+            $this->getCompiler()->throwException(
                 'Attribute value can only be a string, a boolean or an expression, '.
-                get_class($value).' given.'
+                get_class($value).' given.',
+                $node
             );
         }
 
@@ -61,8 +62,9 @@ class AttributeCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         if (!($node instanceof AttributeNode)) {
-            throw new CompilerException(
-                'Unexpected '.get_class($node).' given to attribute compiler.'
+            $this->getCompiler()->throwException(
+                'Unexpected '.get_class($node).' given to attribute compiler.',
+                $node
             );
         }
 
