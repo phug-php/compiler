@@ -150,7 +150,7 @@ interface CompilerInterface extends OptionInterface
     public function isImportNodeYielded();
 
     /**
-     * @param string $mixinName
+     * @param string        $mixinName
      * @param NodeInterface $node
      *
      * @return MixinNode

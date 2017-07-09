@@ -4,7 +4,6 @@ namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
 use Phug\Ast\NodeInterface;
-use Phug\CompilerException;
 use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\DocumentElement;
