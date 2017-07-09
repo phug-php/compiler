@@ -4,7 +4,6 @@ namespace Phug\Test\Compiler\NodeCompiler;
 
 use Phug\Compiler;
 use Phug\Compiler\NodeCompiler\TextNodeCompiler;
-use Phug\Compiler\TextCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 

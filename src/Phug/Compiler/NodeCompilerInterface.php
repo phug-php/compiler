@@ -13,6 +13,7 @@ interface NodeCompilerInterface
     /**
      * @param $nodeList
      * @param ElementInterface $parent
+     *
      * @return array
      */
     public function getCompiledNodeList($nodeList, ElementInterface $parent = null);

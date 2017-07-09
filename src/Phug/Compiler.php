@@ -3,18 +3,20 @@
 namespace Phug;
 
 // Node compilers
-use Phug\Compiler\NodeCompiler\AssignmentNodeCompiler;
+use Phug\Compiler\Element\BlockElement;
+use Phug\Compiler\Layout;
 use Phug\Compiler\NodeCompiler\AssignmentListNodeCompiler;
-use Phug\Compiler\NodeCompiler\AttributeNodeCompiler;
+use Phug\Compiler\NodeCompiler\AssignmentNodeCompiler;
 use Phug\Compiler\NodeCompiler\AttributeListNodeCompiler;
+use Phug\Compiler\NodeCompiler\AttributeNodeCompiler;
 use Phug\Compiler\NodeCompiler\BlockNodeCompiler;
 use Phug\Compiler\NodeCompiler\CaseNodeCompiler;
 use Phug\Compiler\NodeCompiler\CodeNodeCompiler;
 use Phug\Compiler\NodeCompiler\CommentNodeCompiler;
 use Phug\Compiler\NodeCompiler\ConditionalNodeCompiler;
-use Phug\Compiler\NodeCompiler\DoNodeCompiler;
 use Phug\Compiler\NodeCompiler\DoctypeNodeCompiler;
 use Phug\Compiler\NodeCompiler\DocumentNodeCompiler;
+use Phug\Compiler\NodeCompiler\DoNodeCompiler;
 use Phug\Compiler\NodeCompiler\EachNodeCompiler;
 use Phug\Compiler\NodeCompiler\ElementNodeCompiler;
 use Phug\Compiler\NodeCompiler\ExpressionNodeCompiler;
@@ -27,8 +29,6 @@ use Phug\Compiler\NodeCompiler\TextNodeCompiler;
 use Phug\Compiler\NodeCompiler\VariableNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhenNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
-use Phug\Compiler\Element\BlockElement;
-use Phug\Compiler\Layout;
 // Nodes
 use Phug\Compiler\NodeCompilerInterface;
 use Phug\Formatter\Element\CodeElement;
@@ -510,7 +510,7 @@ class Compiler implements CompilerInterface
      * Replace a block by its nodes.
      *
      * @param BlockElement $block
-     * @param array $children
+     * @param array        $children
      */
     public function replaceBlock(BlockElement $block, array $children = null)
     {
@@ -530,6 +530,7 @@ class Compiler implements CompilerInterface
      * Import blocks named lists into the compiler.
      *
      * @param array $blocks
+     *
      * @return $this|void
      */
     public function importBlocks(array $blocks)
@@ -717,8 +718,10 @@ class Compiler implements CompilerInterface
      *
      * @param string $pugInput pug input
      * @param string $fileName optional path of the compiled source
-     * @return null|ElementInterface
+     *
      * @throws \Exception
+     *
+     * @return null|ElementInterface
      */
     public function compileIntoElement($pugInput, $fileName = null)
     {
@@ -769,7 +772,6 @@ class Compiler implements CompilerInterface
 
     public function getModuleBaseClassName()
     {
-
         return CompilerModuleInterface::class;
     }
 

@@ -3,7 +3,6 @@
 namespace Phug\Test\Compiler\NodeCompiler;
 
 use Phug\Compiler;
-use Phug\Compiler\MixinCompiler;
 use Phug\Compiler\NodeCompiler\MixinNodeCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
