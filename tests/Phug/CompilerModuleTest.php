@@ -3,10 +3,10 @@
 namespace Phug\Test;
 
 use Phug\Compiler;
-use Phug\CompilerModule;
+use Phug\AbstractCompilerModule;
 
 /**
- * @coversDefaultClass Phug\CompilerModule
+ * @coversDefaultClass Phug\AbstractCompilerModule
  */
 class CompilerModuleTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,14 +15,5 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testModule()
     {
-        $copy = null;
-        $module = new CompilerModule();
-        $module->onPlug(function ($_compiler) use (&$copy) {
-            $copy = $_compiler;
-        });
-        $compiler = new Compiler([
-            'modules' => [$module],
-        ]);
-        self::assertSame($compiler, $copy);
     }
 }

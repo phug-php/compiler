@@ -2,15 +2,19 @@
 
 namespace Phug\Test;
 
+use Exception;
 use JsPhpize\JsPhpize;
 use Phug\Compiler;
+use Phug\CompilerException;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\ElementInterface;
+use Phug\LexerException;
 use Phug\Parser;
 use Phug\Parser\Node\ElementNode;
 use Phug\Parser\NodeInterface;
+use Phug\ParserException;
 
 /**
  * @coversDefaultClass \Phug\Compiler
@@ -53,8 +57,8 @@ class CompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers \Phug\AbstractNodeCompiler::<public>
-     * @covers \Phug\Compiler\DoctypeCompiler::<public>
+     * @covers \Phug\Compiler\AbstractNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\DoctypeNodeCompiler::<public>
      */
     public function testCompile()
     {
@@ -105,15 +109,15 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers \Phug\AbstractNodeCompiler::compileParserNode
-     * @covers \Phug\AbstractNodeCompiler::<public>
+     * @covers \Phug\Compiler\AbstractNodeCompiler::compileParserNode
+     * @covers \Phug\Compiler\AbstractNodeCompiler::<public>
      */
     public function testGetCompiledChildren()
     {
-        $forCompiler = new Compiler\ForCompiler($this->compiler);
+        $forCompiler = new Compiler\NodeCompiler\ForNodeCompiler($this->compiler);
         $elementNode = new ElementNode();
         $elementNode->setName('section');
-        $for = new CodeElement('foreach ($groups as $group)', [
+        $for = new CodeElement('foreach ($groups as $group)', null, null, [
             new MarkupElement('article'),
             $elementNode,
         ]);
@@ -172,7 +176,7 @@ class CompilerTest extends AbstractCompilerTest
     {
         $this->expectMessageToBeThrown(
             'Passed node compiler needs to implement '.
-            'Phug\NodeCompilerInterface'
+            'Phug\Compiler\NodeCompilerInterface. Phug\Parser\Node\ElementNode given.'
         );
 
         $compiler = new Compiler();

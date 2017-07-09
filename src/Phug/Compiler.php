@@ -3,33 +3,34 @@
 namespace Phug;
 
 // Node compilers
-use Phug\Compiler\AssignmentCompiler;
-use Phug\Compiler\AssignmentListCompiler;
-use Phug\Compiler\AttributeCompiler;
-use Phug\Compiler\AttributeListCompiler;
-use Phug\Compiler\Block;
-use Phug\Compiler\BlockCompiler;
-use Phug\Compiler\CaseCompiler;
-use Phug\Compiler\CodeCompiler;
-use Phug\Compiler\CommentCompiler;
-use Phug\Compiler\ConditionalCompiler;
-use Phug\Compiler\DoCompiler;
-use Phug\Compiler\DoctypeCompiler;
-use Phug\Compiler\DocumentCompiler;
-use Phug\Compiler\EachCompiler;
-use Phug\Compiler\ElementCompiler;
-use Phug\Compiler\ExpressionCompiler;
-use Phug\Compiler\FilterCompiler;
-use Phug\Compiler\ForCompiler;
-use Phug\Compiler\ImportCompiler;
+use Phug\Compiler\NodeCompiler\AssignmentNodeCompiler;
+use Phug\Compiler\NodeCompiler\AssignmentListNodeCompiler;
+use Phug\Compiler\NodeCompiler\AttributeNodeCompiler;
+use Phug\Compiler\NodeCompiler\AttributeListNodeCompiler;
+use Phug\Compiler\NodeCompiler\BlockNodeCompiler;
+use Phug\Compiler\NodeCompiler\CaseNodeCompiler;
+use Phug\Compiler\NodeCompiler\CodeNodeCompiler;
+use Phug\Compiler\NodeCompiler\CommentNodeCompiler;
+use Phug\Compiler\NodeCompiler\ConditionalNodeCompiler;
+use Phug\Compiler\NodeCompiler\DoNodeCompiler;
+use Phug\Compiler\NodeCompiler\DoctypeNodeCompiler;
+use Phug\Compiler\NodeCompiler\DocumentNodeCompiler;
+use Phug\Compiler\NodeCompiler\EachNodeCompiler;
+use Phug\Compiler\NodeCompiler\ElementNodeCompiler;
+use Phug\Compiler\NodeCompiler\ExpressionNodeCompiler;
+use Phug\Compiler\NodeCompiler\FilterNodeCompiler;
+use Phug\Compiler\NodeCompiler\ForNodeCompiler;
+use Phug\Compiler\NodeCompiler\ImportNodeCompiler;
+use Phug\Compiler\NodeCompiler\MixinCallNodeCompiler;
+use Phug\Compiler\NodeCompiler\MixinNodeCompiler;
+use Phug\Compiler\NodeCompiler\TextNodeCompiler;
+use Phug\Compiler\NodeCompiler\VariableNodeCompiler;
+use Phug\Compiler\NodeCompiler\WhenNodeCompiler;
+use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
+use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Layout;
-use Phug\Compiler\MixinCallCompiler;
-use Phug\Compiler\MixinCompiler;
-use Phug\Compiler\TextCompiler;
-use Phug\Compiler\VariableCompiler;
-use Phug\Compiler\WhenCompiler;
-use Phug\Compiler\WhileCompiler;
 // Nodes
+use Phug\Compiler\NodeCompilerInterface;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
@@ -61,15 +62,12 @@ use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
-use Phug\Util\ModulesContainerInterface;
-use Phug\Util\Partial\ModuleTrait;
-use Phug\Util\Partial\OptionTrait;
+use Phug\Util\Partial\ModuleContainerTrait;
 use Phug\Util\PugFileLocationInterface;
 
-class Compiler implements ModulesContainerInterface, CompilerInterface
+class Compiler implements CompilerInterface
 {
-    use ModuleTrait;
-    use OptionTrait;
+    use ModuleContainerTrait;
 
     /**
      * @var Formatter
@@ -151,35 +149,34 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             'mixins_storage_mode'  => AssociativeStorage::REPLACE,
             'modules'              => [],
             'node_compilers'       => [
-                AssignmentListNode::class  => AssignmentListCompiler::class,
-                AssignmentNode::class      => AssignmentCompiler::class,
-                AttributeListNode::class   => AttributeListCompiler::class,
-                AttributeNode::class       => AttributeCompiler::class,
-                BlockNode::class           => BlockCompiler::class,
-                CaseNode::class            => CaseCompiler::class,
-                CodeNode::class            => CodeCompiler::class,
-                CommentNode::class         => CommentCompiler::class,
-                ConditionalNode::class     => ConditionalCompiler::class,
-                DoctypeNode::class         => DoctypeCompiler::class,
-                DocumentNode::class        => DocumentCompiler::class,
-                DoNode::class              => DoCompiler::class,
-                EachNode::class            => EachCompiler::class,
-                ElementNode::class         => ElementCompiler::class,
-                ExpressionNode::class      => ExpressionCompiler::class,
-                FilterNode::class          => FilterCompiler::class,
-                ForNode::class             => ForCompiler::class,
-                ImportNode::class          => ImportCompiler::class,
-                MixinCallNode::class       => MixinCallCompiler::class,
-                MixinNode::class           => MixinCompiler::class,
-                TextNode::class            => TextCompiler::class,
-                VariableNode::class        => VariableCompiler::class,
-                WhenNode::class            => WhenCompiler::class,
-                WhileNode::class           => WhileCompiler::class,
+                AssignmentListNode::class  => AssignmentListNodeCompiler::class,
+                AssignmentNode::class      => AssignmentNodeCompiler::class,
+                AttributeListNode::class   => AttributeListNodeCompiler::class,
+                AttributeNode::class       => AttributeNodeCompiler::class,
+                BlockNode::class           => BlockNodeCompiler::class,
+                CaseNode::class            => CaseNodeCompiler::class,
+                CodeNode::class            => CodeNodeCompiler::class,
+                CommentNode::class         => CommentNodeCompiler::class,
+                ConditionalNode::class     => ConditionalNodeCompiler::class,
+                DoctypeNode::class         => DoctypeNodeCompiler::class,
+                DocumentNode::class        => DocumentNodeCompiler::class,
+                DoNode::class              => DoNodeCompiler::class,
+                EachNode::class            => EachNodeCompiler::class,
+                ElementNode::class         => ElementNodeCompiler::class,
+                ExpressionNode::class      => ExpressionNodeCompiler::class,
+                FilterNode::class          => FilterNodeCompiler::class,
+                ForNode::class             => ForNodeCompiler::class,
+                ImportNode::class          => ImportNodeCompiler::class,
+                MixinCallNode::class       => MixinCallNodeCompiler::class,
+                MixinNode::class           => MixinNodeCompiler::class,
+                TextNode::class            => TextNodeCompiler::class,
+                VariableNode::class        => VariableNodeCompiler::class,
+                WhenNode::class            => WhenNodeCompiler::class,
+                WhileNode::class           => WhileNodeCompiler::class,
             ],
         ]);
         $this->setOptionsRecursive($options ?: []);
 
-        $this->setExpectedModuleType(CompilerModuleInterface::class);
         $this->addModules($this->getOption('modules'));
 
         $parserClassName = $this->getOption('parser_class_name');
@@ -402,7 +399,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
 
     private function convertBlocksToDynamicCalls($element)
     {
-        if ($element instanceof Block) {
+        if ($element instanceof BlockElement) {
             $expression = new ExpressionElement('$__pug_children');
             $expression->preventFromTransformation();
 
@@ -493,7 +490,7 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
 
                 $element = $compiler->compileNode($node, $parent);
 
-                if ($element instanceof ElementInterface && !($element instanceof Block)) {
+                if ($element instanceof ElementInterface && !($element instanceof BlockElement)) {
                     $this->walkOption('post_compile_node', function (callable $postCompile) use (&$element) {
                         $postCompile($element, $this);
                     });
@@ -512,10 +509,10 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     /**
      * Replace a block by its nodes.
      *
-     * @param Block $block
+     * @param BlockElement $block
      * @param array $children
      */
-    public function replaceBlock(Block $block, array $children = null)
+    public function replaceBlock(BlockElement $block, array $children = null)
     {
         if ($parent = $block->getParent()) {
             foreach (array_reverse($children ?: $block->getChildren()) as $child) {
@@ -533,12 +530,13 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      * Import blocks named lists into the compiler.
      *
      * @param array $blocks
+     * @return $this|void
      */
     public function importBlocks(array $blocks)
     {
         foreach ($blocks as $name => $list) {
             foreach ($list as $block) {
-                /* @var Block $block */
+                /* @var BlockElement $block */
                 $block->addCompiler($this);
             }
         }
@@ -557,12 +555,12 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
             $blockProceeded = 0;
             foreach ($this->getBlocks() as $name => $blocks) {
                 foreach ($blocks as $block) {
-                    if (!($block instanceof Block)) {
+                    if (!($block instanceof BlockElement)) {
                         throw new CompilerException(
                             'Unexpected block for the name '.$name
                         );
                     }
-                    /** @var Block $block */
+                    /** @var BlockElement $block */
                     if ($block->hasParent()) {
                         $this->replaceBlock($block);
                         $blockProceeded++;
@@ -719,10 +717,8 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
      *
      * @param string $pugInput pug input
      * @param string $fileName optional path of the compiled source
-     *
-     * @throws CompilerException|ParserException|LexerException
-     *
      * @return null|ElementInterface
+     * @throws \Exception
      */
     public function compileIntoElement($pugInput, $fileName = null)
     {
@@ -769,6 +765,12 @@ class Compiler implements ModulesContainerInterface, CompilerInterface
     public function getFileName()
     {
         return $this->fileName;
+    }
+
+    public function getModuleBaseClassName()
+    {
+
+        return CompilerModuleInterface::class;
     }
 
     /**

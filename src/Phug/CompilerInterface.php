@@ -2,15 +2,16 @@
 
 namespace Phug;
 
-use Phug\Compiler\Block;
+use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Layout;
+use Phug\Compiler\NodeCompilerInterface;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 use Phug\Util\AssociativeStorage;
-use Phug\Util\OptionInterface;
+use Phug\Util\ModuleContainerInterface;
 
-interface CompilerInterface extends OptionInterface
+interface CompilerInterface extends ModuleContainerInterface
 {
     /**
      * @return Parser
@@ -60,10 +61,10 @@ interface CompilerInterface extends OptionInterface
     public function getBlocks();
 
     /**
-     * @param Block $block
+     * @param BlockElement $block
      * @param array $children
      */
-    public function replaceBlock(Block $block, array $children = null);
+    public function replaceBlock(BlockElement $block, array $children = null);
 
     /**
      * @throws CompilerException
