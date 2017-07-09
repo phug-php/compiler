@@ -62,7 +62,7 @@ interface CompilerInterface extends ModuleContainerInterface
 
     /**
      * @param BlockElement $block
-     * @param array $children
+     * @param array        $children
      */
     public function replaceBlock(BlockElement $block, array $children = null);
 

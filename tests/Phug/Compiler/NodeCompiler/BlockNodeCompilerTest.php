@@ -60,7 +60,7 @@ class BlockNodeCompilerTest extends AbstractCompilerTest
             'Unexpected block for the name foo'
         );
 
-        require_once __DIR__ . '/BlockNodeCompilerTest/TestBlockNodeCompiler.php';
+        require_once __DIR__.'/BlockNodeCompilerTest/TestBlockNodeCompiler.php';
         $compiler = new Compiler([
             'node_compilers' => [
                 BlockNode::class => TestBlockNodeCompiler::class,

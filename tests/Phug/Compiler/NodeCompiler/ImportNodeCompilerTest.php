@@ -75,7 +75,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             "<section>1\nA2\nA</section>",
-            __DIR__ . '/../../../templates/page.pug'
+            __DIR__.'/../../../templates/page.pug'
         );
     }
 
@@ -105,7 +105,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
                 '</div>',
                 '</div>',
             ],
-            __DIR__ . '/../../../templates/inheritance.alert-dialog.pug'
+            __DIR__.'/../../../templates/inheritance.alert-dialog.pug'
         );
     }
 
@@ -118,7 +118,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             "<section>1\nA2\nA</section><section>1\nA2\nA</section>",
-            __DIR__ . '/../../../templates/inc-page.pug'
+            __DIR__.'/../../../templates/inc-page.pug'
         );
     }
 
@@ -133,7 +133,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             '<div>foo<p>Hello</p>bar</div>',
-            __DIR__ . '/../../../templates/inc-yield.pug'
+            __DIR__.'/../../../templates/inc-yield.pug'
         );
     }
 
@@ -147,7 +147,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             '<p>Pug</p>',
-            __DIR__ . '/../../../templates/inc-no-extension.pug'
+            __DIR__.'/../../../templates/inc-no-extension.pug'
         );
     }
 
@@ -161,7 +161,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             '<section><div>sample<p>A</p><p>B</p></div></section>',
-            __DIR__ . '/../../../templates/inc-children.pug'
+            __DIR__.'/../../../templates/inc-children.pug'
         );
     }
 
@@ -175,7 +175,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompileFile(
             '<pre><code>var x = "\n here is some \n new lined text";'."\n</code></pre>",
-            __DIR__ . '/../../../templates/includes-with-ext-js.pug'
+            __DIR__.'/../../../templates/includes-with-ext-js.pug'
         );
     }
 
@@ -191,7 +191,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
             'implement ElementInterface: string'
         );
 
-        require_once __DIR__ . '/../../TestCompiler.php';
+        require_once __DIR__.'/../../TestCompiler.php';
         $compiler = new TestCompiler();
         $compiler->compile('extends layout');
     }
@@ -236,7 +236,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
         );
 
         $compiler = new Compiler([
-            'basedir' => __DIR__ . '/../../../templates',
+            'basedir' => __DIR__.'/../../../templates',
         ]);
         $compiler->compile('include /missing');
     }

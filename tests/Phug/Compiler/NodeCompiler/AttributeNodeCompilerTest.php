@@ -74,7 +74,7 @@ class AttributeNodeCompilerTest extends AbstractCompilerTest
                 '  </div>'.PHP_EOL,
                 '</script>'.PHP_EOL,
             ],
-            __DIR__ . '/../../../templates/attrs.unescaped.pug',
+            __DIR__.'/../../../templates/attrs.unescaped.pug',
             [
                 'pretty' => '  ',
             ]

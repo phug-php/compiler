@@ -3,7 +3,6 @@
 namespace Phug\Test\Compiler\NodeCompiler;
 
 use Phug\Compiler;
-use Phug\Compiler\ForCompiler;
 use Phug\Compiler\NodeCompiler\ForNodeCompiler;
 use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;

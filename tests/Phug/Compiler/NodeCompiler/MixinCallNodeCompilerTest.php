@@ -48,7 +48,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
                 '<p class="biz">bar</p>'.PHP_EOL,
                 '<div>footer</div>'.PHP_EOL,
             ],
-            __DIR__ . '/../../../templates/mixins-test.pug',
+            __DIR__.'/../../../templates/mixins-test.pug',
             [
                 'pretty' => '  ',
             ]
@@ -72,7 +72,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
                 '<header>HelloHello</header>',
                 '<footer>ByeBye</footer>',
             ],
-            __DIR__ . '/../../../templates/mixin-double-block.pug'
+            __DIR__.'/../../../templates/mixin-double-block.pug'
         );
     }
 

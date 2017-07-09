@@ -2,9 +2,6 @@
 
 namespace Phug\Test;
 
-use Phug\Compiler;
-use Phug\AbstractCompilerModule;
-
 /**
  * @coversDefaultClass Phug\AbstractCompilerModule
  */

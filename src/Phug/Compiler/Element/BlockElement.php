@@ -6,7 +6,6 @@ use Phug\Ast\NodeInterface;
 use Phug\CompilerInterface;
 use Phug\Formatter\AbstractElement;
 use Phug\Parser\NodeInterface as ParserNode;
-use Phug\Util\UnorderedArguments;
 
 class BlockElement extends AbstractElement
 {
@@ -27,8 +26,6 @@ class BlockElement extends AbstractElement
         NodeInterface $parent = null,
         array $children = null
     ) {
-    
-
         $blocks = &$compiler->getBlocksByName($name);
         $blocks[] = $this;
         $this->compilers = [$compiler];
@@ -41,6 +38,7 @@ class BlockElement extends AbstractElement
      * Link another compiler.
      *
      * @param CompilerInterface $compiler
+     *
      * @return $this
      */
     public function addCompiler(CompilerInterface $compiler)
