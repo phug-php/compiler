@@ -3,7 +3,6 @@
 namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
-use Phug\CompilerException;
 use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;

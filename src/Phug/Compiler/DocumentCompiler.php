@@ -3,7 +3,6 @@
 namespace Phug\Compiler;
 
 use Phug\AbstractNodeCompiler;
-use Phug\CompilerException;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\DocumentNode;
