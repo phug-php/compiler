@@ -10,11 +10,9 @@ use Phug\CompilerException;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\MarkupElement;
-use Phug\Formatter\ElementInterface;
 use Phug\LexerException;
 use Phug\Parser;
 use Phug\Parser\Node\ElementNode;
-use Phug\Parser\NodeInterface;
 use Phug\ParserException;
 
 /**
@@ -209,14 +207,12 @@ class CompilerTest extends AbstractCompilerTest
     {
         $compiler = new Compiler([
             'on_node'  => function (Compiler\Event\NodeEvent $e) {
-
                 $node = $e->getNode();
                 if ($node instanceof ElementNode) {
                     $node->setName($node->getName().'b');
                 }
             },
             'on_element' => function (Compiler\Event\ElementEvent $e) {
-
                 $element = $e->getElement();
                 if ($element instanceof MarkupElement) {
                     $element->setName($element->getName().'c');
@@ -228,11 +224,9 @@ class CompilerTest extends AbstractCompilerTest
 
         $compiler = new Compiler([
             'on_compile'  => function (Compiler\Event\CompileEvent $e) {
-
                 $e->setInput($e->getInput().' Hello');
             },
             'on_output' => function (Compiler\Event\OutputEvent $e) {
-
                 $e->setOutput('<p>'.$e->getOutput().'</p>');
             },
         ]);
@@ -267,7 +261,6 @@ class CompilerTest extends AbstractCompilerTest
             ],
         ]);
         $compiler->attach(CompilerEvent::COMPILE, function (Compiler\Event\CompileEvent $e) use ($compiler) {
-
             $compiler->setOption('jsphpize_engine', new JsPhpize([
                 'catchDependencies' => true,
             ]));
