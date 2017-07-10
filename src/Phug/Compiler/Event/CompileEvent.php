@@ -7,14 +7,13 @@ use Phug\Event;
 
 class CompileEvent extends Event
 {
-
     private $input;
     private $path;
 
     /**
      * CompileEvent constructor.
      *
-     * @param string $input
+     * @param string      $input
      * @param string|null $path
      */
     public function __construct($input, $path = null)
