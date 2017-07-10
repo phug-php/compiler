@@ -5,6 +5,7 @@ namespace Phug\Test;
 use Exception;
 use JsPhpize\JsPhpize;
 use Phug\Compiler;
+use Phug\CompilerEvent;
 use Phug\CompilerException;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
@@ -201,43 +202,39 @@ class CompilerTest extends AbstractCompilerTest
 
     /**
      * @group hooks
-     * @covers ::walkOption
      * @covers ::compileNode
      * @covers ::compile
-     * @covers ::addHook
      */
     public function testHooks()
     {
         $compiler = new Compiler([
-            'pre_compile_node'  => [
-                function (NodeInterface $node) {
-                    if ($node instanceof ElementNode) {
-                        $node->setName($node->getName().'b');
-                    }
-                },
-            ],
-            'post_compile_node' => [
-                function (ElementInterface $element) {
-                    if ($element instanceof MarkupElement) {
-                        $element->setName($element->getName().'c');
-                    }
-                },
-            ],
+            'on_node'  => function (Compiler\Event\NodeEvent $e) {
+
+                $node = $e->getNode();
+                if ($node instanceof ElementNode) {
+                    $node->setName($node->getName().'b');
+                }
+            },
+            'on_element' => function (Compiler\Event\ElementEvent $e) {
+
+                $element = $e->getElement();
+                if ($element instanceof MarkupElement) {
+                    $element->setName($element->getName().'c');
+                }
+            },
         ]);
 
         self::assertSame('<abc></abc>', $compiler->compile('a'));
 
         $compiler = new Compiler([
-            'pre_compile'  => [
-                function ($pugCode) {
-                    return $pugCode.' Hello';
-                },
-            ],
-            'post_compile' => [
-                function ($phpCode) {
-                    return '<p>'.$phpCode.'</p>';
-                },
-            ],
+            'on_compile'  => function (Compiler\Event\CompileEvent $e) {
+
+                $e->setInput($e->getInput().' Hello');
+            },
+            'on_output' => function (Compiler\Event\OutputEvent $e) {
+
+                $e->setOutput('<p>'.$e->getOutput().'</p>');
+            },
         ]);
 
         self::assertSame('<p><a>Hello</a></p>', $compiler->compile('a'));
@@ -269,24 +266,23 @@ class CompilerTest extends AbstractCompilerTest
                 ],
             ],
         ]);
-        $compiler->addHook('pre_compile', 'jsphpize', function ($pugCode) use (&$compiler) {
+        $compiler->attach(CompilerEvent::COMPILE, function (Compiler\Event\CompileEvent $e) use ($compiler) {
+
             $compiler->setOption('jsphpize_engine', new JsPhpize([
                 'catchDependencies' => true,
             ]));
-
-            return $pugCode;
         });
-        $compiler->addHook('post_compile', 'jsphpize', function ($phpCode) use (&$compiler) {
+
+        $compiler->attach(CompilerEvent::OUTPUT, function (Compiler\Event\OutputEvent $e) use ($compiler) {
+
             /** @var JsPhpize $jsPhpize */
             $jsPhpize = $compiler->getOption('jsphpize_engine');
             $dependencies = $jsPhpize->compileDependencies();
             if ($dependencies !== '') {
-                $phpCode = $compiler->getFormatter()->handleCode($dependencies).$phpCode;
+                $e->setOutput($compiler->getFormatter()->handleCode($dependencies).$e->getOutput());
             }
             $jsPhpize->flushDependencies();
             $compiler->unsetOption('jsphpize_engine');
-
-            return $phpCode;
         });
         $this->compiler = $compiler;
 

@@ -4,6 +4,10 @@ namespace Phug;
 
 // Node compilers
 use Phug\Compiler\Element\BlockElement;
+use Phug\Compiler\Event\CompileEvent;
+use Phug\Compiler\Event\ElementEvent;
+use Phug\Compiler\Event\NodeEvent;
+use Phug\Compiler\Event\OutputEvent;
 use Phug\Compiler\Layout;
 use Phug\Compiler\NodeCompiler\AssignmentListNodeCompiler;
 use Phug\Compiler\NodeCompiler\AssignmentNodeCompiler;
@@ -138,10 +142,10 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
-            'pre_compile'          => [],
-            'pre_compile_node'     => [],
-            'post_compile'         => [],
-            'post_compile_node'    => [],
+            'on_compile'           => null,
+            'on_output'    => null,
+            'on_node'      => null,
+            'on_element'       => null,
             'filters'              => [],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
@@ -213,6 +217,22 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'mixin',
             $this->getOption('mixins_storage_mode')
         );
+
+        if ($onCompile = $this->getOption('on_compile')) {
+            $this->attach(CompilerEvent::COMPILE, $onCompile);
+        }
+
+        if ($onOutput = $this->getOption('on_output')) {
+            $this->attach(CompilerEvent::OUTPUT, $onOutput);
+        }
+
+        if ($onNode = $this->getOption('on_node')) {
+            $this->attach(CompilerEvent::NODE, $onNode);
+        }
+
+        if ($onElement = $this->getOption('on_element')) {
+            $this->attach(CompilerEvent::ELEMENT, $onElement);
+        }
     }
 
     /**
@@ -444,30 +464,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     }
 
     /**
-     * Append a named hook in a option list.
-     *
-     * @param string   $event   event listened
-     * @param string   $name    hook name
-     * @param callable $handler action called
-     *
-     * @return $this
-     */
-    public function addHook($event, $name, callable $handler)
-    {
-        if (is_array($this->getOption($event))) {
-            $this->setOption([$event, $name], $handler);
-        }
-
-        return $this;
-    }
-
-    protected function walkOption($option, callable $handler)
-    {
-        $array = $this->getOption($option);
-        array_walk($array, $handler);
-    }
-
-    /**
      * Returns PHTML from pug node input.
      *
      * @param NodeInterface    $node   input
@@ -479,10 +475,13 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
+
+        $e = new NodeEvent($node);
+        $this->trigger($e);
+        $node = $e->getNode();
+
         $this->currentNode = $node;
-        $this->walkOption('pre_compile_node', function (callable $preCompile) use (&$node) {
-            $preCompile($node, $this);
-        });
+
         foreach ($this->nodeCompilers as $className => $compiler) {
             if (is_a($node, $className)) {
                 if (!($compiler instanceof NodeCompilerInterface)) {
@@ -492,9 +491,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 $element = $compiler->compileNode($node, $parent);
 
                 if ($element instanceof ElementInterface && !($element instanceof BlockElement)) {
-                    $this->walkOption('post_compile_node', function (callable $postCompile) use (&$element) {
-                        $postCompile($element, $this);
-                    });
+                    $e = new ElementEvent($element);
+                    $this->trigger($e);
+                    $element = $e->getElement();
                 }
 
                 return $element;
@@ -607,17 +606,17 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * Returns ElementInterface from pug input with all layouts and
      * blocks compiled.
      *
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @throws CompilerException
      *
      * @return null|ElementInterface
      */
-    public function compileDocument($pugInput, $fileName = null)
+    public function compileDocument($input, $path = null)
     {
         $this->formatter->initDependencies();
-        $element = $this->compileIntoElement($pugInput, $fileName);
+        $element = $this->compileIntoElement($input, $path);
         $layout = $this->getLayout();
         $blocksCompiler = $this;
         if ($layout) {
@@ -682,24 +681,28 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Returns PHTML from pug input.
      *
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @return string
      */
-    public function compile($pugInput, $fileName = null)
+    public function compile($input, $path = null)
     {
-        $this->walkOption('pre_compile', function (callable $preCompile) use (&$pugInput) {
-            $pugInput = $preCompile($pugInput, $this);
-        });
-        $element = $this->compileDocument($pugInput, $fileName);
-        $phtml = $this->formatter->format($element);
-        $phtml = $this->formatter->formatDependencies().$phtml;
-        $this->walkOption('post_compile', function (callable $preCompile) use (&$phtml) {
-            $phtml = $preCompile($phtml, $this);
-        });
 
-        return $phtml;
+        $e = new CompileEvent($input, $path);
+        $this->trigger($e);
+
+        $input = $e->getInput();
+        $path = $e->getPath();
+
+        $element = $this->compileDocument($input, $path);
+
+        $output = $this->formatter->format($element);
+        $output = $this->formatter->formatDependencies().$output;
+
+        $e = new OutputEvent($output);
+        $this->trigger($e);
+        return $e->getOutput();
     }
 
     /**

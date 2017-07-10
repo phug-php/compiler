@@ -89,12 +89,12 @@ interface CompilerInterface extends ModuleContainerInterface
     public function compileNode(NodeInterface $node, ElementInterface $parent = null);
 
     /**
-     * @param string $pugInput
-     * @param string $fileName
+     * @param string $input
+     * @param string $path
      *
      * @return string
      */
-    public function compile($pugInput, $fileName = null);
+    public function compile($input, $path = null);
 
     /**
      * @param string $fileName
@@ -112,14 +112,14 @@ interface CompilerInterface extends ModuleContainerInterface
     public function compileIntoElement($pugInput, $fileName = null);
 
     /**
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @throws CompilerException
      *
      * @return null|ElementInterface
      */
-    public function compileDocument($pugInput, $fileName = null);
+    public function compileDocument($input, $path = null);
 
     /**
      * @param string $fileName
