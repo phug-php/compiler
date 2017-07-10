@@ -182,8 +182,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         ]);
         $this->setOptionsRecursive($options ?: []);
 
-        $this->addModules($this->getOption('modules'));
-
         $parserClassName = $this->getOption('parser_class_name');
 
         if ($parserClassName !== Parser::class && !is_a($parserClassName, Parser::class, true)) {
@@ -233,6 +231,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         if ($onElement = $this->getOption('on_element')) {
             $this->attach(CompilerEvent::ELEMENT, $onElement);
         }
+
+        $this->addModules($this->getOption('modules'));
     }
 
     /**
