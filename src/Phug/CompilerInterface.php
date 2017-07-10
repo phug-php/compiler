@@ -113,7 +113,7 @@ interface CompilerInterface extends ModuleContainerInterface
 
     /**
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @throws CompilerException
      *

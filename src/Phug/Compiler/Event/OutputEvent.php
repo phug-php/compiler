@@ -7,7 +7,6 @@ use Phug\Event;
 
 class OutputEvent extends Event
 {
-
     private $output;
 
     /**

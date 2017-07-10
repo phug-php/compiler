@@ -2,7 +2,6 @@
 
 namespace Phug\Test\Compiler\NodeCompiler;
 
-use Phug\Ast\NodeInterface;
 use Phug\Compiler;
 use Phug\Compiler\NodeCompiler\FilterNodeCompiler;
 use Phug\Formatter\Element\DocumentElement;
@@ -153,7 +152,6 @@ class FilterNodeCompilerTest extends AbstractCompilerTest
 
         $compiler = new Compiler([
             'on_element' => function (Compiler\Event\ElementEvent $e) {
-
                 if ($e->getElement() instanceof TextElement) {
                     $e->setElement(new DocumentElement());
                 }

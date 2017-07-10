@@ -143,9 +143,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
             'on_compile'           => null,
-            'on_output'    => null,
-            'on_node'      => null,
-            'on_element'       => null,
+            'on_output'            => null,
+            'on_node'              => null,
+            'on_element'           => null,
             'filters'              => [],
             'parser_class_name'    => Parser::class,
             'parser_options'       => [],
@@ -475,7 +475,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-
         $e = new NodeEvent($node);
         $this->trigger($e);
         $node = $e->getNode();
@@ -607,7 +606,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * blocks compiled.
      *
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @throws CompilerException
      *
@@ -682,13 +681,12 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * Returns PHTML from pug input.
      *
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @return string
      */
     public function compile($input, $path = null)
     {
-
         $e = new CompileEvent($input, $path);
         $this->trigger($e);
 
@@ -702,6 +700,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $e = new OutputEvent($output);
         $this->trigger($e);
+
         return $e->getOutput();
     }
 
