@@ -62,10 +62,11 @@ use Phug\Parser\Node\WhileNode;
 use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
+use Phug\Util\ModuleContainerInterface;
 use Phug\Util\Partial\ModuleContainerTrait;
 use Phug\Util\PugFileLocationInterface;
 
-class Compiler implements CompilerInterface
+class Compiler implements ModuleContainerInterface, CompilerInterface
 {
     use ModuleContainerTrait;
 
