@@ -7,6 +7,7 @@ use JsPhpize\JsPhpize;
 use Phug\Compiler;
 use Phug\CompilerEvent;
 use Phug\CompilerException;
+use Phug\CompilerModuleInterface;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\MarkupElement;
@@ -22,6 +23,7 @@ class CompilerTest extends AbstractCompilerTest
 {
     /**
      * @covers ::<public>
+     * @covers ::__construct
      */
     public function testGetters()
     {
@@ -34,6 +36,7 @@ class CompilerTest extends AbstractCompilerTest
     /**
      * @covers ::compileNode
      * @covers ::getNamedCompiler
+     * @covers ::__construct
      */
     public function testCompileNode()
     {
@@ -58,6 +61,7 @@ class CompilerTest extends AbstractCompilerTest
      * @covers ::<public>
      * @covers \Phug\Compiler\AbstractNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\DoctypeNodeCompiler::<public>
+     * @covers ::__construct
      */
     public function testCompile()
     {
@@ -168,6 +172,21 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers            ::__construct
+     * @expectedException \InvalidArgumentException
+     */
+    public function testLocatorClassException()
+    {
+        $this->expectMessageToBeThrown(
+            'Passed locator class Phug\Parser\Node\ElementNode is not a valid Phug\Compiler\LocatorInterface'
+        );
+
+        new Compiler([
+            'locator_class_name' => ElementNode::class,
+        ]);
+    }
+
+    /**
      * @covers            ::setNodeCompiler
      * @expectedException \InvalidArgumentException
      */
@@ -199,9 +218,70 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::pushPath
+     */
+    public function testPushPath()
+    {
+
+        $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
+        $compiler->pushPath('d');
+
+        self::assertSame(['a', 'b', 'c', 'd'], $compiler->getOption('paths'));
+    }
+
+    /**
+     * @covers ::popPath
+     */
+    public function testPopPath()
+    {
+
+        $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
+        $compiler->popPath();
+
+        self::assertSame(['a', 'b'], $compiler->getOption('paths'));
+    }
+
+    /**
+     * @covers ::locate
+     */
+    public function testLocate()
+    {
+
+        $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
+
+        self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->locate('index')));
+        self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->locate('index.pug')));
+    }
+
+    /**
+     * @covers ::resolve
+     */
+    public function testResolve()
+    {
+
+        $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
+
+        self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->resolve('index')));
+        self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->resolve('index.pug')));
+    }
+
+    /**
+     * @covers ::resolve
+     * @expectedException \Phug\CompilerException
+     * @expectedExceptionMessage Source file not-existent not found
+     */
+    public function testResolveNotFoundException()
+    {
+
+        $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
+        $compiler->resolve('not-existent');
+    }
+
+    /**
      * @group hooks
      * @covers ::compileNode
      * @covers ::compile
+     * @covers ::__construct
      */
     public function testHooks()
     {
@@ -284,5 +364,25 @@ class CompilerTest extends AbstractCompilerTest
                 'bar' => 'Hello',
             ],
         ]);
+    }
+
+    /**
+     * @covers ::getModuleBaseClassName
+     */
+    public function testGetModuleBaseClassName()
+    {
+
+        self::assertSame(CompilerModuleInterface::class, (new Compiler())->getModuleBaseClassName());
+    }
+
+    /**
+     * @covers ::throwException
+     * @expectedException \Phug\CompilerException
+     */
+    public function testThrowException()
+    {
+
+        $compiler = new Compiler();
+        $compiler->throwException('Test Exception');
     }
 }

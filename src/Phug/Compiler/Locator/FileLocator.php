@@ -21,6 +21,7 @@ class FileLocator implements LocatorInterface
         }
 
         $path = $this->normalize($path);
+        $locations = array_reverse($locations);
 
         foreach ($locations as $location) {
             $location = $this->normalize($location);
@@ -29,7 +30,7 @@ class FileLocator implements LocatorInterface
                 $fullPath = "$location/$path$extension";
 
                 if (is_file($fullPath) && is_readable($fullPath)) {
-                    return $fullPath;
+                    return realpath($fullPath);
                 }
             }
         }
