@@ -3,8 +3,6 @@
 namespace Phug\Test\Compiler\Locator;
 
 use Phug\Compiler;
-use Phug\Compiler\NodeCompiler\AssignmentListNodeCompiler;
-use Phug\Parser\Node\ElementNode;
 use Phug\Test\AbstractCompilerTest;
 
 /**
@@ -17,8 +15,7 @@ class FileLocatorTest extends AbstractCompilerTest
      */
     public function testLocate()
     {
-
-        $base = __DIR__ . '/../../../templates/example-structure';
+        $base = __DIR__.'/../../../templates/example-structure';
         $paths = ["$base/layouts", "$base/mixins/lib1", "$base/mixins/lib2", "$base/views"];
         $extensions = ['.pug'];
 

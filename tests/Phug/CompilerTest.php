@@ -222,7 +222,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testPushPath()
     {
-
         $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
         $compiler->pushPath('d');
 
@@ -234,7 +233,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testPopPath()
     {
-
         $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
         $compiler->popPath();
 
@@ -246,7 +244,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testLocate()
     {
-
         $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
 
         self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->locate('index')));
@@ -258,7 +255,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testResolve()
     {
-
         $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
 
         self::assertStringEndsWith('/views/index.pug', str_replace('\\', '/', $compiler->resolve('index')));
@@ -272,7 +268,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testResolveNotFoundException()
     {
-
         $compiler = new Compiler(['paths' => [__DIR__.'/../templates/example-structure/views']]);
         $compiler->resolve('not-existent');
     }
@@ -371,7 +366,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testGetModuleBaseClassName()
     {
-
         self::assertSame(CompilerModuleInterface::class, (new Compiler())->getModuleBaseClassName());
     }
 
@@ -381,7 +375,6 @@ class CompilerTest extends AbstractCompilerTest
      */
     public function testThrowException()
     {
-
         $compiler = new Compiler();
         $compiler->throwException('Test Exception');
     }
