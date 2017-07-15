@@ -26,7 +26,7 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->compiler = new Compiler([
-            'paths'           => [__DIR__.'/../templates'],
+            'paths'             => [__DIR__.'/../templates'],
             'formatter_options' => [
                 'patterns' => [
                     'expression_in_text' => '%s',

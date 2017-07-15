@@ -15,7 +15,6 @@ use Phug\Parser\NodeInterface;
 
 class ImportNodeCompiler extends AbstractNodeCompiler
 {
-
     /**
      * @param NodeInterface    $node
      * @param ElementInterface $parent
