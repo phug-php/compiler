@@ -133,7 +133,7 @@ class CompilerTest extends AbstractCompilerTest
 
     /**
      * @covers            ::__construct
-     * @expectedException \Phug\CompilerException
+     * @expectedException \InvalidArgumentException
      */
     public function testParserClassException()
     {
@@ -151,7 +151,7 @@ class CompilerTest extends AbstractCompilerTest
 
     /**
      * @covers            ::__construct
-     * @expectedException \Phug\CompilerException
+     * @expectedException \InvalidArgumentException
      */
     public function testFormatterClassException()
     {

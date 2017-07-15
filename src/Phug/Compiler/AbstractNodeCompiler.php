@@ -41,6 +41,9 @@ abstract class AbstractNodeCompiler implements NodeCompilerInterface
         }, $children));
     }
 
+    /**
+     * @return CompilerInterface
+     */
     public function getCompiler()
     {
         return $this->compiler;

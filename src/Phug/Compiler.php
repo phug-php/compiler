@@ -3,12 +3,15 @@
 namespace Phug;
 
 // Node compilers
+use phpDocumentor\Reflection\DocBlock\Tags\Source;
 use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Event\CompileEvent;
 use Phug\Compiler\Event\ElementEvent;
 use Phug\Compiler\Event\NodeEvent;
 use Phug\Compiler\Event\OutputEvent;
 use Phug\Compiler\Layout;
+use Phug\Compiler\Locator\FileLocator;
+use Phug\Compiler\LocatorInterface;
 use Phug\Compiler\NodeCompiler\AssignmentListNodeCompiler;
 use Phug\Compiler\NodeCompiler\AssignmentNodeCompiler;
 use Phug\Compiler\NodeCompiler\AttributeListNodeCompiler;
@@ -68,7 +71,7 @@ use Phug\Parser\NodeInterface;
 use Phug\Util\AssociativeStorage;
 use Phug\Util\ModuleContainerInterface;
 use Phug\Util\Partial\ModuleContainerTrait;
-use Phug\Util\PugFileLocationInterface;
+use Phug\Util\SourceLocation;
 
 class Compiler implements ModuleContainerInterface, CompilerInterface
 {
@@ -85,9 +88,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     private $parser;
 
     /**
+     * @var LocatorInterface
+     */
+    private $locator;
+
+    /**
      * @var string
      */
-    private $fileName;
+    private $path;
 
     /**
      * @var array
@@ -137,7 +145,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     public function __construct(array $options = null)
     {
         $this->setOptionsRecursive([
-            'basedir'              => null,
+            'paths'                => [],
             'debug'                => false,
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
@@ -151,6 +159,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
             'formatter_options'    => [],
+            'locator_class_name'   => FileLocator::class,
+            'locator_options'      => [],
             'mixins_storage_mode'  => AssociativeStorage::REPLACE,
             'modules'              => [],
             'node_compilers'       => [
@@ -182,10 +192,12 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         ]);
         $this->setOptionsRecursive($options ?: []);
 
+
+        //Initialize parser to parse source code into an AST
         $parserClassName = $this->getOption('parser_class_name');
 
-        if ($parserClassName !== Parser::class && !is_a($parserClassName, Parser::class, true)) {
-            throw new CompilerException(
+        if (!is_a($parserClassName, Parser::class, true)) {
+            throw new \InvalidArgumentException(
                 "Passed parser class $parserClassName is ".
                 'not a valid '.Parser::class
             );
@@ -193,16 +205,33 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $this->parser = new $parserClassName($this->getOption('parser_options'));
 
+
+        //Initialize the formatter to turn elements into PHTML
         $formatterClassName = $this->getOption('formatter_class_name');
 
-        if ($formatterClassName !== Formatter::class && !is_a($formatterClassName, Formatter::class, true)) {
-            throw new CompilerException(
+        if (!is_a($formatterClassName, Formatter::class, true)) {
+            throw new \InvalidArgumentException(
                 "Passed formatter class $formatterClassName is ".
                 'not a valid '.Formatter::class
             );
         }
 
         $this->formatter = new $formatterClassName($this->getOption('formatter_options'));
+
+
+        //Initialize the Locator to locate sources
+        $locatorClassName = $this->getOption('locator_class_name');
+
+        if (!is_a($locatorClassName, LocatorInterface::class, true)) {
+            throw new \InvalidArgumentException(
+                "Passed locator class $locatorClassName is ".
+                'not a valid '.LocatorInterface::class
+            );
+        }
+
+        $this->locator = new $locatorClassName($this->getOption('locator_options'));
+
+
 
         $this->nodeCompilers = [];
         $this->namedCompilers = [];
@@ -285,6 +314,26 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         return $declaration;
     }
 
+    public function pushPath($path)
+    {
+
+        $paths = $this->getOption('paths');
+        $paths[] = $path;
+        $this->setOption('paths', $paths);
+
+        return $this;
+    }
+
+    public function popPath()
+    {
+
+        $paths = $this->getOption('paths');
+        array_pop($paths);
+        $this->setOption('paths', $paths);
+
+        return $this;
+    }
+
     /**
      * @param NodeInterface $importNode
      *
@@ -323,6 +372,33 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $this->layout = null;
         $this->namedCompilers = [];
+    }
+
+    public function locate($path)
+    {
+
+        return $this->locator->locate(
+            $path,
+            $this->getOption('paths'),
+            $this->getOption('extensions')
+        );
+    }
+
+    public function resolve($path)
+    {
+
+        $resolvePath = $this->locate($path);
+
+        if (!$resolvePath) {
+            $this->throwException(sprintf(
+                "Source file %s not found \nPaths: %s \nExtensions: %s",
+                $path,
+                implode(', ', $this->getOption('paths')),
+                implode(', ', $this->getOption('extensions'))
+            ));
+        }
+
+        return $resolvePath;
     }
 
     /**
@@ -556,7 +632,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             foreach ($this->getBlocks() as $name => $blocks) {
                 foreach ($blocks as $block) {
                     if (!($block instanceof BlockElement)) {
-                        throw new CompilerException(
+                        $this->throwException(
                             'Unexpected block for the name '.$name
                         );
                     }
@@ -575,14 +651,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Dump a debug tre for a given pug input.
      *
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @return string
      */
-    public function dump($pugInput, $fileName = null)
+    public function dump($input, $path = null)
     {
-        $element = $this->compileDocument($pugInput, $fileName);
+        $element = $this->compileDocument($input, $path);
 
         return $element instanceof ElementInterface
             ? $element->dump()
@@ -592,13 +668,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Dump a debug tre for a given pug input.
      *
-     * @param string $fileName pug input file
+     * @param string $path pug input file
      *
      * @return string
      */
-    public function dumpFile($fileName)
+    public function dumpFile($path)
     {
-        return $this->dump(file_get_contents($fileName), $fileName);
+        $path = $this->resolve($path);
+        return $this->dump(file_get_contents($path), $path);
     }
 
     /**
@@ -614,7 +691,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileDocument($input, $path = null)
     {
-        $this->formatter->initDependencies();
         $element = $this->compileIntoElement($input, $path);
         $layout = $this->getLayout();
         $blocksCompiler = $this;
@@ -707,38 +783,34 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Returns PHTML from pug input file.
      *
-     * @param string $fileName path of the compiled source
+     * @param string $path path of the compiled source
      *
      * @return string
      */
-    public function compileFile($fileName)
+    public function compileFile($path)
     {
-        return $this->compile(file_get_contents($fileName), $fileName);
+
+        $path = $this->resolve($path);
+        return $this->compile(file_get_contents($path), $path);
     }
 
     /**
      * Returns ElementInterface from pug input.
      *
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @throws \Exception
      *
      * @return null|ElementInterface
      */
-    public function compileIntoElement($pugInput, $fileName = null)
+    public function compileIntoElement($input, $path = null)
     {
-        $this->fileName = $fileName;
+        $this->path = $path;
         $this->namedBlocks = [];
-        try {
-            $node = $this->parser->parse($pugInput);
-        } catch (PugFileLocationInterface $exception) {
-            if ($fileName && !$exception->getPugFile()) {
-                $exception->setPugFile($fileName);
-            }
 
-            throw $exception;
-        }
+        $node = $this->parser->parse($input); //Let exceptions fall through
+
         $element = $this->compileNode($node);
 
         if ($element && !($element instanceof ElementInterface)) {
@@ -756,21 +828,22 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Returns ElementInterface from pug input file.
      *
-     * @param string $fileName path of the compiled source
+     * @param string $path path of the compiled source
      *
      * @return ElementInterface
      */
-    public function compileFileIntoElement($fileName)
+    public function compileFileIntoElement($path)
     {
-        return $this->compileIntoElement(file_get_contents($fileName), $fileName);
+        $path = $this->resolve($path);
+        return $this->compileIntoElement(file_get_contents($path), $path);
     }
 
     /**
      * @return string
      */
-    public function getFileName()
+    public function getPath()
     {
-        return $this->fileName;
+        return $this->path;
     }
 
     public function getModuleBaseClassName()
@@ -793,24 +866,28 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function throwException($message, $node = null, $code = 0, $previous = null)
     {
-        $pattern = "Failed to compile: %s Line: %s \nOffset: %s";
+        $pattern = "Failed to compile: %s \nLine: %s \nOffset: %s";
 
-        if ($this->fileName) {
-            $pattern .= "\nPath: ".$this->fileName;
+        $location = $node ? $node->getSourceLocation() : null;
+
+        $path = $location ? $location->getPath() : $this->getPath();
+        $line = $location ? $location->getLine() : 0;
+        $offset = $location ? $location->getOffset() : 0;
+        $offsetLength = $location ? $location->getOffsetLength() : 0;
+
+        if ($path) {
+            $pattern .= "\nPath: $path";
         }
-        $node = $node instanceof NodeInterface ? $node : null;
 
         throw new CompilerException(
+            new SourceLocation($path, $line, $offset, $offsetLength),
             vsprintf($pattern, [
                 $message,
-                $node ? $node->getLine() : '',
-                $node ? $node->getOffset() : '',
+                $line,
+                $offset
             ]),
             $code,
-            $previous,
-            $this->fileName,
-            $node ? $node->getLine() : null,
-            $node ? $node->getOffset() : null
+            $previous
         );
     }
 }

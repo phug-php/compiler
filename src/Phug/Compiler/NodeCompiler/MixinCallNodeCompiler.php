@@ -172,7 +172,7 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
         foreach ($declaration->getChildren() as $child) {
             $document->appendChild(clone $child);
         }
-        $node->appendChild(new CodeNode('extract($'.$scopeName.')', $node));
+        $node->appendChild(new CodeNode(null, $node->getSourceLocation(), 'extract($'.$scopeName.')'));
         $this->proceedBlocks($document, $this->getCompiledChildren($node, $parent));
 
         return $document;

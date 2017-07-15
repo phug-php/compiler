@@ -30,8 +30,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::getBaseDirectoryForPath
-     * @covers ::resolvePath
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      * @covers \Phug\Compiler\NodeCompiler\FilterNodeCompiler::compileNode
@@ -53,8 +51,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::getBaseDirectoryForPath
-     * @covers ::resolvePath
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
@@ -65,7 +61,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::compile
      * @covers \Phug\Compiler::compileFile
      * @covers \Phug\Compiler::compileFileIntoElement
-     * @covers \Phug\Compiler::getFileName
+     * @covers \Phug\Compiler::getPath
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::hasBlockParent
      * @covers \Phug\Compiler\Element\BlockElement::<public>
@@ -111,8 +107,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::getBaseDirectoryForPath
-     * @covers ::resolvePath
      */
     public function testExtendsInInclude()
     {
@@ -139,7 +133,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::isRawTextFile
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
@@ -153,7 +146,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::isRawTextFile
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
@@ -167,7 +159,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::isRawTextFile
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
@@ -197,46 +188,16 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers            ::getBaseDirectoryForPath
-     * @expectedException \Phug\CompilerException
-     */
-    public function testBasedirException()
-    {
-        $this->expectMessageToBeThrown(
-            'The "basedir" option is required to use '.
-            'includes and extends with "absolute" paths.'
-        );
-
-        $compiler = new Compiler();
-        $compiler->compile('extends /layout');
-    }
-
-    /**
-     * @covers            ::getBaseDirectoryForPath
-     * @expectedException \Phug\CompilerException
-     */
-    public function testRelativePathException()
-    {
-        $this->expectMessageToBeThrown(
-            'No source file path provided to get relative paths from it.'
-        );
-
-        $compiler = new Compiler();
-        $compiler->compile('extends ./relative');
-    }
-
-    /**
-     * @covers            ::resolvePath
      * @expectedException \Phug\CompilerException
      */
     public function testFileNotFoundException()
     {
         $this->expectMessageToBeThrown(
-            "File not found at path '/missing'"
+            "Source file /missing not found"
         );
 
         $compiler = new Compiler([
-            'basedir' => __DIR__.'/../../../templates',
+            'paths' => [__DIR__.'/../../../templates'],
         ]);
         $compiler->compile('include /missing');
     }

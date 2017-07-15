@@ -15,65 +15,6 @@ use Phug\Parser\NodeInterface;
 
 class ImportNodeCompiler extends AbstractNodeCompiler
 {
-    protected function getBaseDirectoryForPath($path, $node)
-    {
-        $compiler = $this->getCompiler();
-
-        if (mb_substr($path, 0, 1) === '/') {
-            $base = $compiler->getOption('basedir');
-            if (!$base) {
-                $this->getCompiler()->throwException(
-                    'The "basedir" option is required to use '.
-                    'includes and extends with "absolute" paths.',
-                    $node
-                );
-            }
-
-            return $base;
-        }
-
-        $base = $compiler->getFileName();
-        if (!$base) {
-            $this->getCompiler()->throwException(
-                'No source file path provided to get relative paths from it.',
-                $node
-            );
-        }
-
-        return dirname($base);
-    }
-
-    protected function resolvePath($path, $node)
-    {
-        $base = $this->getBaseDirectoryForPath($path, $node);
-        $file = rtrim($base, '\\/').DIRECTORY_SEPARATOR.ltrim($path, '\\/');
-
-        foreach ($this->getCompiler()->getOption('extensions') as $extension) {
-            if (file_exists($file.$extension)) {
-                return $file.$extension;
-            }
-        }
-
-        $this->getCompiler()->throwException(
-            'File not found at path '.var_export($path, true).'.',
-            $node
-        );
-    }
-
-    protected function isRawTextFile($path)
-    {
-        foreach ($this->getCompiler()->getOption('extensions') as $extension) {
-            if ($extension === '' && mb_strpos(basename($path), '.') === false) {
-                return false;
-            }
-
-            if (mb_substr($path, -mb_strlen($extension)) === $extension) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     /**
      * @param NodeInterface    $node
@@ -93,7 +34,17 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         }
 
         $compiler = $this->getCompiler();
-        $path = $this->resolvePath($node->getPath(), $node);
+        $currentPath = dirname($compiler->getPath());
+
+        if ($currentPath) {
+            $compiler->pushPath($currentPath);
+        }
+
+        $path = $compiler->resolve($node->getPath());
+
+        if ($currentPath) {
+            $compiler->popPath();
+        }
 
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
@@ -108,7 +59,10 @@ class ImportNodeCompiler extends AbstractNodeCompiler
             return $element;
         }
 
-        if ($this->isRawTextFile($path)) {
+        $ext = pathinfo($path, PATHINFO_EXTENSION) ?: '';
+        $exts = $compiler->getOption('extensions');
+
+        if (!in_array($ext === '' ? '' : ".$ext", $exts, true)) {
             return new TextElement(file_get_contents($path), $node);
         }
 

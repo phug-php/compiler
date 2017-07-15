@@ -40,6 +40,12 @@ interface CompilerInterface extends ModuleContainerInterface
      */
     public function setLayout(Layout $layout);
 
+    public function pushPath($path);
+    public function popPath();
+
+    public function locate($path);
+    public function resolve($path);
+
     /**
      * @param string                $className
      * @param NodeCompilerInterface $handler
@@ -97,19 +103,19 @@ interface CompilerInterface extends ModuleContainerInterface
     public function compile($input, $path = null);
 
     /**
-     * @param string $fileName
+     * @param string $path
      *
      * @return string
      */
-    public function compileFile($fileName);
+    public function compileFile($path);
 
     /**
-     * @param string $pugInput
-     * @param string $fileName
+     * @param string $input
+     * @param string $path
      *
      * @return null|ElementInterface
      */
-    public function compileIntoElement($pugInput, $fileName = null);
+    public function compileIntoElement($input, $path = null);
 
     /**
      * @param string $input pug input
@@ -122,16 +128,16 @@ interface CompilerInterface extends ModuleContainerInterface
     public function compileDocument($input, $path = null);
 
     /**
-     * @param string $fileName
+     * @param string $path
      *
      * @return null|ElementInterface
      */
-    public function compileFileIntoElement($fileName);
+    public function compileFileIntoElement($path);
 
     /**
      * @return null|string
      */
-    public function getFileName();
+    public function getPath();
 
     /**
      * @return NodeInterface
@@ -159,19 +165,19 @@ interface CompilerInterface extends ModuleContainerInterface
     public function requireMixin($mixinName, $node);
 
     /**
-     * @param string $pugInput pug input
-     * @param string $fileName optional path of the compiled source
+     * @param string $input pug input
+     * @param string $path optional path of the compiled source
      *
      * @return string
      */
-    public function dump($pugInput, $fileName = null);
+    public function dump($input, $path = null);
 
     /**
-     * @param string $fileName pug input file
+     * @param string $path pug input file
      *
      * @return string
      */
-    public function dumpFile($fileName);
+    public function dumpFile($path);
 
     /**
      * @return $this
