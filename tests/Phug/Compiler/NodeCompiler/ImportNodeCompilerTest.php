@@ -193,7 +193,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     public function testFileNotFoundException()
     {
         $this->expectMessageToBeThrown(
-            "Source file /missing not found"
+            'Source file /missing not found'
         );
 
         $compiler = new Compiler([

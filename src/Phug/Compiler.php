@@ -192,7 +192,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         ]);
         $this->setOptionsRecursive($options ?: []);
 
-
         //Initialize parser to parse source code into an AST
         $parserClassName = $this->getOption('parser_class_name');
 
@@ -204,7 +203,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         }
 
         $this->parser = new $parserClassName($this->getOption('parser_options'));
-
 
         //Initialize the formatter to turn elements into PHTML
         $formatterClassName = $this->getOption('formatter_class_name');
@@ -218,7 +216,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $this->formatter = new $formatterClassName($this->getOption('formatter_options'));
 
-
         //Initialize the Locator to locate sources
         $locatorClassName = $this->getOption('locator_class_name');
 
@@ -230,8 +227,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         }
 
         $this->locator = new $locatorClassName($this->getOption('locator_options'));
-
-
 
         $this->nodeCompilers = [];
         $this->namedCompilers = [];
@@ -316,7 +311,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
     public function pushPath($path)
     {
-
         $paths = $this->getOption('paths');
         $paths[] = $path;
         $this->setOption('paths', $paths);
@@ -326,7 +320,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
     public function popPath()
     {
-
         $paths = $this->getOption('paths');
         array_pop($paths);
         $this->setOption('paths', $paths);
@@ -376,7 +369,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
     public function locate($path)
     {
-
         return $this->locator->locate(
             $path,
             $this->getOption('paths'),
@@ -386,7 +378,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
     public function resolve($path)
     {
-
         $resolvePath = $this->locate($path);
 
         if (!$resolvePath) {
@@ -652,7 +643,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * Dump a debug tre for a given pug input.
      *
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @return string
      */
@@ -675,6 +666,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     public function dumpFile($path)
     {
         $path = $this->resolve($path);
+
         return $this->dump(file_get_contents($path), $path);
     }
 
@@ -789,8 +781,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileFile($path)
     {
-
         $path = $this->resolve($path);
+
         return $this->compile(file_get_contents($path), $path);
     }
 
@@ -798,7 +790,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * Returns ElementInterface from pug input.
      *
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @throws \Exception
      *
@@ -835,6 +827,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     public function compileFileIntoElement($path)
     {
         $path = $this->resolve($path);
+
         return $this->compileIntoElement(file_get_contents($path), $path);
     }
 
@@ -884,7 +877,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             vsprintf($pattern, [
                 $message,
                 $line,
-                $offset
+                $offset,
             ]),
             $code,
             $previous
