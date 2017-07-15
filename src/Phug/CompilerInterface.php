@@ -41,9 +41,11 @@ interface CompilerInterface extends ModuleContainerInterface
     public function setLayout(Layout $layout);
 
     public function pushPath($path);
+
     public function popPath();
 
     public function locate($path);
+
     public function resolve($path);
 
     /**
@@ -166,7 +168,7 @@ interface CompilerInterface extends ModuleContainerInterface
 
     /**
      * @param string $input pug input
-     * @param string $path optional path of the compiled source
+     * @param string $path  optional path of the compiled source
      *
      * @return string
      */
