@@ -309,30 +309,28 @@ class CompilerTest extends AbstractCompilerTest
         self::assertSame('<p><a>Hello</a></p>', $compiler->compile('a'));
 
         $compiler = new Compiler([
-            'formatter_options' => [
-                'patterns' => [
-                    'transform_expression' => function ($jsCode) use (&$compiler) {
-                        /** @var JsPhpize $jsPhpize */
-                        $jsPhpize = $compiler->getOption('jsphpize_engine');
+            'patterns' => [
+                'transform_expression' => function ($jsCode) use (&$compiler) {
+                    /** @var JsPhpize $jsPhpize */
+                    $jsPhpize = $compiler->getOption('jsphpize_engine');
 
-                        try {
-                            return rtrim(trim(preg_replace(
-                                '/\{\s*\}$/',
-                                '',
-                                trim($jsPhpize->compile($jsCode))
-                            )), ';');
-                        } catch (Exception $e) {
-                            if ($e instanceof LexerException ||
-                                $e instanceof ParserException ||
-                                $e instanceof CompilerException
-                            ) {
-                                return $jsCode;
-                            }
-
-                            throw $e;
+                    try {
+                        return rtrim(trim(preg_replace(
+                            '/\{\s*\}$/',
+                            '',
+                            trim($jsPhpize->compile($jsCode))
+                        )), ';');
+                    } catch (Exception $e) {
+                        if ($e instanceof LexerException ||
+                            $e instanceof ParserException ||
+                            $e instanceof CompilerException
+                        ) {
+                            return $jsCode;
                         }
-                    },
-                ],
+
+                        throw $e;
+                    }
+                },
             ],
         ]);
         $compiler->attach(CompilerEvent::COMPILE, function (Compiler\Event\CompileEvent $e) use ($compiler) {

@@ -142,9 +142,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     private $dynamicMixinsEnabled;
 
-    public function __construct(array $options = null)
+    public function __construct($options = null)
     {
-        $this->setOptionsRecursive([
+        $this->setOptionsDefaults($options ?: [], [
             'paths'                => [],
             'debug'                => false,
             'extensions'           => ['', '.pug', '.jade'],
@@ -156,13 +156,10 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'on_element'           => null,
             'filters'              => [],
             'parser_class_name'    => Parser::class,
-            'parser_options'       => [],
             'formatter_class_name' => Formatter::class,
-            'formatter_options'    => [],
             'locator_class_name'   => FileLocator::class,
-            'locator_options'      => [],
             'mixins_storage_mode'  => AssociativeStorage::REPLACE,
-            'modules'              => [],
+            'compiler_modules'     => [],
             'node_compilers'       => [
                 AssignmentListNode::class  => AssignmentListNodeCompiler::class,
                 AssignmentNode::class      => AssignmentNodeCompiler::class,
@@ -190,7 +187,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 WhileNode::class           => WhileNodeCompiler::class,
             ],
         ]);
-        $this->setOptionsRecursive($options ?: []);
 
         //Initialize parser to parse source code into an AST
         $parserClassName = $this->getOption('parser_class_name');
@@ -202,7 +198,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             );
         }
 
-        $this->parser = new $parserClassName($this->getOption('parser_options'));
+        $this->parser = new $parserClassName($this->getOptions());
 
         //Initialize the formatter to turn elements into PHTML
         $formatterClassName = $this->getOption('formatter_class_name');
@@ -214,7 +210,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             );
         }
 
-        $this->formatter = new $formatterClassName($this->getOption('formatter_options'));
+        $this->formatter = new $formatterClassName($this->getOptions());
 
         //Initialize the Locator to locate sources
         $locatorClassName = $this->getOption('locator_class_name');
@@ -226,7 +222,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             );
         }
 
-        $this->locator = new $locatorClassName($this->getOption('locator_options'));
+        $this->locator = new $locatorClassName($this->getOptions());
 
         $this->nodeCompilers = [];
         $this->namedCompilers = [];
@@ -256,7 +252,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             $this->attach(CompilerEvent::ELEMENT, $onElement);
         }
 
-        $this->addModules($this->getOption('modules'));
+        $this->addModules($this->getOption('compiler_modules'));
     }
 
     /**
