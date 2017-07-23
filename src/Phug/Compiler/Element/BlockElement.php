@@ -35,6 +35,14 @@ class BlockElement extends AbstractElement
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Link another compiler.
      *
      * @param CompilerInterface $compiler

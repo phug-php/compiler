@@ -76,8 +76,10 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
         $list = &$this->compiler->getBlocksByName('foo');
         self::assertCount(2, $list);
+        /* @var \Phug\Compiler\Element\BlockElement $copyBlock */
         $copyBlock = clone $list[0];
         self::assertCount(3, $list);
+        self::assertSame('foo', $copyBlock->getName());
     }
 
     /**
