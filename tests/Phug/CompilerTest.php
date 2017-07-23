@@ -59,6 +59,7 @@ class CompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\AbstractNodeCompiler::compileParserNode
      * @covers \Phug\Compiler\AbstractNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\DoctypeNodeCompiler::<public>
      * @covers ::__construct
@@ -112,7 +113,6 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers \Phug\Compiler\AbstractNodeCompiler::compileParserNode
      * @covers \Phug\Compiler\AbstractNodeCompiler::<public>
      */
     public function testGetCompiledChildren()
