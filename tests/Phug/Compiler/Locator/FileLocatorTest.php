@@ -2,7 +2,7 @@
 
 namespace Phug\Test\Compiler\Locator;
 
-use Phug\Compiler;
+use Phug\Compiler\Locator\FileLocator;
 use Phug\Test\AbstractCompilerTest;
 
 /**
@@ -11,7 +11,8 @@ use Phug\Test\AbstractCompilerTest;
 class FileLocatorTest extends AbstractCompilerTest
 {
     /**
-     * @covers            ::<public>
+     * @covers ::normalize
+     * @covers ::<public>
      */
     public function testLocate()
     {
@@ -19,7 +20,7 @@ class FileLocatorTest extends AbstractCompilerTest
         $paths = ["$base/layouts", "$base/mixins/lib1", "$base/mixins/lib2", "$base/views"];
         $extensions = ['.pug'];
 
-        $locator = new Compiler\Locator\FileLocator();
+        $locator = new FileLocator();
 
         self::assertFileExists($locator->locate('base', $paths, $extensions));
         self::assertStringEndsWith(
@@ -56,5 +57,10 @@ class FileLocatorTest extends AbstractCompilerTest
             '/mixins/lib2/second-module.pug',
             str_replace('\\', '/', $locator->locate('second-module', $paths, $extensions))
         );
+
+        $locator = new FileLocator();
+        self::assertSame(__FILE__, $locator->locate(__FILE__, [], []));
+        self::assertSame(null, $locator->locate('foo.pug', [], []));
+        self::assertSame(null, $locator->locate('foo.pug', [], []));
     }
 }

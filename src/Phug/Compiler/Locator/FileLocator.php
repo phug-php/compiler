@@ -8,7 +8,7 @@ class FileLocator implements LocatorInterface
 {
     private function normalize($path)
     {
-        return rtrim(str_replace('\\', '/', $path), '/'); //Windows can handle both, so we don't care about backslashes
+        return rtrim(str_replace('\\', '/', $path), '/');
     }
 
     public function locate($path, array $locations, array $extensions)
