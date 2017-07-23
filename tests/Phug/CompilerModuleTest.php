@@ -1,6 +1,7 @@
 <?php
 
 namespace Phug\Test;
+
 use Phug\Compiler;
 use Phug\Compiler\Event\CompileEvent;
 use Phug\Compiler\Event\ElementEvent;
@@ -28,10 +29,7 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        self::assertSame(
-            '<header></header><footer></footer>',
-            $compiler->compile('header')
-        );
+        self::assertSame('<header></header><footer></footer>', $compiler->compile('header'));
 
         $compiler = new Compiler([
             'on_compile' => function (CompileEvent $event) {
@@ -45,10 +43,8 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
         } catch (CompilerException $exception) {
             $message = $exception->getMessage();
         }
-        self::assertContains(
-            'foo-bar.pug',
-            $message
-        );
+
+        self::assertContains('foo-bar.pug', $message);
     }
 
     /**
@@ -64,10 +60,7 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        self::assertSame(
-            '<header></header>',
-            $compiler->compile('header=message')
-        );
+        self::assertSame('<header></header>', $compiler->compile('header=message'));
     }
 
     /**
@@ -88,10 +81,7 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        self::assertSame(
-            '<footer></footer>',
-            $compiler->compile('header')
-        );
+        self::assertSame('<footer></footer>', $compiler->compile('header'));
     }
 
     /**
@@ -112,9 +102,6 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        self::assertSame(
-            '<footer></footer>',
-            $compiler->compile('header')
-        );
+        self::assertSame('<footer></footer>', $compiler->compile('header'));
     }
 }
