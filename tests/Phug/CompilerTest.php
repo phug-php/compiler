@@ -360,6 +360,24 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers \Phug\Compiler::dumpFile
+     * @covers \Phug\Compiler::dump
+     */
+    public function testDump()
+    {
+        $dump = $this->compiler->dumpFile(__DIR__.'/../templates/page.pug');
+
+        self::assertSame(implode("\n", [
+            'Document: document',
+            '  Markup: section',
+            '    Text',
+            '    Text',
+            '    Text',
+            '    Text',
+        ]), $dump);
+    }
+
+    /**
      * @covers ::getModuleBaseClassName
      */
     public function testGetModuleBaseClassName()

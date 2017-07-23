@@ -201,4 +201,21 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
         ]);
         $compiler->compile('include /missing');
     }
+
+    /**
+     * @covers            \Phug\Compiler::throwException
+     * @expectedException \Phug\CompilerException
+     */
+    public function testFileNotFoundInFileException()
+    {
+        $base = __DIR__.'/../../../templates';
+        $file = realpath($base . DIRECTORY_SEPARATOR . 'include-wrong-path.pug');
+        $this->expectMessageToBeThrown(
+            'Path: '.$file
+        );
+        $compiler = new Compiler([
+            'paths' => [$base],
+        ]);
+        $compiler->compileFile($file);
+    }
 }

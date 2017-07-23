@@ -3,7 +3,6 @@
 namespace Phug;
 
 // Node compilers
-use phpDocumentor\Reflection\DocBlock\Tags\Source;
 use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Event\CompileEvent;
 use Phug\Compiler\Event\ElementEvent;
@@ -253,14 +252,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         }
 
         $this->addModules($this->getOption('compiler_modules'));
-    }
-
-    /**
-     * @return NodeInterface
-     */
-    public function getCurrentNode()
-    {
-        return $this->currentNode;
     }
 
     /**

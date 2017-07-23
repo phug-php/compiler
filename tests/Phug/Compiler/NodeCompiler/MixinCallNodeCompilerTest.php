@@ -21,6 +21,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
      * @covers \Phug\Compiler::getMixins
      * @covers \Phug\Compiler::replaceBlock
+     * @covers \Phug\Compiler::requireMixin
      */
     public function testCompile()
     {
@@ -79,6 +80,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::<public>
      * @covers ::compileDynamicMixin
+     * @covers \Phug\Compiler::enableDynamicMixins
      * @covers \Phug\Compiler::compileDocument
      * @covers \Phug\Compiler::convertBlocksToDynamicCalls
      */
@@ -141,6 +143,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers            ::<public>
+     * @covers            \Phug\Compiler::requireMixin
      * @expectedException \Phug\CompilerException
      */
     public function testUnknownMixin()
