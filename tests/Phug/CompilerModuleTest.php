@@ -83,7 +83,7 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
                     /* @var ElementNode $element */
                     $element->setName('footer');
 
-                    return $element;
+                    $event->setNode($element);
                 }
             },
         ]);
@@ -103,11 +103,11 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
     {
         $compiler = new Compiler([
             'on_element' => function (ElementEvent $event) {
-                if (($element = $event->getElement()) instanceof MarkupElement) {
-                    /* @var ElementNode $element */
-                    $element->setName('footer');
+                if (($markup = $event->getElement()) instanceof MarkupElement) {
+                    /* @var MarkupElement $markup */
+                    $markup->setName('footer');
 
-                    return $element;
+                    $event->setElement($markup);
                 }
             },
         ]);

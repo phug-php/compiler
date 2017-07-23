@@ -19,6 +19,7 @@ class ElementNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompile('<section><input /></section>', 'section: input');
         $this->assertCompile('<section></section>', 'section');
+        $this->assertCompile('<section></section>', '#{"section"}');
         $this->assertCompile('<section />', 'section/');
     }
 

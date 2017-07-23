@@ -209,7 +209,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     public function testFileNotFoundInFileException()
     {
         $base = __DIR__.'/../../../templates';
-        $file = realpath($base . DIRECTORY_SEPARATOR . 'include-wrong-path.pug');
+        $file = realpath($base.DIRECTORY_SEPARATOR.'include-wrong-path.pug');
         $this->expectMessageToBeThrown(
             'Path: '.$file
         );
