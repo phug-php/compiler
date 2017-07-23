@@ -73,11 +73,17 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
             "<section>1\nA2\nA</section>",
             __DIR__.'/../../../templates/page.pug'
         );
+
+        $list = &$this->compiler->getBlocksByName('foo');
+        self::assertCount(2, $list);
+        $copyBlock = clone $list[0];
+        self::assertCount(3, $list);
     }
 
     /**
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::hasBlockParent
+     * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
     public function testDoubleInheritance()
     {
@@ -107,6 +113,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
     public function testExtendsInInclude()
     {
