@@ -151,9 +151,9 @@ class FilterNodeCompilerTest extends AbstractCompilerTest
         );
 
         $compiler = new Compiler([
-            'on_element' => function (Compiler\Event\ElementEvent $e) {
-                if ($e->getElement() instanceof TextElement) {
-                    $e->setElement(new DocumentElement());
+            'on_element' => function (Compiler\Event\ElementEvent $event) {
+                if ($event->getElement() instanceof TextElement) {
+                    $event->setElement(new DocumentElement());
                 }
             },
             'filters' => [

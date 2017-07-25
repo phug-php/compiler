@@ -281,14 +281,14 @@ class CompilerTest extends AbstractCompilerTest
     public function testHooks()
     {
         $compiler = new Compiler([
-            'on_node'  => function (Compiler\Event\NodeEvent $e) {
-                $node = $e->getNode();
+            'on_node'  => function (Compiler\Event\NodeEvent $event) {
+                $node = $event->getNode();
                 if ($node instanceof ElementNode) {
                     $node->setName($node->getName().'b');
                 }
             },
-            'on_element' => function (Compiler\Event\ElementEvent $e) {
-                $element = $e->getElement();
+            'on_element' => function (Compiler\Event\ElementEvent $event) {
+                $element = $event->getElement();
                 if ($element instanceof MarkupElement) {
                     $element->setName($element->getName().'c');
                 }
@@ -298,11 +298,11 @@ class CompilerTest extends AbstractCompilerTest
         self::assertSame('<abc></abc>', $compiler->compile('a'));
 
         $compiler = new Compiler([
-            'on_compile'  => function (Compiler\Event\CompileEvent $e) {
-                $e->setInput($e->getInput().' Hello');
+            'on_compile'  => function (Compiler\Event\CompileEvent $event) {
+                $event->setInput($event->getInput().' Hello');
             },
-            'on_output' => function (Compiler\Event\OutputEvent $e) {
-                $e->setOutput('<p>'.$e->getOutput().'</p>');
+            'on_output' => function (Compiler\Event\OutputEvent $event) {
+                $event->setOutput('<p>'.$event->getOutput().'</p>');
             },
         ]);
 
@@ -320,32 +320,32 @@ class CompilerTest extends AbstractCompilerTest
                             '',
                             trim($jsPhpize->compile($jsCode))
                         )), ';');
-                    } catch (Exception $e) {
-                        if ($e instanceof LexerException ||
-                            $e instanceof ParserException ||
-                            $e instanceof CompilerException
+                    } catch (Exception $exception) {
+                        if ($exception instanceof LexerException ||
+                            $exception instanceof ParserException ||
+                            $exception instanceof CompilerException
                         ) {
                             return $jsCode;
                         }
 
-                        throw $e;
+                        throw $exception;
                     }
                 },
             ],
         ]);
-        $compiler->attach(CompilerEvent::COMPILE, function (Compiler\Event\CompileEvent $e) use ($compiler) {
+        $compiler->attach(CompilerEvent::COMPILE, function () use ($compiler) {
             $compiler->setOption('jsphpize_engine', new JsPhpize([
                 'catchDependencies' => true,
             ]));
         });
 
-        $compiler->attach(CompilerEvent::OUTPUT, function (Compiler\Event\OutputEvent $e) use ($compiler) {
+        $compiler->attach(CompilerEvent::OUTPUT, function (Compiler\Event\OutputEvent $event) use ($compiler) {
 
             /** @var JsPhpize $jsPhpize */
             $jsPhpize = $compiler->getOption('jsphpize_engine');
             $dependencies = $jsPhpize->compileDependencies();
             if ($dependencies !== '') {
-                $e->setOutput($compiler->getFormatter()->handleCode($dependencies).$e->getOutput());
+                $event->setOutput($compiler->getFormatter()->handleCode($dependencies).$event->getOutput());
             }
             $jsPhpize->flushDependencies();
             $compiler->unsetOption('jsphpize_engine');

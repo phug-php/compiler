@@ -529,9 +529,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        $e = new NodeEvent($node);
-        $this->trigger($e);
-        $node = $e->getNode();
+        $event = new NodeEvent($node);
+        $this->trigger($event);
+        $node = $event->getNode();
 
         $this->currentNode = $node;
 
@@ -544,9 +544,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 $element = $compiler->compileNode($node, $parent);
 
                 if ($element instanceof ElementInterface && !($element instanceof BlockElement)) {
-                    $e = new ElementEvent($element);
-                    $this->trigger($e);
-                    $element = $e->getElement();
+                    $event = new ElementEvent($element);
+                    $this->trigger($event);
+                    $element = $event->getElement();
                 }
 
                 return $element;
@@ -742,21 +742,21 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compile($input, $path = null)
     {
-        $e = new CompileEvent($input, $path);
-        $this->trigger($e);
+        $event = new CompileEvent($input, $path);
+        $this->trigger($event);
 
-        $input = $e->getInput();
-        $path = $e->getPath();
+        $input = $event->getInput();
+        $path = $event->getPath();
 
         $element = $this->compileDocument($input, $path);
 
         $output = $this->formatter->format($element);
         $output = $this->formatter->formatDependencies().$output;
 
-        $e = new OutputEvent($output);
-        $this->trigger($e);
+        $event = new OutputEvent($output);
+        $this->trigger($event);
 
-        return $e->getOutput();
+        return $event->getOutput();
     }
 
     /**
