@@ -138,8 +138,11 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
         $declaration = $compiler->requireMixin($mixinName, $node);
         foreach ($declaration->getAttributes() as $index => $attribute) {
             $name = $attribute->getName();
-            if (substr($name, 0, 3) === '...') {
-                $name = substr($name, 3);
+            if (mb_substr($name, 0, 3) === '...') {
+                $name = mb_substr($name, 3);
+                if (mb_substr($name, 0, 1) === '$') {
+                    $name = mb_substr($name, 1);
+                }
                 $value = [];
                 foreach (array_slice($arguments, $index) as $subIndex => $argument) {
                     $value[] = isset($arguments[$index + $subIndex])
@@ -151,6 +154,9 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                     $node
                 );
                 break;
+            }
+            if (mb_substr($name, 0, 1) === '$') {
+                $name = mb_substr($name, 1);
             }
             $variables[$name] = new ExpressionElement(
                 isset($arguments[$index])

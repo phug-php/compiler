@@ -277,6 +277,7 @@ class CompilerTest extends AbstractCompilerTest
      * @covers ::compileNode
      * @covers ::compile
      * @covers ::__construct
+     * @covers \Phug\Compiler\Event\ElementEvent::getNodeEvent
      */
     public function testHooks()
     {

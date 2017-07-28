@@ -57,6 +57,28 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group i
+     * @covers ::<public>
+     */
+    public function testCompileVariadicMixin()
+    {
+        $this->assertRender(
+            [
+                '<p>1</p>',
+                '<i>2</i>',
+                '<i>3</i>',
+            ],
+            [
+                'mixin variadicMixin($a, ...$b)'."\n",
+                '  p=$a'."\n",
+                '  each $c in $b'."\n",
+                '    i=$c'."\n",
+                '+variadicMixin(1, 2, 3)',
+            ]
+        );
+    }
+
+    /**
      * @covers ::<public>
      * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
