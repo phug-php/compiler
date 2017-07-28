@@ -9,17 +9,27 @@ use Phug\Formatter\ElementInterface;
 class ElementEvent extends Event
 {
     private $element;
+    private $nodeEvent;
 
     /**
      * ElementEvent constructor.
      *
      * @param ElementInterface $element
      */
-    public function __construct(ElementInterface $element)
+    public function __construct(NodeEvent $nodeEvent, ElementInterface $element)
     {
         parent::__construct(CompilerEvent::ELEMENT);
 
+        $this->nodeEvent = $nodeEvent;
         $this->element = $element;
+    }
+
+    /**
+     * @return NodeEvent
+     */
+    public function getNodeEvent()
+    {
+        return $this->nodeEvent;
     }
 
     /**

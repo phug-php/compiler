@@ -290,12 +290,12 @@ class CompilerTest extends AbstractCompilerTest
             'on_element' => function (Compiler\Event\ElementEvent $event) {
                 $element = $event->getElement();
                 if ($element instanceof MarkupElement) {
-                    $element->setName($element->getName().'c');
+                    $element->setName($element->getName().'c'.$event->getNodeEvent()->getNode()->getName());
                 }
             },
         ]);
 
-        self::assertSame('<abc></abc>', $compiler->compile('a'));
+        self::assertSame('<abcab></abcab>', $compiler->compile('a'));
 
         $compiler = new Compiler([
             'on_compile'  => function (Compiler\Event\CompileEvent $event) {

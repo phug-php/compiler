@@ -529,9 +529,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        $event = new NodeEvent($node);
-        $this->trigger($event);
-        $node = $event->getNode();
+        $nodeEvent = new NodeEvent($node);
+        $this->trigger($nodeEvent);
+        $node = $nodeEvent->getNode();
 
         $this->currentNode = $node;
 
@@ -544,9 +544,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 $element = $compiler->compileNode($node, $parent);
 
                 if ($element instanceof ElementInterface && !($element instanceof BlockElement)) {
-                    $event = new ElementEvent($element);
-                    $this->trigger($event);
-                    $element = $event->getElement();
+                    $elementEvent = new ElementEvent($nodeEvent, $element);
+                    $this->trigger($elementEvent);
+                    $element = $elementEvent->getElement();
                 }
 
                 return $element;
