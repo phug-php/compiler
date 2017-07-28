@@ -742,21 +742,21 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compile($input, $path = null)
     {
-        $event = new CompileEvent($input, $path);
-        $this->trigger($event);
+        $compileEvent = new CompileEvent($input, $path);
+        $this->trigger($compileEvent);
 
-        $input = $event->getInput();
-        $path = $event->getPath();
+        $input = $compileEvent->getInput();
+        $path = $compileEvent->getPath();
 
         $element = $this->compileDocument($input, $path);
 
         $output = $this->formatter->format($element);
         $output = $this->formatter->formatDependencies().$output;
 
-        $event = new OutputEvent($output);
-        $this->trigger($event);
+        $outputEvent = new OutputEvent($compileEvent, $output);
+        $this->trigger($outputEvent);
 
-        return $event->getOutput();
+        return $outputEvent->getOutput();
     }
 
     /**

@@ -57,7 +57,6 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      */
     public function testCompileVariadicMixin()

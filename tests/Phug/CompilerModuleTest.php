@@ -56,11 +56,14 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
     {
         $compiler = new Compiler([
             'on_output' => function (OutputEvent $event) {
-                $event->setOutput(preg_replace('/<\\?.*?\\?>/', '', $event->getOutput()));
+                $event->setOutput(
+                    preg_replace('/<\\?.*?\\?>/', '', $event->getOutput()).
+                    mb_strlen($event->getCompileEvent()->getInput())
+                );
             },
         ]);
 
-        self::assertSame('<header></header>', $compiler->compile('header=message'));
+        self::assertSame('<header></header>14', $compiler->compile('header=message'));
     }
 
     /**
