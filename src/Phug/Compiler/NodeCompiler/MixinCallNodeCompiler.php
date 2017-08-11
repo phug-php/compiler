@@ -36,14 +36,15 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
     {
         $compiler = $this->getCompiler()->enableDynamicMixins();
         $formatter = $compiler->getFormatter();
-        /* @var ExpressionElement $expression */
-        $expression = $compiler->compileNode($mixinName);
+        $name = is_string($mixinName)
+            ? var_export($mixinName, true)
+            : $formatter->formatCode($compiler->compileNode($mixinName)->getValue());
         $children = implode('', array_map(function ($child) use ($formatter) {
             return $formatter->format($child);
         }, $this->getCompiledChildren($node, new DocumentElement($node))));
         $call = new CodeElement(
             implode("\n", [
-                '$__pug_vars = [];',
+                '$__pug_vars = [\'__pug_mixins\' => $__pug_mixins];',
                 'foreach (array_keys(get_defined_vars()) as $key) {',
                 '    if ('.
                         'mb_substr($key, 0, 6) === \'__pug_\' || '.
@@ -67,9 +68,7 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                 '        $__pug_vars[$key] = &$value;',
                 '    }',
                 '}',
-                '$__pug_mixins['.
-                $formatter->formatCode($expression->getValue()).
-                '](['.
+                '$__pug_mixins['.$name.'](['.
                     '"attributes" => '.($attributes
                         ? $formatter->formatCode($attributes->getValue())
                         : '[]'
@@ -131,7 +130,14 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                 implode(', ', $mergeAttributes)
             ));
         }
-        if (!is_string($mixinName)) {
+        $inMixinDeclaration = false;
+        for ($parent = $node->getParent(); $parent; $parent = $parent->getParent()) {
+            if ($parent instanceof MixinNode) {
+                $inMixinDeclaration = true;
+                break;
+            }
+        }
+        if ($inMixinDeclaration || !is_string($mixinName)) {
             return $this->compileDynamicMixin($mixinName, $node, $variables['attributes'], $arguments);
         }
         /** @var MixinNode $declaration */
