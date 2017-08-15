@@ -4,7 +4,6 @@ namespace Phug\Compiler\NodeCompiler;
 
 use Phug\Compiler\AbstractNodeCompiler;
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 
