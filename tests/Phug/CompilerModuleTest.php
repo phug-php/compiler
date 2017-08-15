@@ -38,6 +38,7 @@ class CompilerModuleTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $message = '';
+
         try {
             $compiler->compileFile(__DIR__.'/../templates/include-wrong-path.pug');
         } catch (CompilerException $exception) {

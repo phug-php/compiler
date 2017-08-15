@@ -39,7 +39,6 @@ use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
 use Phug\Compiler\NodeCompilerInterface;
 use Phug\Compiler\Util\PhpUnwrap;
 use Phug\Formatter\Element\CodeElement;
-use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
@@ -499,7 +498,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 '        $__pug_children_vars[$key] = &$value;',
                 '    }',
                 '}',
-                '$__pug_children($__pug_children_vars, $__pug_mixins, $__pug_children);'
+                '$__pug_children($__pug_children_vars, $__pug_mixins, $__pug_children);',
             ]));
             $mixinBlock->preventFromTransformation();
 
