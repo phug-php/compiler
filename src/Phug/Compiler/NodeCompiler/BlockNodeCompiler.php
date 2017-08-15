@@ -42,7 +42,7 @@ class BlockNodeCompiler extends AbstractNodeCompiler
         return false;
     }
 
-    protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent)
+    protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent = null)
     {
         $compiler = $this->getCompiler();
         $layout = $compiler->getLayout();

@@ -37,6 +37,7 @@ use Phug\Compiler\NodeCompiler\WhenNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
 // Nodes
 use Phug\Compiler\NodeCompilerInterface;
+use Phug\Compiler\Util\PhpUnwrap;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\TextElement;
@@ -149,6 +150,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
+            'dynamic_mixins'       => false,
             'on_compile'           => null,
             'on_output'            => null,
             'on_node'              => null,
@@ -475,10 +477,33 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     private function convertBlocksToDynamicCalls($element)
     {
         if ($element instanceof BlockElement) {
-            $expression = new ExpressionElement('$__pug_children');
-            $expression->preventFromTransformation();
+            $mixinBlock = new CodeElement(implode("\n", [
+                '$__pug_children_vars = [];',
+                'foreach (array_keys(get_defined_vars()) as $key) {',
+                '    if (mb_substr($key, 0, 6) === \'__pug_\') {',
+                '        continue;',
+                '    }',
+                '    $ref = &$GLOBALS[$key];',
+                '    $value = &$$key;',
+                '    if($ref !== $value){',
+                '        $__pug_children_vars[$key] = &$value;',
 
-            return $expression;
+                '        continue;',
+                '    }',
+                '    $savedValue = $value;',
+                '    $value = ($value === true) ? false : true;',
+                '    $isGlobalReference = ($value === $ref);',
+                '    $value = $savedValue;',
+
+                '    if (!$isGlobalReference) {',
+                '        $__pug_children_vars[$key] = &$value;',
+                '    }',
+                '}',
+                '$__pug_children($__pug_children_vars, $__pug_mixins, $__pug_children);'
+            ]));
+            $mixinBlock->preventFromTransformation();
+
+            return $mixinBlock;
         }
 
         if ($element instanceof ElementInterface) {
@@ -707,9 +732,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                     $childElement = $child instanceof ElementInterface
                         ? $child
                         : $this->compileNode($child);
-                    $content .= "\n".'?>'.$this->formatter->format(
-                        $this->convertBlocksToDynamicCalls($childElement)
-                    ).'<?php';
+                    $dynamicCall = $this->convertBlocksToDynamicCalls($childElement);
+                    $blockCode = new PhpUnwrap($dynamicCall, $this->getFormatter());
+                    $content .= "\n$blockCode\n";
                 }
                 $code .= var_export($mixin->getName(), true).
                     ' => function ($__pug_params) {'."\n".

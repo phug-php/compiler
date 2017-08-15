@@ -5,6 +5,7 @@ namespace Phug\Compiler\NodeCompiler;
 use Phug\Ast\NodeInterface;
 use Phug\Compiler\AbstractNodeCompiler;
 use Phug\Compiler\Element\BlockElement;
+use Phug\Compiler\Util\PhpUnwrap;
 use Phug\Formatter\Element\AttributeElement;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\DocumentElement;
@@ -39,11 +40,12 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
         $name = is_string($mixinName)
             ? var_export($mixinName, true)
             : $formatter->formatCode($compiler->compileNode($mixinName)->getValue());
-        $children = implode('', array_map(function ($child) use ($formatter) {
-            return $formatter->format($child);
-        }, $this->getCompiledChildren($node, new DocumentElement($node))));
+        $children = new PhpUnwrap($this->getCompiledChildren($node, new DocumentElement($node)), $formatter);
         $call = new CodeElement(
             implode("\n", [
+                'if (!isset($__pug_mixins)) {',
+                '    $__pug_mixins = [];',
+                '}',
                 '$__pug_vars = [\'__pug_mixins\' => $__pug_mixins];',
                 'foreach (array_keys(get_defined_vars()) as $key) {',
                 '    if ('.
@@ -77,9 +79,14 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                         /* @var AttributeElement $argument */
                         return $formatter->formatCode($argument->getValue());
                     }, $arguments)).'],'.
-                    '"children" => '.var_export($children, true).','.
+                    '"children" => function ($__pug_children_vars, &$__pug_mixins, &$__pug_children) {'."\n".
+                    '    foreach ($__pug_children_vars as $key => &$value) {'."\n".
+                    '        $$key = &$value;'."\n".
+                    '    }'."\n".
+                    '    '.$children."\n".
+                    '},'.
                     '"globals" => $__pug_vars,'.
-                '])',
+                ']);',
             ]),
             $node
         );
@@ -87,6 +94,17 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
         $call->preventFromTransformation();
 
         return $call;
+    }
+
+    protected function isInsideMixinNode(NodeInterface $node)
+    {
+        for ($parent = $node->getParent(); $parent; $parent = $parent->getParent()) {
+            if ($parent instanceof MixinNode) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function compileNode(ParserNodeInterface $node, ElementInterface $parent = null)
@@ -130,14 +148,11 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                 implode(', ', $mergeAttributes)
             ));
         }
-        $inMixinDeclaration = false;
-        for ($parent = $node->getParent(); $parent; $parent = $parent->getParent()) {
-            if ($parent instanceof MixinNode) {
-                $inMixinDeclaration = true;
-                break;
-            }
-        }
-        if ($inMixinDeclaration || !is_string($mixinName)) {
+        if ($compiler->getOption('dynamic_mixins') ||
+            !is_string($mixinName) ||
+            $compiler->isDynamicMixinsEnabled() ||
+            $this->isInsideMixinNode($node)
+        ) {
             return $this->compileDynamicMixin($mixinName, $node, $variables['attributes'], $arguments);
         }
         /** @var MixinNode $declaration */

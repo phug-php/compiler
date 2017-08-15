@@ -19,6 +19,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
      * @covers \Phug\Compiler::getMixins
      * @covers \Phug\Compiler::replaceBlock
      * @covers \Phug\Compiler::requireMixin
@@ -84,11 +85,15 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
      * @covers \Phug\Compiler::getMixins
      * @covers \Phug\Compiler::replaceBlock
+     * @covers \Phug\Compiler\Util\PhpUnwrap::<public>
      */
     public function testDoubleBlock()
     {
+        $compiler = new Compiler();
+        file_put_contents(__DIR__.'/../../../../temp.php', $compiler->compileFile(__DIR__.'/../../../templates/mixin-double-block.pug'));
         $this->assertRenderFile(
             [
                 '<header>HelloHello</header>',
@@ -153,6 +158,54 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     * @covers ::proceedBlocks
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
+     * @covers \Phug\Compiler::getMixins
+     * @covers \Phug\Compiler::replaceBlock
+     * @covers \Phug\Compiler::requireMixin
+     */
+    public function testMixinAttributes()
+    {
+        $this->enableJsPhpize();
+        $this->assertRenderFile(
+            file_get_contents(__DIR__.'/../../../templates/mixin.attrs.html'),
+            __DIR__.'/../../../templates/mixin.attrs.pug',
+            [
+                'pretty' => '  ',
+            ]
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers ::proceedBlocks
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
+     * @covers \Phug\Compiler::getMixins
+     * @covers \Phug\Compiler::replaceBlock
+     * @covers \Phug\Compiler::requireMixin
+     */
+    public function testMixinBlocks()
+    {
+        $this->enableJsPhpize();
+        $this->assertRenderFile(
+            file_get_contents(__DIR__.'/../../../templates/mixin.blocks.html'),
+            __DIR__.'/../../../templates/mixin.blocks.pug',
+            [
+                'pretty' => '  ',
+            ]
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
@@ -178,6 +231,8 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
             'Unknown undef mixin called.'
         );
 
-        (new Compiler())->compile('+undef()');
+        (new Compiler([
+            'dynamic_mixins' => false,
+        ]))->compile('+undef()');
     }
 }

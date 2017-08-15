@@ -3,7 +3,9 @@
 namespace Phug\Test;
 
 use Exception;
+use JsPhpize\JsPhpize;
 use Phug\Compiler;
+use Phug\CompilerEvent;
 
 abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,6 +35,59 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    protected function enableJsPhpize()
+    {
+        $compiler = $this->compiler;
+
+        $compiler = new Compiler([
+            'paths'    => [__DIR__.'/../templates'],
+            'patterns' => [
+                'expression_in_text'   => '%s',
+                'transform_expression' => function ($jsCode) use (&$compiler) {
+                    /** @var JsPhpize $jsPhpize */
+                    $jsPhpize = $compiler->getOption('jsphpize_engine');
+
+                    try {
+                        return rtrim(trim(preg_replace(
+                            '/\{\s*\}$/',
+                            '',
+                            trim($jsPhpize->compile($jsCode))
+                        )), ';');
+                    } catch (Exception $exception) {
+                        if ($exception instanceof \JsPhpize\Lexer\Exception ||
+                            $exception instanceof \JsPhpize\Parser\Exception ||
+                            $exception instanceof \JsPhpize\Compiler\Exception
+                        ) {
+                            return $jsCode;
+                        }
+
+                        throw $exception;
+                    }
+                },
+            ],
+        ]);
+
+        $compiler->attach(CompilerEvent::COMPILE, function () use ($compiler) {
+            $compiler->setOption('jsphpize_engine', new JsPhpize([
+                'catchDependencies' => true,
+            ]));
+        });
+
+        $compiler->attach(CompilerEvent::OUTPUT, function (Compiler\Event\OutputEvent $event) use ($compiler) {
+
+            /** @var JsPhpize $jsPhpize */
+            $jsPhpize = $compiler->getOption('jsphpize_engine');
+            $dependencies = $jsPhpize->compileDependencies();
+            if ($dependencies !== '') {
+                $event->setOutput($compiler->getFormatter()->handleCode($dependencies).$event->getOutput());
+            }
+            $jsPhpize->flushDependencies();
+            $compiler->unsetOption('jsphpize_engine');
+        });
+
+        $this->compiler = $compiler;
+    }
+
     protected function implodeLines($str)
     {
         return is_string($str) ? $str : implode('', $str);
@@ -58,7 +113,9 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         $compiler = $this->compiler;
         $compiler->getFormatter()->setOptionsRecursive($options);
         $php = $compiler->compile($this->implodeLines($actual));
-        file_put_contents('temp.php', $php);
+        if (getenv('LOG_COMPILE')) {
+            file_put_contents('temp.php', $php);
+        }
         extract($variables);
         ob_start();
         eval('?>'.$php);
@@ -78,7 +135,7 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     protected function assertRenderFile($expected, $actual, array $options = [])
     {
         $compiler = $this->compiler;
-        $compiler->getFormatter()->setOptionsRecursive($options);
+        $compiler->setOptionsRecursive($options);
         ob_start();
         eval('?>'.$compiler->compileFile($actual));
         $actual = ob_get_contents();

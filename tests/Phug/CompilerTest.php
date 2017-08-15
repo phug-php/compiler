@@ -2,19 +2,13 @@
 
 namespace Phug\Test;
 
-use Exception;
-use JsPhpize\JsPhpize;
 use Phug\Compiler;
-use Phug\CompilerEvent;
-use Phug\CompilerException;
 use Phug\CompilerModuleInterface;
 use Phug\Formatter;
 use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\MarkupElement;
-use Phug\LexerException;
 use Phug\Parser;
 use Phug\Parser\Node\ElementNode;
-use Phug\ParserException;
 
 /**
  * @coversDefaultClass \Phug\Compiler
@@ -309,49 +303,7 @@ class CompilerTest extends AbstractCompilerTest
 
         self::assertSame('<p><a>Hello</a></p>', $compiler->compile('a'));
 
-        $compiler = new Compiler([
-            'patterns' => [
-                'transform_expression' => function ($jsCode) use (&$compiler) {
-                    /** @var JsPhpize $jsPhpize */
-                    $jsPhpize = $compiler->getOption('jsphpize_engine');
-
-                    try {
-                        return rtrim(trim(preg_replace(
-                            '/\{\s*\}$/',
-                            '',
-                            trim($jsPhpize->compile($jsCode))
-                        )), ';');
-                    } catch (Exception $exception) {
-                        if ($exception instanceof LexerException ||
-                            $exception instanceof ParserException ||
-                            $exception instanceof CompilerException
-                        ) {
-                            return $jsCode;
-                        }
-
-                        throw $exception;
-                    }
-                },
-            ],
-        ]);
-        $compiler->attach(CompilerEvent::COMPILE, function () use ($compiler) {
-            $compiler->setOption('jsphpize_engine', new JsPhpize([
-                'catchDependencies' => true,
-            ]));
-        });
-
-        $compiler->attach(CompilerEvent::OUTPUT, function (Compiler\Event\OutputEvent $event) use ($compiler) {
-
-            /** @var JsPhpize $jsPhpize */
-            $jsPhpize = $compiler->getOption('jsphpize_engine');
-            $dependencies = $jsPhpize->compileDependencies();
-            if ($dependencies !== '') {
-                $event->setOutput($compiler->getFormatter()->handleCode($dependencies).$event->getOutput());
-            }
-            $jsPhpize->flushDependencies();
-            $compiler->unsetOption('jsphpize_engine');
-        });
-        $this->compiler = $compiler;
+        $this->enableJsPhpize();
 
         $this->assertRender('<p>Hello</p>', 'p=foo.bar', [], [
             'foo' => [
