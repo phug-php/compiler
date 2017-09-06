@@ -108,11 +108,8 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         return $this->assertSameLines($expected, $this->compiler->compileFile($actual));
     }
 
-    protected function render($actual, array $options = [], array $variables = [])
+    protected function getRenderedHtml($php, array $variables = [])
     {
-        $compiler = $this->compiler;
-        $compiler->getFormatter()->setOptionsRecursive($options);
-        $php = $compiler->compile($this->implodeLines($actual));
         if (getenv('LOG_COMPILE')) {
             file_put_contents('temp.php', $php);
         }
@@ -123,6 +120,15 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         ob_end_clean();
 
         return $actual;
+    }
+
+    protected function render($actual, array $options = [], array $variables = [])
+    {
+        $compiler = $this->compiler;
+        $compiler->setOptionsRecursive($options);
+        $php = $compiler->compile($this->implodeLines($actual));
+
+        return $this->getRenderedHtml($php, $variables);
     }
 
     protected function assertRender($expected, $actual, array $options = [], array $variables = [])
@@ -136,10 +142,8 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     {
         $compiler = $this->compiler;
         $compiler->setOptionsRecursive($options);
-        ob_start();
-        eval('?>'.$compiler->compileFile($actual));
-        $actual = ob_get_contents();
-        ob_end_clean();
+        $php = $compiler->compileFile($actual);
+        $actual = $this->getRenderedHtml($php);
 
         return $this->assertSameLines($expected, $actual);
     }
