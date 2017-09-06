@@ -498,7 +498,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 '        $__pug_children_vars[$key] = &$value;',
                 '    }',
                 '}',
-                '$__pug_children($__pug_children_vars, $__pug_mixins, $__pug_children);',
+                '$__pug_children($__pug_children_vars, $__pug_mixins);',
             ]));
             $mixinBlock->preventFromTransformation();
 

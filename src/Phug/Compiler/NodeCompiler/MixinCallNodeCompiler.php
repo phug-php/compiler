@@ -79,7 +79,7 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
                         /* @var AttributeElement $argument */
                         return $formatter->formatCode($argument->getValue());
                     }, $arguments)).'],'.
-                    '"children" => function ($__pug_children_vars, &$__pug_mixins, &$__pug_children) {'."\n".
+                    '"children" => function ($__pug_children_vars, &$__pug_mixins) use ($__pug_children) {'."\n".
                     '    foreach ($__pug_children_vars as $key => &$value) {'."\n".
                     '        $$key = &$value;'."\n".
                     '    }'."\n".

@@ -48,11 +48,15 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
                     $jsPhpize = $compiler->getOption('jsphpize_engine');
 
                     try {
-                        return rtrim(trim(preg_replace(
-                            '/\{\s*\}$/',
-                            '',
-                            trim($jsPhpize->compile($jsCode))
-                        )), ';');
+                        $phpCode = trim($jsPhpize->compile($jsCode));
+                        $phpCode = preg_replace('/\{\s*\}$/', '', $phpCode);
+                        $phpCode = preg_replace(
+                            '/^(?<!\$)\$+(\$[a-zA-Z\\\\\\x7f-\\xff][a-zA-Z0-9\\\\_\\x7f-\\xff]*\s*[=;])/',
+                            '$1',
+                            $phpCode
+                        );
+
+                        return rtrim(trim($phpCode), ';');
                     } catch (Exception $exception) {
                         if ($exception instanceof \JsPhpize\Lexer\Exception ||
                             $exception instanceof \JsPhpize\Parser\Exception ||
