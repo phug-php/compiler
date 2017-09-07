@@ -147,7 +147,11 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         $compiler = $this->compiler;
         $compiler->setOptionsRecursive($options);
         $php = $compiler->compileFile($actual);
-        $actual = $this->getRenderedHtml($php);
+        $actual = preg_replace(
+            '/\s(class|id)=""/',
+            '',
+            $this->getRenderedHtml($php)
+        );
 
         return $this->assertSameLines($expected, $actual);
     }

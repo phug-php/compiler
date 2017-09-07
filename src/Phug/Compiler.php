@@ -149,7 +149,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
-            'dynamic_mixins'       => false,
             'on_compile'           => null,
             'on_output'            => null,
             'on_node'              => null,
@@ -473,7 +472,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         return $this->namedCompilers[$compiler];
     }
 
-    private function convertBlocksToDynamicCalls($element)
+    public function convertBlocksToDynamicCalls($element)
     {
         if ($element instanceof BlockElement) {
             $mixinBlock = new CodeElement(implode("\n", [
@@ -736,7 +735,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                     $content .= "\n$blockCode\n";
                 }
                 $code .= var_export($mixin->getName(), true).
-                    ' => function ($__pug_params) {'."\n".
+                    ' => function ($__pug_params) use (&$__pug_mixins) {'."\n".
                         'foreach ($__pug_params["globals"] as $key => &$value) {'."\n".
                         '    $$key = &$value;'."\n".
                         '}'."\n".
