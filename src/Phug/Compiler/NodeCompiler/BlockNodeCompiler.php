@@ -4,6 +4,7 @@ namespace Phug\Compiler\NodeCompiler;
 
 use Phug\Compiler\AbstractNodeCompiler;
 use Phug\Compiler\Element\BlockElement;
+use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\BlockNode;
 use Phug\Parser\Node\MixinNode;
@@ -11,7 +12,7 @@ use Phug\Parser\NodeInterface;
 
 class BlockNodeCompiler extends AbstractNodeCompiler
 {
-    protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent)
+    protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent = null)
     {
         $compiler = $this->getCompiler();
         $block = new BlockElement($compiler, null, $node, $parent);
@@ -28,7 +29,11 @@ class BlockNodeCompiler extends AbstractNodeCompiler
             return null;
         }
 
-        return $block;
+        $expression = new ExpressionElement('$__pug_children(get_defined_vars())');
+        $expression->uncheck();
+        $expression->preventFromTransformation();
+
+        return $expression;
     }
 
     protected function hasBlockParent(BlockNode $node)
@@ -42,7 +47,7 @@ class BlockNodeCompiler extends AbstractNodeCompiler
         return false;
     }
 
-    protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent)
+    protected function compileNamedBlock($name, BlockNode $node, ElementInterface $parent = null)
     {
         $compiler = $this->getCompiler();
         $layout = $compiler->getLayout();

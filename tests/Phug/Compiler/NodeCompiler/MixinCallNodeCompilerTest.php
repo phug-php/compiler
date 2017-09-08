@@ -13,50 +13,45 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCallNodeCompilerTest extends AbstractCompilerTest
 {
     /**
+     * @group mixins
      * @covers ::<public>
-     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
-     * @covers \Phug\Compiler::requireMixin
      */
     public function testCompile()
     {
         $this->assertRenderFile(
             [
-                '<section>'.PHP_EOL,
-                '  <div class="ab">'.PHP_EOL,
-                '    <div class="a"></div>'.PHP_EOL,
-                '    <div class="b"></div>'.PHP_EOL,
-                '  </div>'.PHP_EOL,
-                '  <div>'.PHP_EOL,
-                '  </div>'.PHP_EOL,
-                '</section>'.PHP_EOL,
-                '<div>bar</div>'.PHP_EOL,
-                '<article>append</article>'.PHP_EOL,
-                '<div class="ab">'.PHP_EOL,
-                '  <div class="a">a</div>'.PHP_EOL,
-                '  <div class="b">b</div>'.PHP_EOL,
-                '</div>'.PHP_EOL,
-                '<div>'.PHP_EOL,
-                '  <h1>1</h1>'.PHP_EOL,
-                '</div>'.PHP_EOL,
-                '<article>prepend</article>'.PHP_EOL,
-                '<p>footer-foo</p>'.PHP_EOL,
-                '<p class="biz">bar</p>'.PHP_EOL,
-                '<div>footer</div>'.PHP_EOL,
+                '<section>',
+                '<div class="ab">',
+                '<div class="a"></div>',
+                '<div class="b"></div>',
+                '</div>',
+                '<div>',
+                '</div>',
+                '</section>',
+                '<div>bar</div>',
+                '<article>append</article>',
+                '<div class="ab">',
+                '<div class="a">a</div>',
+                '<div class="b">b</div>',
+                '</div>',
+                '<div>',
+                '<h1>1</h1>',
+                '</div>',
+                '<article>prepend</article>',
+                '<p>footer-foo</p>',
+                '<p class="biz">bar</p>',
+                '<div>footer</div>',
             ],
-            __DIR__.'/../../../templates/mixins-test.pug',
-            [
-                'pretty' => '  ',
-            ]
+            __DIR__.'/../../../templates/mixins-test.pug'
         );
     }
 
     /**
+     * @group mixins
      * @covers ::<public>
      */
     public function testCompileVariadicMixin()
@@ -78,17 +73,16 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group mixins
      * @covers ::<public>
-     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
      */
     public function testDoubleBlock()
     {
+        $compiler = new Compiler();
         $this->assertRenderFile(
             [
                 '<header>HelloHello</header>',
@@ -99,11 +93,10 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group mixins
      * @covers ::<public>
-     * @covers ::compileDynamicMixin
-     * @covers \Phug\Compiler::enableDynamicMixins
      * @covers \Phug\Compiler::compileDocument
-     * @covers \Phug\Compiler::convertBlocksToDynamicCalls
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      */
     public function testDynamicMixins()
     {
@@ -153,6 +146,109 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group mixins
+     * @covers ::<public>
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     */
+    public function testOuterNodes()
+    {
+        $this->assertRender(
+            [
+                '<div></div>',
+                '<footer><footer><p>bar</p><span>i</span></footer></footer>',
+            ],
+            [
+                'div: mixin bar'."\n",
+                '  p bar'."\n",
+                '  block'."\n",
+                'footer'."\n",
+                '  footer: +#{$foo}: span i',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+        $this->setUp();
+        $this->assertRender(
+            [
+                '<div class="foo" bar="biz">',
+                '1#2#3-4<em>Message</em>',
+                '</div>',
+                '<div bar="biz">',
+                '1#2#3-4<em>Message</em>',
+                '</div>',
+                '<p>42</p>',
+            ],
+            [
+                '- $bar = 40'."\n",
+                'mixin bar(a, b, ...c)'."\n",
+                '  - $bar++'."\n",
+                '  div&attributes($attributes)'."\n",
+                '    =$a."#".$b."#".implode("-", $c)'."\n",
+                '    block'."\n",
+                '+#{$foo}(1, 2, 3, 4).foo(bar="biz")'."\n",
+                '  em Message'."\n",
+                '+#{$foo}(1, 2, 3, 4)&attributes(["bar" => "biz" ])'."\n",
+                '  em Message'."\n",
+                'p=$bar',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     */
+    public function testMixinAttributes()
+    {
+        $this->enableJsPhpize();
+        $this->assertRenderFile(
+            preg_replace(
+                '/(\S)\/>/',
+                '$1 />',
+                preg_replace(
+                    '/\n\s*/',
+                    '',
+                    file_get_contents(__DIR__.'/../../../templates/mixin.attrs.html')
+                )
+            ),
+            __DIR__.'/../../../templates/mixin.attrs.pug'
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     */
+    public function testMixinBlocks()
+    {
+        $this->enableJsPhpize();
+        $this->assertRenderFile(
+            preg_replace(
+                '/(\S)\/>/',
+                '$1 />',
+                preg_replace(
+                    '/\n\s*/',
+                    '',
+                    file_get_contents(__DIR__.'/../../../templates/mixin.blocks.html')
+                )
+            ),
+            __DIR__.'/../../../templates/mixin.blocks.pug'
+        );
+    }
+
+    /**
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
@@ -169,8 +265,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers            ::<public>
-     * @covers            \Phug\Compiler::requireMixin
-     * @expectedException \Phug\CompilerException
+     * @expectedException \InvalidArgumentException
      */
     public function testUnknownMixin()
     {
@@ -178,6 +273,9 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
             'Unknown undef mixin called.'
         );
 
-        (new Compiler())->compile('+undef()');
+        $php = (new Compiler([
+            'debug' => true,
+        ]))->compile('+undef()');
+        eval('?>'.$php);
     }
 }

@@ -28,6 +28,7 @@ class MixinNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group mixins
      * @covers ::<public>
      */
     public function testRecursion()
@@ -53,6 +54,40 @@ class MixinNodeCompilerTest extends AbstractCompilerTest
                 '    else'."\n",
                 '      li=$item'."\n",
                 '+tree([1, [2, 3], [[4]]])',
+            ]
+        );
+    }
+
+    /**
+     * @group mixins
+     * @covers ::<public>
+     */
+    public function testRecursionWithBlock()
+    {
+        $this->assertRender(
+            [
+                'Hello<ul>',
+                '<li>1</li>',
+                '<li>',
+                'Hello<ul>',
+                '<li>2</li>',
+                '<li>3</li>',
+                '</ul>',
+                '</li>',
+                '<li>Hello<ul><li>Hello<ul><li>4</li></ul></li></ul></li>',
+                '</ul>',
+            ],
+            [
+                'mixin tree($items)'."\n",
+                '  block'."\n",
+                '  ul: each $item in $items'."\n",
+                '    if is_array($item)'."\n",
+                '      li: +tree($item)'."\n",
+                '        block'."\n",
+                '    else'."\n",
+                '      li=$item'."\n",
+                '+tree([1, [2, 3], [[4]]])'."\n".
+                '  | Hello',
             ]
         );
     }

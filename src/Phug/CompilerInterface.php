@@ -6,9 +6,7 @@ use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Layout;
 use Phug\Compiler\NodeCompilerInterface;
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
-use Phug\Util\AssociativeStorage;
 use Phug\Util\ModuleContainerInterface;
 
 interface CompilerInterface extends ModuleContainerInterface
@@ -27,11 +25,6 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return Layout
      */
     public function getLayout();
-
-    /**
-     * @return AssociativeStorage
-     */
-    public function getMixins();
 
     /**
      * @param Layout $layout
@@ -159,14 +152,6 @@ interface CompilerInterface extends ModuleContainerInterface
     public function isImportNodeYielded();
 
     /**
-     * @param string        $mixinName
-     * @param NodeInterface $node
-     *
-     * @return MixinNode
-     */
-    public function requireMixin($mixinName, $node);
-
-    /**
      * @param string $input pug input
      * @param string $path  optional path of the compiled source
      *
@@ -180,16 +165,6 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return string
      */
     public function dumpFile($path);
-
-    /**
-     * @return $this
-     */
-    public function enableDynamicMixins();
-
-    /**
-     * @return bool
-     */
-    public function isDynamicMixinsEnabled();
 
     /**
      * @param string        $message  A meaningful error message
