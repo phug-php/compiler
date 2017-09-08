@@ -10,6 +10,7 @@ use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ImportNode;
+use Phug\Parser\Node\MixinNode;
 use Phug\Parser\Node\TextNode;
 use Phug\Parser\NodeInterface;
 
@@ -92,7 +93,17 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         }
 
         if ($node->getName() === 'extend') {
-            $compiler->setLayout(new Layout($element, $subCompiler));
+            $layout = new Layout($element, $subCompiler);
+            $subDocument = $layout->getDocument();
+            foreach ($node->getParent()->getChildren() as $child) {
+                if ($child instanceof MixinNode) {
+                    $mixinElement = $subCompiler->compileNode($child, $subDocument);
+                    if ($mixinElement) {
+                        $subDocument->appendChild($mixinElement);
+                    }
+                }
+            }
+            $compiler->setLayout($layout);
         }
 
         return null;
