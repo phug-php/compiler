@@ -211,8 +211,12 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     {
         $this->enableJsPhpize();
         $this->assertRenderFile(
-            preg_replace('/(\S)\/>/', '$1 />',
-                preg_replace('/\n\s*/', '',
+            preg_replace(
+                '/(\S)\/>/',
+                '$1 />',
+                preg_replace(
+                    '/\n\s*/',
+                    '',
                     file_get_contents(__DIR__.'/../../../templates/mixin.attrs.html')
                 )
             ),
@@ -231,8 +235,12 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     {
         $this->enableJsPhpize();
         $this->assertRenderFile(
-            preg_replace('/(\S)\/>/', '$1 />',
-                preg_replace('/\n\s*/', '',
+            preg_replace(
+                '/(\S)\/>/',
+                '$1 />',
+                preg_replace(
+                    '/\n\s*/',
+                    '',
                     file_get_contents(__DIR__.'/../../../templates/mixin.blocks.html')
                 )
             ),

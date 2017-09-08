@@ -97,7 +97,11 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         return preg_replace_callback('/(\s+[a-z0-9:_-]+="(?:\\\\[\\S\\s]|[^"\\\\])*")+/', function ($matches) {
             $attributes = [];
             $input = $matches[0];
-            while (mb_strlen($input) && preg_match('/^\s+([a-z0-9:_-]+)="((?:\\\\[\\S\\s]|[^"\\\\])*)"/', $input, $match)) {
+            while (mb_strlen($input) && preg_match(
+                '/^\s+([a-z0-9:_-]+)="((?:\\\\[\\S\\s]|[^"\\\\])*)"/',
+                $input,
+                $match
+            )) {
                 if ($match[1] === 'class') {
                     $classes = explode(' ', $match[2]);
                     sort($classes);
