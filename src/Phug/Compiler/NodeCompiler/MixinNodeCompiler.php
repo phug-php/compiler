@@ -26,10 +26,7 @@ class MixinNodeCompiler extends AbstractNodeCompiler
         $compiler = $this->getCompiler();
 
         /** @var MixinNode $node */
-        $name = $node->getName();
-        if ($name instanceof ExpressionNode) {
-            $name = $compiler->compileNode($name);
-        }
+        $name = strval($node->getName());
         $mixin = new MixinElement();
         $mixin->setName($name);
 
@@ -44,14 +41,6 @@ class MixinNodeCompiler extends AbstractNodeCompiler
         }
 
         $this->compileNodeChildren($node, $mixin);
-
-        $outer = $node->getOuterNode();
-        if ($outer) {
-            $outerMarkup = $compiler->compileNode($outer);
-            $outerMarkup->appendChild($mixin);
-
-            return $outerMarkup;
-        }
 
         return $mixin;
     }

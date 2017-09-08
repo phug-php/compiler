@@ -13,18 +13,12 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCallNodeCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @group i
      * @group mixins
      * @covers ::<public>
-     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
-     * @covers \Phug\Compiler::requireMixin
      */
     public function testCompile()
     {
@@ -81,20 +75,14 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     /**
      * @group mixins
      * @covers ::<public>
-     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
-     * @covers \Phug\Compiler\Util\PhpUnwrap::<public>
      */
     public function testDoubleBlock()
     {
         $compiler = new Compiler();
-        file_put_contents(__DIR__.'/../../../../temp.php', $compiler->compileFile(__DIR__.'/../../../templates/mixin-double-block.pug'));
         $this->assertRenderFile(
             [
                 '<header>HelloHello</header>',
@@ -107,10 +95,8 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     /**
      * @group mixins
      * @covers ::<public>
-     * @covers ::compileDynamicMixin
-     * @covers \Phug\Compiler::enableDynamicMixins
      * @covers \Phug\Compiler::compileDocument
-     * @covers \Phug\Compiler::convertBlocksToDynamicCalls
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      */
     public function testDynamicMixins()
     {
@@ -160,17 +146,66 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
+     * @group mixins
      * @covers ::<public>
-     * @covers ::proceedBlocks
+     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
+     */
+    public function testOuterNodes()
+    {
+        $this->assertRender(
+            [
+                '<div></div>',
+                '<footer><footer><p>bar</p><span>i</span></footer></footer>',
+            ],
+            [
+                'div: mixin bar'."\n",
+                '  p bar'."\n",
+                '  block'."\n",
+                'footer'."\n",
+                '  footer: +#{$foo}: span i',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+        $this->setUp();
+        $this->assertRender(
+            [
+                '<div class="foo" bar="biz">',
+                '1#2#3-4<em>Message</em>',
+                '</div>',
+                '<div bar="biz">',
+                '1#2#3-4<em>Message</em>',
+                '</div>',
+                '<p>42</p>',
+            ],
+            [
+                '- $bar = 40'."\n",
+                'mixin bar(a, b, ...c)'."\n",
+                '  - $bar++'."\n",
+                '  div&attributes($attributes)'."\n",
+                '    =$a."#".$b."#".implode("-", $c)'."\n",
+                '    block'."\n",
+                '+#{$foo}(1, 2, 3, 4).foo(bar="biz")'."\n",
+                '  em Message'."\n",
+                '+#{$foo}(1, 2, 3, 4)&attributes(["bar" => "biz" ])'."\n",
+                '  em Message'."\n",
+                'p=$bar',
+            ],
+            [],
+            [
+                'foo' => 'bar',
+            ]
+        );
+    }
+
+    /**
+     * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
-     * @covers \Phug\Compiler::requireMixin
      */
     public function testMixinAttributes()
     {
@@ -187,15 +222,10 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers ::proceedBlocks
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
-     * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::containsMixinCall
-     * @covers \Phug\Compiler::getMixins
-     * @covers \Phug\Compiler::replaceBlock
-     * @covers \Phug\Compiler::requireMixin
      */
     public function testMixinBlocks()
     {

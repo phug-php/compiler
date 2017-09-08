@@ -94,7 +94,22 @@ abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
 
     protected function implodeLines($str)
     {
-        return is_string($str) ? $str : implode('', $str);
+        return preg_replace_callback('/(\s+[a-z0-9:_-]+="(?:\\\\[\\S\\s]|[^"\\\\])*")+/', function ($matches) {
+            $attributes = [];
+            $input = $matches[0];
+            while (mb_strlen($input) && preg_match('/^\s+([a-z0-9:_-]+)="((?:\\\\[\\S\\s]|[^"\\\\])*)"/', $input, $match)) {
+                if ($match[1] === 'class') {
+                    $classes = explode(' ', $match[2]);
+                    sort($classes);
+                    $match[2] = implode(' ', $classes);
+                }
+                $attributes[] = trim($match[1]).'="'.$match[2].'"';
+                $input = mb_substr($input, mb_strlen($match[0]));
+            }
+            sort($attributes);
+
+            return ' '.implode(' ', $attributes);
+        }, is_string($str) ? $str : implode('', $str));
     }
 
     protected function assertSameLines($expected, $actual)

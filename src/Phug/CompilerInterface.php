@@ -29,11 +29,6 @@ interface CompilerInterface extends ModuleContainerInterface
     public function getLayout();
 
     /**
-     * @return AssociativeStorage
-     */
-    public function getMixins();
-
-    /**
      * @param Layout $layout
      *
      * @return mixed
@@ -159,14 +154,6 @@ interface CompilerInterface extends ModuleContainerInterface
     public function isImportNodeYielded();
 
     /**
-     * @param string        $mixinName
-     * @param NodeInterface $node
-     *
-     * @return MixinNode
-     */
-    public function requireMixin($mixinName, $node);
-
-    /**
      * @param string $input pug input
      * @param string $path  optional path of the compiled source
      *
@@ -180,16 +167,6 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return string
      */
     public function dumpFile($path);
-
-    /**
-     * @return $this
-     */
-    public function enableDynamicMixins();
-
-    /**
-     * @return bool
-     */
-    public function isDynamicMixinsEnabled();
 
     /**
      * @param string        $message  A meaningful error message

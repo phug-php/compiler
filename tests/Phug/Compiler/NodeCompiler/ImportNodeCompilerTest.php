@@ -59,6 +59,35 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::importBlocks
      * @covers \Phug\Compiler::compileBlocks
      * @covers \Phug\Compiler::compile
+     * @covers \Phug\Compiler::replaceBlock
+     * @covers \Phug\Compiler::compileDocument
+     * @covers \Phug\Compiler::compileFile
+     * @covers \Phug\Compiler::compileFileIntoElement
+     * @covers \Phug\Compiler::getPath
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
+     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::hasBlockParent
+     * @covers \Phug\Compiler\Element\BlockElement::<public>
+     * @covers \Phug\Compiler\Layout::<public>
+     */
+    public function testReplaceBlocks()
+    {
+        $this->assertCompileFile(
+            "<section><div>Bye</div><div>Bye</div></section>",
+            __DIR__.'/../../../templates/replace.pug'
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers \Phug\Compiler::__clone
+     * @covers \Phug\Compiler::setLayout
+     * @covers \Phug\Compiler::getBlocksByName
+     * @covers \Phug\Compiler::setImportNode
+     * @covers \Phug\Compiler::isImportNodeYielded
+     * @covers \Phug\Compiler::importBlocks
+     * @covers \Phug\Compiler::compileBlocks
+     * @covers \Phug\Compiler::compile
+     * @covers \Phug\Compiler::compileDocument
      * @covers \Phug\Compiler::compileFile
      * @covers \Phug\Compiler::compileFileIntoElement
      * @covers \Phug\Compiler::getPath

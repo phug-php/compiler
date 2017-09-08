@@ -30,7 +30,6 @@ class MixinNodeCompilerTest extends AbstractCompilerTest
     /**
      * @group mixins
      * @covers ::<public>
-     * @covers ::containsMixinCall
      */
     public function testRecursion()
     {
