@@ -134,11 +134,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     private $importNodeYielded;
 
-    /**
-     * @var bool
-     */
-    private $dynamicMixinsEnabled;
-
     public function __construct($options = null)
     {
         $this->setOptionsDefaults($options ?: [], [
