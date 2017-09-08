@@ -155,6 +155,19 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group i
+     * @covers ::<public>
+     * @covers \Phug\Compiler\Element\BlockElement::<public>
+     */
+    public function testNestedYield()
+    {
+        $this->assertCompileFile(
+            file_get_contents(__DIR__.'/../../../templates/yield-in-sub-include.html'),
+            __DIR__.'/../../../templates/yield-in-sub-include.pug'
+        );
+    }
+
+    /**
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock

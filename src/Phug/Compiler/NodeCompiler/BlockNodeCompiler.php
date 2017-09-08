@@ -12,6 +12,11 @@ use Phug\Parser\NodeInterface;
 
 class BlockNodeCompiler extends AbstractNodeCompiler
 {
+    /**
+     * @var array
+     */
+    protected $blocksStack = [];
+
     protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent = null)
     {
         $compiler = $this->getCompiler();
@@ -22,7 +27,15 @@ class BlockNodeCompiler extends AbstractNodeCompiler
             $mixin = $mixin->getParent();
         }
         if (!($mixin instanceof MixinNode)) {
+            if (in_array($node, $this->blocksStack)) {
+                return null;
+            }
+            $this->blocksStack[] = $node;
             if ($importNode = $compiler->getImportNode()) {
+                $parents = [];
+                for ($element = $parent; $element->hasParent(); $element = $element->getParent()) {
+                    $parents[] = $element;
+                }
                 $this->compileNodeChildren($importNode, $parent);
             }
 
