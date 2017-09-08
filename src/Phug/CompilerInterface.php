@@ -6,9 +6,7 @@ use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Layout;
 use Phug\Compiler\NodeCompilerInterface;
 use Phug\Formatter\ElementInterface;
-use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
-use Phug\Util\AssociativeStorage;
 use Phug\Util\ModuleContainerInterface;
 
 interface CompilerInterface extends ModuleContainerInterface

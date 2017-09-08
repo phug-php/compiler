@@ -8,7 +8,6 @@ use Phug\Formatter\Element\ExpressionElement;
 use Phug\Formatter\Element\MixinElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AttributeNode;
-use Phug\Parser\Node\ExpressionNode;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\NodeInterface;
 

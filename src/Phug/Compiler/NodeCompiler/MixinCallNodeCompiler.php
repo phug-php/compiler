@@ -26,7 +26,7 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
         $compiler = $this->getCompiler();
         $mixinCall = new MixinCallElement();
 
-        /** @var MixinCallNode $node */;
+        /** @var MixinCallNode $node */
         $name = $node->getName();
         if ($name instanceof ExpressionNode) {
             $name = $compiler->compileNode($name, $mixinCall);

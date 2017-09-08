@@ -72,7 +72,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     public function testReplaceBlocks()
     {
         $this->assertCompileFile(
-            "<section><div>Bye</div><div>Bye</div></section>",
+            '<section><div>Bye</div><div>Bye</div></section>',
             __DIR__.'/../../../templates/replace.pug'
         );
     }

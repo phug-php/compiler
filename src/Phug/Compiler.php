@@ -37,8 +37,6 @@ use Phug\Compiler\NodeCompiler\WhenNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
 // Nodes
 use Phug\Compiler\NodeCompilerInterface;
-use Phug\Compiler\Util\PhpUnwrap;
-use Phug\Formatter\Element\CodeElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
