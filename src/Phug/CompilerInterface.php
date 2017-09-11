@@ -147,6 +147,23 @@ interface CompilerInterface extends ModuleContainerInterface
     public function setImportNode(NodeInterface $defaultYieldChildren);
 
     /**
+     * @param NodeInterface $yieldNode
+     *
+     * @return $this
+     */
+    public function setYieldNode(NodeInterface $yieldNode);
+
+    /**
+     * @return NodeInterface
+     */
+    public function getYieldNode();
+
+    /**
+     * @return $this
+     */
+    public function unsetYieldNode();
+
+    /**
      * @return bool
      */
     public function isImportNodeYielded();

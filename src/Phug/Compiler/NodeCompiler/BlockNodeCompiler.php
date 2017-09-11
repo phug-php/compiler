@@ -14,19 +14,12 @@ class BlockNodeCompiler extends AbstractNodeCompiler
 {
     protected function compileAnonymousBlock(BlockNode $node, ElementInterface $parent = null)
     {
-        $compiler = $this->getCompiler();
-        $block = new BlockElement($compiler, null, $node, $parent);
-        $block->setChildren($this->getCompiledChildren($node, $parent));
         $mixin = $node;
         while ($mixin->hasParent() && !($mixin instanceof MixinNode)) {
             $mixin = $mixin->getParent();
         }
         if (!($mixin instanceof MixinNode)) {
-            if ($importNode = $compiler->getImportNode()) {
-                $this->compileNodeChildren($importNode, $parent);
-            }
-
-            return null;
+            $this->getCompiler()->throwException('Anonymous blocks are not allowed unless they are part of a mixin.');
         }
 
         $expression = new ExpressionElement('$__pug_children(get_defined_vars())');

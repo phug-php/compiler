@@ -91,4 +91,17 @@ class MixinNodeCompilerTest extends AbstractCompilerTest
             ]
         );
     }
+
+    /**
+     * @group             mixins
+     * @covers            \Phug\Compiler\NodeCompiler\BlockNodeCompiler ::compileAnonymousBlock
+     * @expectedException \Phug\CompilerException
+     */
+    public function testAnonymousBlocksOutsideMixin()
+    {
+        $this->expectMessageToBeThrown(
+            'Anonymous blocks are not allowed unless they are part of a mixin.'
+        );
+        $this->compiler->compile('block');
+    }
 }

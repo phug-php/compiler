@@ -67,7 +67,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         }
 
         $subCompiler = clone $compiler;
-        $subCompiler->setImportNode($node);
+        $subCompiler->setImportNode($compiler->getImportNode() ?: $node);
         $element = $subCompiler->compileFileIntoElement($path);
         $compiler->importBlocks($subCompiler->getBlocks());
         $isIncludeImport = $node->getName() === 'include';
@@ -82,7 +82,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
 
         if (!$subCompiler->isImportNodeYielded()) {
             $yield = $element;
-            if ($yield instanceof DocumentElement && $yield->getChildCount()) {
+            if ($yield instanceof DocumentElement && $yield->hasChildren()) {
                 $yield = $yield->getChildAt($yield->getChildCount() - 1);
             }
             $this->compileNodeChildren($node, $yield);
