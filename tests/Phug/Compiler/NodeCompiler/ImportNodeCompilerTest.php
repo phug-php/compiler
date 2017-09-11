@@ -54,8 +54,8 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
-     * @covers \Phug\Compiler::setImportNode
-     * @covers \Phug\Compiler::isImportNodeYielded
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::setImportNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::isImportNodeYielded
      * @covers \Phug\Compiler::importBlocks
      * @covers \Phug\Compiler::compileBlocks
      * @covers \Phug\Compiler::compile
@@ -82,8 +82,8 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
-     * @covers \Phug\Compiler::setImportNode
-     * @covers \Phug\Compiler::isImportNodeYielded
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::setImportNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::isImportNodeYielded
      * @covers \Phug\Compiler::importBlocks
      * @covers \Phug\Compiler::compileBlocks
      * @covers \Phug\Compiler::compile
@@ -112,9 +112,11 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
-     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::hasBlockParent
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::setYieldNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::unsetYieldNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::getYieldNode
+     * @covers \Phug\Compiler\NodeCompiler\YieldNodeCompiler::<public>
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
     public function testDoubleInheritance()
@@ -157,7 +159,8 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers \Phug\Compiler\Element\BlockElement::<public>
+     * @covers \Phug\Compiler\NodeCompiler\YieldNodeCompiler::<public>
+     * @covers \Phug\Compiler\NodeCompiler\ImportNodeCompiler::<public>
      */
     public function testNestedYield()
     {
@@ -171,10 +174,10 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
-     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
-     * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
-     * @covers \Phug\Compiler\Element\BlockElement::<public>
-     * @covers \Phug\Compiler::getImportNode
+     * @covers \Phug\Compiler\NodeCompiler\YieldNodeCompiler::<public>
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::getImportNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::setYieldNode
+     * @covers \Phug\Compiler\Util\YieldHandlerTrait::unsetYieldNode
      */
     public function testYieldInInclude()
     {
