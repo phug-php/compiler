@@ -112,6 +112,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::hasBlockParent
      * @covers \Phug\Compiler\Element\BlockElement::<public>
@@ -155,14 +156,15 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group i
      * @covers ::<public>
      * @covers \Phug\Compiler\Element\BlockElement::<public>
      */
     public function testNestedYield()
     {
+        $expected = file_get_contents(__DIR__.'/../../../templates/yield-in-sub-include.html');
+
         $this->assertCompileFile(
-            file_get_contents(__DIR__.'/../../../templates/yield-in-sub-include.html'),
+            str_replace("\n", '', $expected),
             __DIR__.'/../../../templates/yield-in-sub-include.pug'
         );
     }

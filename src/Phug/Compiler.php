@@ -36,7 +36,9 @@ use Phug\Compiler\NodeCompiler\VariableNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhenNodeCompiler;
 use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
 // Nodes
+use Phug\Compiler\NodeCompiler\YieldNodeCompiler;
 use Phug\Compiler\NodeCompilerInterface;
+use Phug\Compiler\Util\YieldHandlerTrait;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
@@ -63,6 +65,7 @@ use Phug\Parser\Node\TextNode;
 use Phug\Parser\Node\VariableNode;
 use Phug\Parser\Node\WhenNode;
 use Phug\Parser\Node\WhileNode;
+use Phug\Parser\Node\YieldNode;
 use Phug\Parser\NodeInterface;
 // Utils
 use Phug\Util\AssociativeStorage;
@@ -73,6 +76,7 @@ use Phug\Util\SourceLocation;
 class Compiler implements ModuleContainerInterface, CompilerInterface
 {
     use ModuleContainerTrait;
+    use YieldHandlerTrait;
 
     /**
      * @var Formatter
@@ -124,16 +128,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     private $currentNode;
 
-    /**
-     * @var NodeInterface
-     */
-    private $importNode;
-
-    /**
-     * @var bool
-     */
-    private $importNodeYielded;
-
     public function __construct($options = null)
     {
         $this->setOptionsDefaults($options ?: [], [
@@ -158,6 +152,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 AttributeListNode::class   => AttributeListNodeCompiler::class,
                 AttributeNode::class       => AttributeNodeCompiler::class,
                 BlockNode::class           => BlockNodeCompiler::class,
+                YieldNode::class           => YieldNodeCompiler::class,
                 CaseNode::class            => CaseNodeCompiler::class,
                 CodeNode::class            => CodeNodeCompiler::class,
                 CommentNode::class         => CommentNodeCompiler::class,
@@ -266,43 +261,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     }
 
     /**
-     * @param NodeInterface $importNode
-     *
-     * @return $this
-     */
-    public function setImportNode(NodeInterface $importNode)
-    {
-        $this->importNode = $importNode;
-        $this->importNodeYielded = false;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isImportNodeYielded()
-    {
-        return (bool) $this->importNodeYielded;
-    }
-
-    /**
-     * @return NodeInterface
-     */
-    public function getImportNode()
-    {
-        $this->importNodeYielded = true;
-
-        return $this->importNode;
-    }
-
-    /**
      * Reset layout and compilers cache on clone.
      */
     public function __clone()
     {
         $this->layout = null;
         $this->namedCompilers = [];
+        $this->importNodeYielded = false;
+        $this->importNode = null;
     }
 
     public function locate($path)
