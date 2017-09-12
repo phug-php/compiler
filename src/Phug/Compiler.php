@@ -325,7 +325,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     public function getFileContents($path)
     {
         if ($path) {
-            return $this->getOption('get_file_contents')($path);
+            return call_user_func($this->getOption('get_file_contents'), $path);
         }
 
         return $this->getOption('not_found_template');
