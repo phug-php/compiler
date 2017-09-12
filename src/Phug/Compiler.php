@@ -295,9 +295,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      *
      * @param string $path
      *
-     * @return string
-     *
      * @throws CompilerException
+     *
+     * @return string
      */
     public function resolve($path)
     {
