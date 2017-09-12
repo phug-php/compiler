@@ -41,6 +41,8 @@ interface CompilerInterface extends ModuleContainerInterface
 
     public function resolve($path);
 
+    public function getFileContents($path);
+
     /**
      * @param string                $className
      * @param NodeCompilerInterface $handler

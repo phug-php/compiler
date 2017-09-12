@@ -49,7 +49,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
             $text = new TextNode();
-            $text->setValue(file_get_contents($path));
+            $text->setValue($compiler->getFileContents($path));
             $filter->appendChild($text);
             $import = $filter->getImport();
             $filter->setImport(null);
@@ -63,7 +63,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         $exts = $compiler->getOption('extensions');
 
         if (!in_array($ext === '' ? '' : ".$ext", $exts, true)) {
-            return new TextElement(file_get_contents($path), $node);
+            return new TextElement($compiler->getFileContents($path), $node);
         }
 
         $subCompiler = clone $compiler;

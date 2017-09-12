@@ -133,9 +133,10 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->setOptionsDefaults($options ?: [], [
             'paths'                => [],
             'debug'                => false,
-            'extensions'           => ['', '.pug', '.jade'],
             'default_tag'          => 'div',
             'default_doctype'      => 'html',
+            'extensions'           => ['', '.pug', '.jade'],
+            'get_file_contents'    => 'file_get_contents',
             'on_compile'           => null,
             'on_output'            => null,
             'on_node'              => null,
@@ -271,6 +272,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->importNode = null;
     }
 
+    /**
+     * Locate a file for a given path. Returns null if
+     * not found.
+     *
+     * @param string $path
+     *
+     * @return string|null
+     */
     public function locate($path)
     {
         return $this->locator->locate(
@@ -280,11 +289,21 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         );
     }
 
+    /**
+     * Resolve a path using the base directories. Throw
+     * an exception if not found.
+     *
+     * @param string $path
+     *
+     * @return string
+     *
+     * @throws CompilerException
+     */
     public function resolve($path)
     {
         $resolvePath = $this->locate($path);
 
-        if (!$resolvePath) {
+        if (!$resolvePath && !$this->hasOption('not_found_template')) {
             $this->throwException(sprintf(
                 "Source file %s not found \nPaths: %s \nExtensions: %s",
                 $path,
@@ -294,6 +313,22 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         }
 
         return $resolvePath;
+    }
+
+    /**
+     * Return the contents for a given file path.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function getFileContents($path)
+    {
+        if ($path) {
+            return $this->getOption('get_file_contents')($path);
+        }
+
+        return $this->getOption('not_found_template');
     }
 
     /**
@@ -544,7 +579,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $path = $this->resolve($path);
 
-        return $this->dump(file_get_contents($path), $path);
+        return $this->dump($this->getFileContents($path), $path);
     }
 
     /**
@@ -610,7 +645,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $path = $this->resolve($path);
 
-        return $this->compile(file_get_contents($path), $path);
+        return $this->compile($this->getFileContents($path), $path);
     }
 
     /**
@@ -655,7 +690,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $path = $this->resolve($path);
 
-        return $this->compileIntoElement(file_get_contents($path), $path);
+        return $this->compileIntoElement($this->getFileContents($path), $path);
     }
 
     /**

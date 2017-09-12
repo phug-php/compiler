@@ -259,6 +259,25 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers \Phug\Compiler::resolve
+     * @covers \Phug\Compiler::getFileContents
+     */
+    public function testNotFoundTemplate()
+    {
+        $compiler = new Compiler([
+            'not_found_template' => '.error Page not found',
+            'paths'              => [__DIR__.'/../../../templates'],
+        ]);
+        $php = $compiler->compile(implode("\n", [
+            'p A',
+            'include /missing',
+            'p B',
+        ]));
+
+        self::assertSame('<p>A</p><div class="error">Page not found</div><p>B</p>', $php);
+    }
+
+    /**
      * @covers            \Phug\Compiler::throwException
      * @expectedException \Phug\CompilerException
      */
