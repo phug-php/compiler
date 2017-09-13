@@ -160,7 +160,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\YieldNodeCompiler::<public>
-     * @covers \Phug\Compiler\NodeCompiler\ImportNodeCompiler::<public>
      */
     public function testNestedYield()
     {
@@ -169,6 +168,20 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
         $this->assertCompileFile(
             str_replace("\n", '', $expected),
             __DIR__.'/../../../templates/yield-in-sub-include.pug'
+        );
+    }
+
+
+    /**
+     * @covers ::<public>
+     */
+    public function testMixinsPropagation()
+    {
+        $expected = file_get_contents(__DIR__.'/../../../templates/inheritance.extend.mixins.html');
+
+        $this->assertRenderFile(
+            preg_replace('/\n\s*/', '', $expected),
+            __DIR__.'/../../../templates/inheritance.extend.mixins.pug'
         );
     }
 
@@ -188,7 +201,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group c
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>
