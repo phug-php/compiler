@@ -212,25 +212,20 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @covers ::pushPath
+     * @covers            ::locate
+     * @covers            ::resolve
+     * @covers            \Phug\Compiler\NodeCompiler\ImportNodeCompiler::compileNode
+     * @expectedException \Phug\CompilerException
      */
-    public function testPushPath()
+    public function testAbsolutePathWithoutPaths()
     {
-        $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
-        $compiler->pushPath('d');
+        $this->expectMessageToBeThrown(
+            'Either the "basedir" or "paths" option is required'.
+            ' to use includes and extends with "absolute" paths'
+        );
 
-        self::assertSame(['a', 'b', 'c', 'd'], $compiler->getOption('paths'));
-    }
-
-    /**
-     * @covers ::popPath
-     */
-    public function testPopPath()
-    {
-        $compiler = new Compiler(['paths' => ['a', 'b', 'c']]);
-        $compiler->popPath();
-
-        self::assertSame(['a', 'b'], $compiler->getOption('paths'));
+        $compiler = new Compiler();
+        $compiler->compile('include /foo.pug');
     }
 
     /**

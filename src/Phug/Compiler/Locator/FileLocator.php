@@ -17,7 +17,7 @@ class FileLocator implements LocatorInterface
             return is_readable($path) ? $path : null;
         }
 
-        $path = $this->normalize($path);
+        $path = ltrim($this->normalize($path), '/');
         $locations = array_reverse($locations);
 
         foreach ($locations as $location) {

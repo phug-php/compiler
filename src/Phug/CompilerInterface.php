@@ -33,13 +33,9 @@ interface CompilerInterface extends ModuleContainerInterface
      */
     public function setLayout(Layout $layout);
 
-    public function pushPath($path);
+    public function locate($path, $paths = null);
 
-    public function popPath();
-
-    public function locate($path);
-
-    public function resolve($path);
+    public function resolve($path, $paths = null);
 
     public function getFileContents($path);
 

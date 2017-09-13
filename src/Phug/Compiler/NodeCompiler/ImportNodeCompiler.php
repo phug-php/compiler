@@ -34,17 +34,21 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         }
 
         $compiler = $this->getCompiler();
-        $currentPath = dirname($compiler->getPath());
+        $path = $node->getPath();
+        $isAbsolutePath = mb_substr($path, 0, 1) === '/';
 
-        if ($currentPath) {
-            $compiler->pushPath($currentPath);
+        if ($isAbsolutePath && empty($compiler->getOption('paths'))) {
+            $compiler->throwException(
+                'Either the "basedir" or "paths" option is required'.
+                ' to use includes and extends with "absolute" paths'
+            );
         }
 
-        $path = $compiler->resolve($node->getPath());
+        $paths = $isAbsolutePath
+            ? null
+            : [dirname($compiler->getPath()) ?: '.'];
 
-        if ($currentPath) {
-            $compiler->popPath();
-        }
+        $path = $compiler->resolve($node->getPath(), $paths);
 
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
@@ -59,10 +63,10 @@ class ImportNodeCompiler extends AbstractNodeCompiler
             return $element;
         }
 
-        $ext = pathinfo($path, PATHINFO_EXTENSION) ?: '';
-        $exts = $compiler->getOption('extensions');
+        $extension = pathinfo($path, PATHINFO_EXTENSION) ?: '';
+        $extensions = $compiler->getOption('extensions');
 
-        if (!in_array($ext === '' ? '' : ".$ext", $exts, true)) {
+        if (!in_array($extension === '' ? '' : ".$extension", $extensions, true)) {
             return new TextElement($compiler->getFileContents($path), $node);
         }
 

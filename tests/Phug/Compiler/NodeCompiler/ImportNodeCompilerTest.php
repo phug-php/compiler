@@ -188,6 +188,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group c
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileNamedBlock
      * @covers \Phug\Compiler\Element\BlockElement::<public>

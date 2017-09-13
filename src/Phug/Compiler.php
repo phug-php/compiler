@@ -243,24 +243,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->addModules($this->getOption('compiler_modules'));
     }
 
-    public function pushPath($path)
-    {
-        $paths = $this->getOption('paths');
-        $paths[] = $path;
-        $this->setOption('paths', $paths);
-
-        return $this;
-    }
-
-    public function popPath()
-    {
-        $paths = $this->getOption('paths');
-        array_pop($paths);
-        $this->setOption('paths', $paths);
-
-        return $this;
-    }
-
     /**
      * Reset layout and compilers cache on clone.
      */
@@ -277,14 +259,17 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * not found.
      *
      * @param string $path
+     * @param array  $paths
      *
      * @return string|null
      */
-    public function locate($path)
+    public function locate($path, $paths = null)
     {
+        $paths = $paths ?: $this->getOption('paths');
+
         return $this->locator->locate(
             $path,
-            $this->getOption('paths'),
+            $paths,
             $this->getOption('extensions')
         );
     }
@@ -294,14 +279,15 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * an exception if not found.
      *
      * @param string $path
+     * @param array  $paths
      *
      * @throws CompilerException
      *
      * @return string
      */
-    public function resolve($path)
+    public function resolve($path, $paths = null)
     {
-        $resolvePath = $this->locate($path);
+        $resolvePath = $this->locate($path, $paths);
 
         if (!$resolvePath && !$this->hasOption('not_found_template')) {
             $this->throwException(sprintf(
