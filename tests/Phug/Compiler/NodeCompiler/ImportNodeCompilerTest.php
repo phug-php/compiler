@@ -171,7 +171,6 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
         );
     }
 
-
     /**
      * @covers ::<public>
      */
