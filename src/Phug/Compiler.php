@@ -79,9 +79,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     use YieldHandlerTrait;
 
     /**
-     * @var Formatter
+     * @var array<Formatter>
      */
-    private $formatter;
+    private $formatters;
 
     /**
      * @var Parser
@@ -189,16 +189,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->parser = new $parserClassName($this->getOptions());
 
         //Initialize the formatter to turn elements into PHTML
-        $formatterClassName = $this->getOption('formatter_class_name');
-
-        if (!is_a($formatterClassName, Formatter::class, true)) {
-            throw new \InvalidArgumentException(
-                "Passed formatter class $formatterClassName is ".
-                'not a valid '.Formatter::class
-            );
-        }
-
-        $this->formatter = new $formatterClassName($this->getOptions());
+        $this->initializeFormatter();
 
         //Initialize the Locator to locate sources
         $locatorClassName = $this->getOption('locator_class_name');
@@ -241,6 +232,23 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         }
 
         $this->addModules($this->getOption('compiler_modules'));
+    }
+
+    private function initializeFormatter()
+    {
+        $formatterClassName = $this->getOption('formatter_class_name');
+
+        if (!is_a($formatterClassName, Formatter::class, true)) {
+            throw new \InvalidArgumentException(
+                "Passed formatter class $formatterClassName is ".
+                'not a valid '.Formatter::class
+            );
+        }
+
+        $debug = $this->getOption('debug');
+        $this->formatters[$debug] = new $formatterClassName($this->getOptions());
+
+        return $this->formatters[$debug];
     }
 
     /**
@@ -358,7 +366,11 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function getFormatter()
     {
-        return $this->formatter;
+        $debug = $this->getOption('debug');
+
+        return isset($this->formatters[$debug])
+            ? $this->formatters[$debug]
+            : $this->initializeFormatter();
     }
 
     /**
@@ -611,8 +623,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $element = $this->compileDocument($input, $path);
 
-        $output = $this->formatter->format($element);
-        $output = $this->formatter->formatDependencies().$output;
+        $output = $this->getFormatter()->format($element);
+        $output = $this->getFormatter()->formatDependencies().$output;
 
         $outputEvent = new OutputEvent($compileEvent, $output);
         $this->trigger($outputEvent);
