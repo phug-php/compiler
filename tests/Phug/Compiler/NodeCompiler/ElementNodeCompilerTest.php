@@ -28,7 +28,7 @@ class ElementNodeCompilerTest extends AbstractCompilerTest
      */
     public function testExpansionCompile()
     {
-        $this->assertCompile(
+        $this->assertRender(
             '<ul><li class="list-item"><div class="foo"><div id="bar">baz</div></div></li></ul>',
             "ul\n  li.list-item: .foo: #bar baz"
         );

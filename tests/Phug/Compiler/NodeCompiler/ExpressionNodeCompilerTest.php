@@ -22,7 +22,7 @@ class ExpressionNodeCompilerTest extends AbstractCompilerTest
             'p?!=$foo'
         );
         $this->assertCompile(
-            '<p><?= htmlspecialchars((isset($foo) ? $foo : \'\')) ?></p>',
+            '<p><?= htmlspecialchars((isset($foo) ? $foo : null)) ?></p>',
             'p=$foo'
         );
     }

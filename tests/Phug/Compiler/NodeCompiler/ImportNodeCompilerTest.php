@@ -131,7 +131,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
                 '| "'."\n",
             ]
         );
-        $this->assertCompileFile(
+        $this->assertRenderFile(
             [
                 '<div class="window">',
                 '<a href="#" class="close">Close</a>',
@@ -277,7 +277,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     public function testNotFoundTemplate()
     {
         $compiler = new Compiler([
-            'not_found_template' => '.error Page not found',
+            'not_found_template' => 'div Page not found',
             'paths'              => [__DIR__.'/../../../templates'],
         ]);
         $php = $compiler->compile(implode("\n", [
@@ -286,7 +286,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
             'p B',
         ]));
 
-        self::assertSame('<p>A</p><div class="error">Page not found</div><p>B</p>', $php);
+        self::assertSame('<p>A</p><div>Page not found</div><p>B</p>', $php);
     }
 
     /**

@@ -22,37 +22,31 @@ class AttributeNodeCompilerTest extends AbstractCompilerTest
      */
     public function testCompile()
     {
-        $this->assertCompile('<input name="a" />', 'input(name="a")');
-        $this->assertCompile('<input (name)="a" />', 'input((name)="a")');
-        $this->assertCompile('<input (name)="a" />', 'input("(name)"="a")');
-        $this->assertCompile('<input name="<a>" />', 'input(name!="<a>")');
-        $this->assertCompile('<input name="name" />', 'input(name)');
-        $this->assertCompile('<input name="&lt;a&gt;" />', 'input(name="<a>")');
-        $this->assertCompile([
+        $this->assertRender('<input name="a" />', 'input(name="a")');
+        $this->assertRender('<input (name)="a" />', 'input((name)="a")');
+        $this->assertRender('<input (name)="a" />', 'input("(name)"="a")');
+        $this->assertRender('<input name="<a>" />', 'input(name!="<a>")');
+        $this->assertRender('<input name="name" />', 'input(name)');
+        $this->assertRender('<input name="&lt;a&gt;" />', 'input(name="<a>")');
+        $this->assertRender([
             '<img ',
-            'src="<?= htmlspecialchars((is_array($_pug_temp = "foo.$png") || ',
-            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? ',
-            'json_encode($_pug_temp) : strval($_pug_temp))) ?>" ',
+            'src="foo." ',
             'alt="$bar" ',
-            'width="<?= htmlspecialchars((is_array($_pug_temp = get_width("foo.png")) || ',
-            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? ',
-            'json_encode($_pug_temp) : strval($_pug_temp))) ?>" ',
+            'width="FOO.PNG" ',
             'height="30" ',
             'data-ratio="0.54" ',
             'data-code="16205" />',
         ], [
             'img(',
-            'src?="foo.$png" ',
+            'src="foo.$png" ',
             'alt=\'$bar\' ',
-            'width=get_width("foo.png") ',
+            'width=strtoupper("foo.png") ',
             'height=30 ',
             'data-ratio=0.54 ',
             'data-code=0x3f4d)',
         ]);
-        $this->assertCompile(
-            '<img src="<?= (is_array($_pug_temp = (isset($image) ? $image : \'\')) || '.
-            '(is_object($_pug_temp) && !method_exists($_pug_temp, "__toString")) ? '.
-            'json_encode($_pug_temp) : strval($_pug_temp)) ?>" />',
+        $this->assertRender(
+            '<img />',
             'img(src!=$image)'
         );
         $this->assertRender(
