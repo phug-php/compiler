@@ -334,6 +334,42 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::hasFilter
+     * @covers ::getFilter
+     * @covers ::setFilter
+     */
+    public function testFilters()
+    {
+        $compiler = new Compiler([
+            'filters' => [
+                'a' => 'A',
+                'b' => 'B',
+            ],
+            'filter_resolvers' => [
+                function ($name) {
+                    return ctype_digit($name) ? $name * 2 : null;
+                },
+            ]
+        ]);
+
+        self::assertTrue($compiler->hasFilter('a'));
+        self::assertTrue($compiler->hasFilter('b'));
+        self::assertFalse($compiler->hasFilter('c'));
+        self::assertTrue($compiler->hasFilter('1'));
+        self::assertTrue($compiler->hasFilter('4'));
+        self::assertSame('A', $compiler->getFilter('a'));
+        self::assertSame('B', $compiler->getFilter('b'));
+        self::assertSame(null, $compiler->getFilter('c'));
+        self::assertSame(42, $compiler->getFilter('21'));
+        self::assertSame(0, $compiler->getFilter('0'));
+
+        $compiler->setFilter('c', 'C');
+
+        self::assertTrue($compiler->hasFilter('c'));
+        self::assertSame('C', $compiler->getFilter('c'));
+    }
+
+    /**
      * @covers ::throwException
      * @expectedException \Phug\CompilerException
      */

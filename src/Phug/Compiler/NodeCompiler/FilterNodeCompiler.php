@@ -57,13 +57,13 @@ class FilterNodeCompiler extends AbstractNodeCompiler
          * @var FilterNode $node
          */
         $name = $node->getName();
-        $filters = $this->getCompiler()->getOption('filters');
+        $compiler = $this->getCompiler();
 
         $text = $this->compileText($name, $node->getChildren(), $parent, 0);
         $names = explode(':', $name);
 
         while ($name = array_pop($names)) {
-            if (!isset($filters[$name])) {
+            if (!$compiler->hasFilter($name)) {
                 $this->getCompiler()->throwException(
                     'Unknown filter '.$name.'.',
                     $node
@@ -79,7 +79,7 @@ class FilterNodeCompiler extends AbstractNodeCompiler
             }
 
             $text = $this->proceedFilter(
-                $filters[$name],
+                $compiler->getFilter($name),
                 $text,
                 $options
             );

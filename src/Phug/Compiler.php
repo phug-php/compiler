@@ -142,6 +142,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'on_node'              => null,
             'on_element'           => null,
             'filters'              => [],
+            'filter_resolvers'     => [],
             'parser_class_name'    => Parser::class,
             'formatter_class_name' => Formatter::class,
             'locator_class_name'   => FileLocator::class,
@@ -742,5 +743,33 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             $code,
             $previous
         );
+    }
+
+    public function hasFilter($name)
+    {
+        return $this->getFilter($name) !== null;
+    }
+
+    public function getFilter($name)
+    {
+        $filters = $this->getOption('filters');
+
+        if (isset($filters[$name])) {
+            return $filters[$name];
+        }
+
+        foreach ($this->getOption('filter_resolvers') ?: [] as $resolver) {
+            $filter = call_user_func($resolver, $name);
+            if ($filter !== null) {
+                return $filter;
+            }
+        }
+
+        return null;
+    }
+
+    public function setFilter($name, $filter)
+    {
+        return $this->setOption(['filters', $name], $filter);
     }
 }

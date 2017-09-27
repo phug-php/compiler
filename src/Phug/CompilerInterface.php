@@ -190,4 +190,26 @@ interface CompilerInterface extends ModuleContainerInterface
      * @throws CompilerException
      */
     public function throwException($message, $node = null, $code = 0, $previous = null);
+
+    /**
+     * @param string $name
+     *
+     * @return callable|null
+     */
+    public function getFilter($name);
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasFilter($name);
+
+    /**
+     * @param string   $name
+     * @param callable $filter
+     *
+     * @return $this
+     */
+    public function setFilter($name, $filter);
 }
