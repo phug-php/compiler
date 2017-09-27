@@ -349,7 +349,7 @@ class CompilerTest extends AbstractCompilerTest
                 function ($name) {
                     return ctype_digit($name) ? $name * 2 : null;
                 },
-            ]
+            ],
         ]);
 
         self::assertTrue($compiler->hasFilter('a'));
