@@ -29,6 +29,7 @@ use Phug\Compiler\NodeCompiler\ExpressionNodeCompiler;
 use Phug\Compiler\NodeCompiler\FilterNodeCompiler;
 use Phug\Compiler\NodeCompiler\ForNodeCompiler;
 use Phug\Compiler\NodeCompiler\ImportNodeCompiler;
+use Phug\Compiler\NodeCompiler\KeywordNodeCompiler;
 use Phug\Compiler\NodeCompiler\MixinCallNodeCompiler;
 use Phug\Compiler\NodeCompiler\MixinNodeCompiler;
 use Phug\Compiler\NodeCompiler\TextNodeCompiler;
@@ -59,6 +60,7 @@ use Phug\Parser\Node\ExpressionNode;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ForNode;
 use Phug\Parser\Node\ImportNode;
+use Phug\Parser\Node\KeywordNode;
 use Phug\Parser\Node\MixinCallNode;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\Node\TextNode;
@@ -163,6 +165,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 DocumentNode::class        => DocumentNodeCompiler::class,
                 DoNode::class              => DoNodeCompiler::class,
                 EachNode::class            => EachNodeCompiler::class,
+                KeywordNode::class         => KeywordNodeCompiler::class,
                 ElementNode::class         => ElementNodeCompiler::class,
                 ExpressionNode::class      => ExpressionNodeCompiler::class,
                 FilterNode::class          => FilterNodeCompiler::class,
