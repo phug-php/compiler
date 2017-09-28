@@ -35,6 +35,15 @@ class KeywordNodeCompilerTest extends AbstractCompilerTest
             '  input(name="name" value="Bob")'."\n".
             '  input(name="email" value="bob@bob")'
         );
+
+        $this->compiler->setOption(['keywords', 'foobar'], function () {
+            return 'foobar';
+        });
+        $this->assertRender(
+            '<div><div><section>foobar</section></div></div>',
+            'div'."\n".
+            '  div: section: foobar'
+        );
     }
 
     /**

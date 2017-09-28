@@ -19,8 +19,6 @@ class KeywordNodeCompiler extends AbstractNodeCompiler
             );
         }
 
-        $compiler = $this->getCompiler();
-
         $keyword = new KeywordElement(
             $node->getName(),
             $node->getValue(),
@@ -29,14 +27,6 @@ class KeywordNodeCompiler extends AbstractNodeCompiler
         );
 
         $this->compileNodeChildren($node, $keyword);
-
-        $outer = $node->getOuterNode();
-        if ($outer) {
-            $outerMarkup = $compiler->compileNode($outer);
-            $outerMarkup->appendChild($keyword);
-
-            return $outerMarkup;
-        }
 
         return $keyword;
     }
