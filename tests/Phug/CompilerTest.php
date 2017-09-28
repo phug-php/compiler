@@ -373,7 +373,6 @@ class CompilerTest extends AbstractCompilerTest
 
         self::assertFalse($compiler->hasFilter('c'));
         self::assertSame(null, $compiler->getFilter('c'));
-
     }
 
     /**
