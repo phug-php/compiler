@@ -212,4 +212,11 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return $this
      */
     public function setFilter($name, $filter);
+
+    /**
+     * @param string   $name
+     *
+     * @return $this
+     */
+    public function unsetFilter($name);
 }

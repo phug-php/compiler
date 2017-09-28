@@ -337,6 +337,7 @@ class CompilerTest extends AbstractCompilerTest
      * @covers ::hasFilter
      * @covers ::getFilter
      * @covers ::setFilter
+     * @covers ::unsetFilter
      */
     public function testFilters()
     {
@@ -367,6 +368,12 @@ class CompilerTest extends AbstractCompilerTest
 
         self::assertTrue($compiler->hasFilter('c'));
         self::assertSame('C', $compiler->getFilter('c'));
+
+        $compiler->unsetFilter('c');
+
+        self::assertFalse($compiler->hasFilter('c'));
+        self::assertSame(null, $compiler->getFilter('c'));
+
     }
 
     /**

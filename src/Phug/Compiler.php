@@ -772,4 +772,9 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         return $this->setOption(['filters', $name], $filter);
     }
+
+    public function unsetFilter($name)
+    {
+        return $this->unsetOption(['filters', $name]);
+    }
 }
