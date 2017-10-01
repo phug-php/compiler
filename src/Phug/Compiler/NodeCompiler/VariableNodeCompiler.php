@@ -29,7 +29,6 @@ class VariableNodeCompiler extends AbstractNodeCompiler
             $node
         );
 
-
         return $this->createVariable(
             $node,
             $node->getName(),
