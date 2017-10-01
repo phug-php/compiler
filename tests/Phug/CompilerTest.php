@@ -439,7 +439,6 @@ class CompilerTest extends AbstractCompilerTest
         $compiler = new Compiler([
             'get_file_contents' => 'strtolower',
         ]);
-        ;
         self::assertSame('test', $compiler->getFileContents('TEST'));
     }
 }
