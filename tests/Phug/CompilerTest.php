@@ -403,4 +403,43 @@ class CompilerTest extends AbstractCompilerTest
         $compiler = new Compiler();
         $compiler->assert(false, 'Test Exception');
     }
+
+    /**
+     * @covers                   ::initializeFormatter
+     * @expectedException        \InvalidArgumentException
+     * @expectedExceptionMessage Passed formatter class stdClass is not a valid Phug\Formatter
+     */
+    public function testInitializeFormatterException()
+    {
+        $compiler = new Compiler([
+            'debug' => false,
+        ]);
+        $compiler->setOption('debug', true);
+        $compiler->setOption('formatter_class_name', \stdClass::class);
+        $compiler->getFormatter();
+    }
+
+    /**
+     * @covers ::initializeFormatter
+     */
+    public function testInitializeFormatter()
+    {
+        $compiler = new Compiler([
+            'debug' => false,
+        ]);
+        $compiler->setOption('debug', true);
+        self::assertTrue($compiler->getFormatter()->getFormatInstance()->getOption('debug'));
+    }
+
+    /**
+     * @covers ::getFileContents
+     */
+    public function testGetFileContents()
+    {
+        $compiler = new Compiler([
+            'get_file_contents' => 'strtolower',
+        ]);
+        ;
+        self::assertSame('test', $compiler->getFileContents('TEST'));
+    }
 }

@@ -40,6 +40,7 @@ use Phug\Compiler\NodeCompiler\WhileNodeCompiler;
 use Phug\Compiler\NodeCompiler\YieldNodeCompiler;
 use Phug\Compiler\NodeCompilerInterface;
 use Phug\Compiler\Util\YieldHandlerTrait;
+use Phug\Formatter\AbstractElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\AssignmentListNode;
@@ -301,14 +302,15 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $resolvePath = $this->locate($path, $paths);
 
-        if (!$resolvePath && !$this->hasOption('not_found_template')) {
-            $this->throwException(sprintf(
+        $this->assert(
+            $resolvePath || $this->hasOption('not_found_template'),
+            sprintf(
                 "Source file %s not found \nPaths: %s \nExtensions: %s",
                 $path,
                 implode(', ', $this->getOption('paths')),
                 implode(', ', $this->getOption('extensions'))
-            ));
-        }
+            )
+        );
 
         return $resolvePath;
     }
@@ -536,11 +538,11 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             $blockProceeded = 0;
             foreach ($this->getBlocks() as $name => $blocks) {
                 foreach ($blocks as $block) {
-                    if (!($block instanceof BlockElement)) {
-                        $this->throwException(
-                            'Unexpected block for the name '.$name
-                        );
-                    }
+                    $this->assert(
+                        $block instanceof BlockElement,
+                        'Unexpected block for the name '.$name,
+                        $block instanceof AbstractElement ? $block->getOriginNode() : null
+                    );
                     /** @var BlockElement $block */
                     if ($block->hasParent()) {
                         $this->replaceBlock($block);
@@ -676,7 +678,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
                 (is_object($element) ? get_class($element) : gettype($element)),
                 $node
             );
-        }
+        } // @codeCoverageIgnore
 
         return $element;
     }
@@ -785,6 +787,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         if (!$condition) {
             $this->throwException($message, $node, $code, $previous);
-        }
+        } // @codeCoverageIgnore
     }
 }

@@ -159,6 +159,17 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     */
+    public function testAutoYield()
+    {
+        $this->assertRenderFile(
+            '<div>switch</div><section><div><img />img</div></section>',
+            __DIR__.'/../../../templates/auto-yield.pug'
+        );
+    }
+
+    /**
+     * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\YieldNodeCompiler::<public>
      */
     public function testNestedYield()
