@@ -152,7 +152,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     public function testExtendsInInclude()
     {
         $this->assertCompileFile(
-            "<section>1\nA2\nA</section><section>1\nA2\nA</section>",
+            "<section>1\nA2A</section><section>1\nA2A</section>",
             __DIR__.'/../../../templates/inc-page.pug'
         );
     }

@@ -5,13 +5,16 @@ namespace Phug\Compiler\NodeCompiler;
 use Phug\Compiler\AbstractNodeCompiler;
 use Phug\Compiler\Layout;
 use Phug\CompilerException;
-use Phug\Formatter\Element\DocumentElement;
+use Phug\Formatter\Element\CodeElement;
+use Phug\Formatter\Element\ExpressionElement;
+use Phug\Formatter\Element\MarkupElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Formatter\ElementInterface;
 use Phug\Parser\Node\FilterNode;
 use Phug\Parser\Node\ImportNode;
 use Phug\Parser\Node\MixinNode;
 use Phug\Parser\Node\TextNode;
+use Phug\Parser\Node\YieldNode;
 use Phug\Parser\NodeInterface;
 
 class ImportNodeCompiler extends AbstractNodeCompiler
@@ -86,9 +89,37 @@ class ImportNodeCompiler extends AbstractNodeCompiler
 
         if (!$subCompiler->isImportNodeYielded()) {
             $yield = $element;
-            if ($yield instanceof DocumentElement && $yield->hasChildren()) {
+            while ($yield instanceof ElementInterface && $yield->hasChildren()) {
                 $yield = $yield->getChildAt($yield->getChildCount() - 1);
             }
+            while ($yield instanceof CodeElement ||
+                $yield instanceof ExpressionElement ||
+                $yield instanceof TextElement
+            ) {
+                if ($yield instanceof CodeElement &&
+                    trim($yield->getValue(), '; ') === 'break' &&
+                    $yield->getPreviousSibling()
+                ) {
+                    $yield = $yield->getPreviousSibling();
+
+                    continue;
+                }
+                $yield = $yield->getParent();
+            }
+            if ($yield instanceof MarkupElement && in_array($yield->getName(), [
+                'script',
+                'link',
+                'img',
+                'input',
+                'meta',
+                'hr',
+            ])) {
+                $yield = $yield->getParent();
+            }
+            if ($compiler->getImportNode()) {
+                $node->appendChild(new YieldNode());
+            }
+            // TODO: check answers on https://github.com/pugjs/pug/issues/2878
             $this->compileNodeChildren($node, $yield);
         }
 
