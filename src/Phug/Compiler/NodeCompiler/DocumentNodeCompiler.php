@@ -12,12 +12,11 @@ class DocumentNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof DocumentNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to document compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof DocumentNode,
+            'Unexpected '.get_class($node).' given to document compiler.',
+            $node
+        );
 
         $document = new DocumentElement($node);
 

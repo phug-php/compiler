@@ -14,14 +14,14 @@ class FilterNodeCompiler extends AbstractNodeCompiler
     protected function compileText($name, $children, $parent, $indentLevel)
     {
         return implode("\n", array_map(function (TextNode $node) use ($name, $indentLevel, $parent) {
-            $element = $this->getCompiler()->compileNode($node, $parent);
-            if (!($element instanceof TextElement)) {
-                $this->getCompiler()->throwException(
-                    'Unexpected '.get_class($element).' in '.$name.' filter.',
-                    $node
-                );
-            }
-
+            $compiler = $this->getCompiler();
+            $element = $compiler->compileNode($node, $parent);
+            $compiler->assert(
+                $element instanceof TextElement,
+                'Unexpected '.get_class($element).' in '.$name.' filter.',
+                $node
+            );
+            /** @var TextElement $element */
             $text = $element->getValue();
             if ($node->hasChildren()) {
                 $childrenIndent = $indentLevel + 1;
@@ -42,33 +42,31 @@ class FilterNodeCompiler extends AbstractNodeCompiler
 
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof FilterNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to filter compiler.',
-                $node
-            );
-        }
-
-        if ($node->getImport()) {
-            return null;
-        }
+        $compiler = $this->getCompiler();
+        $compiler->assert(
+            $node instanceof FilterNode,
+            'Unexpected '.get_class($node).' given to filter compiler.',
+            $node
+        );
 
         /**
          * @var FilterNode $node
          */
+        if ($node->getImport()) {
+            return null;
+        }
+
         $name = $node->getName();
-        $compiler = $this->getCompiler();
 
         $text = $this->compileText($name, $node->getChildren(), $parent, 0);
         $names = explode(':', $name);
 
         while ($name = array_pop($names)) {
-            if (!$compiler->hasFilter($name)) {
-                $this->getCompiler()->throwException(
-                    'Unknown filter '.$name.'.',
-                    $node
-                );
-            }
+            $this->getCompiler()->assert(
+                $compiler->hasFilter($name),
+                'Unknown filter '.$name.'.',
+                $node
+            );
 
             $options = [];
             foreach ($node->getAttributes() as $attribute) {

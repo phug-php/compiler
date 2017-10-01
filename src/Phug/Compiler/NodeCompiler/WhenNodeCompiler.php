@@ -12,12 +12,11 @@ class WhenNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof WhenNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to when compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof WhenNode,
+            'Unexpected '.get_class($node).' given to when compiler.',
+            $node
+        );
 
         /**
          * @var WhenNode $node

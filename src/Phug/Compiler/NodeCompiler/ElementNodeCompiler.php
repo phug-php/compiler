@@ -15,14 +15,12 @@ class ElementNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof ElementNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to element compiler.',
-                $node
-            );
-        }
-
         $compiler = $this->getCompiler();
+        $compiler->assert(
+            $node instanceof ElementNode,
+            'Unexpected '.get_class($node).' given to element compiler.',
+            $node
+        );
 
         /** @var ElementNode $node */
         $name = $node->getName() ?: $compiler->getOption('default_tag');

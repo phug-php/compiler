@@ -12,13 +12,13 @@ class KeywordNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof KeywordNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to keyword compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof KeywordNode,
+            'Unexpected '.get_class($node).' given to keyword compiler.',
+            $node
+        );
 
+        /** @var KeywordNode $node */
         $keyword = new KeywordElement(
             $node->getName(),
             $node->getValue(),

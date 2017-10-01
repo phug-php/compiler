@@ -14,12 +14,11 @@ class CodeNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof CodeNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to code compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof CodeNode,
+            'Unexpected '.get_class($node).' given to code compiler.',
+            $node
+        );
 
         $children = array_filter($node->getChildren(), function (NodeInterface $node) {
             return !($node instanceof CommentNode);

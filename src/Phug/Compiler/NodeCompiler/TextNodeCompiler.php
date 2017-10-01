@@ -12,13 +12,13 @@ class TextNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof TextNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to text compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof TextNode,
+            'Unexpected '.get_class($node).' given to text compiler.',
+            $node
+        );
 
+        /** @var TextNode $node */
         $text = new TextElement($node->getValue(), $node);
         $text->setIsEscaped($node->isEscaped());
 

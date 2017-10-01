@@ -12,14 +12,15 @@ class DoctypeNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof DoctypeNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to doctype compiler.',
-                $node
-            );
-        }
+        $compiler = $this->getCompiler();
+        $compiler->assert(
+            $node instanceof DoctypeNode,
+            'Unexpected '.get_class($node).' given to doctype compiler.',
+            $node
+        );
 
-        $name = $node->getName() ?: $this->getCompiler()->getOption('default_doctype');
+        /** @var DoctypeNode $node */
+        $name = $node->getName() ?: $compiler->getOption('default_doctype');
 
         return new DoctypeElement($name, $node);
     }

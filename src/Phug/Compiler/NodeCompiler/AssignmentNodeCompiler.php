@@ -14,12 +14,11 @@ class AssignmentNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof AssignmentNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to assignment compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof AssignmentNode,
+            'Unexpected '.get_class($node).' given to assignment compiler.',
+            $node
+        );
 
         /**
          * @var AssignmentNode $node

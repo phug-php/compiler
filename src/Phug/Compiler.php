@@ -708,6 +708,39 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         return CompilerModuleInterface::class;
     }
 
+    public function hasFilter($name)
+    {
+        return $this->getFilter($name) !== null;
+    }
+
+    public function getFilter($name)
+    {
+        $filters = $this->getOption('filters');
+
+        if (isset($filters[$name])) {
+            return $filters[$name];
+        }
+
+        foreach ($this->getOption('filter_resolvers') ?: [] as $resolver) {
+            $filter = call_user_func($resolver, $name);
+            if ($filter !== null) {
+                return $filter;
+            }
+        }
+
+        return null;
+    }
+
+    public function setFilter($name, $filter)
+    {
+        return $this->setOption(['filters', $name], $filter);
+    }
+
+    public function unsetFilter($name)
+    {
+        return $this->unsetOption(['filters', $name]);
+    }
+
     /**
      * Throws a compiler-exception.
      *
@@ -748,36 +781,10 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         );
     }
 
-    public function hasFilter($name)
+    public function assert($condition, $message, $node = null, $code = 0, $previous = null)
     {
-        return $this->getFilter($name) !== null;
-    }
-
-    public function getFilter($name)
-    {
-        $filters = $this->getOption('filters');
-
-        if (isset($filters[$name])) {
-            return $filters[$name];
+        if (!$condition) {
+            $this->throwException($message, $node, $code, $previous);
         }
-
-        foreach ($this->getOption('filter_resolvers') ?: [] as $resolver) {
-            $filter = call_user_func($resolver, $name);
-            if ($filter !== null) {
-                return $filter;
-            }
-        }
-
-        return null;
-    }
-
-    public function setFilter($name, $filter)
-    {
-        return $this->setOption(['filters', $name], $filter);
-    }
-
-    public function unsetFilter($name)
-    {
-        return $this->unsetOption(['filters', $name]);
     }
 }

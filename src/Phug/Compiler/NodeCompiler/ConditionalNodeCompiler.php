@@ -10,12 +10,11 @@ class ConditionalNodeCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof ConditionalNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to conditional compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof ConditionalNode,
+            'Unexpected '.get_class($node).' given to conditional compiler.',
+            $node
+        );
 
         /**
          * @var ConditionalNode $node

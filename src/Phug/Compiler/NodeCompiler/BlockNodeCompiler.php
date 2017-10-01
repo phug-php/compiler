@@ -18,9 +18,11 @@ class BlockNodeCompiler extends AbstractNodeCompiler
         while ($mixin->hasParent() && !($mixin instanceof MixinNode)) {
             $mixin = $mixin->getParent();
         }
-        if (!($mixin instanceof MixinNode)) {
-            $this->getCompiler()->throwException('Anonymous blocks are not allowed unless they are part of a mixin.');
-        }
+        $this->getCompiler()->assert(
+            $mixin instanceof MixinNode,
+            'Anonymous blocks are not allowed unless they are part of a mixin.',
+            $node
+        );
 
         $expression = new ExpressionElement('$__pug_children(get_defined_vars())');
         $expression->uncheck();
@@ -67,12 +69,11 @@ class BlockNodeCompiler extends AbstractNodeCompiler
 
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof BlockNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to block compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof BlockNode,
+            'Unexpected '.get_class($node).' given to block compiler.',
+            $node
+        );
 
         /**
          * @var BlockNode $node

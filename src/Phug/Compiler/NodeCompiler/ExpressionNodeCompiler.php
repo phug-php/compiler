@@ -12,14 +12,13 @@ class ExpressionNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof ExpressionNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to expression compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof ExpressionNode,
+            'Unexpected '.get_class($node).' given to expression compiler.',
+            $node
+        );
 
-        /** @var ExpressionNode $element */
+        /** @var ExpressionNode $node */
         $value = $node->getValue();
         $expression = new ExpressionElement($value, $node);
         $expression->setIsChecked($node->isChecked());

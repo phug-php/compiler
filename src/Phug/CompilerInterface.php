@@ -182,16 +182,6 @@ interface CompilerInterface extends ModuleContainerInterface
     public function dumpFile($path);
 
     /**
-     * @param string        $message  A meaningful error message
-     * @param NodeInterface $node     Node generating the error
-     * @param int           $code     Error code
-     * @param \Throwable    $previous Source error
-     *
-     * @throws CompilerException
-     */
-    public function throwException($message, $node = null, $code = 0, $previous = null);
-
-    /**
      * @param string $name
      *
      * @return callable|null
@@ -219,4 +209,25 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return $this
      */
     public function unsetFilter($name);
+
+    /**
+     * @param string        $message  A meaningful error message
+     * @param NodeInterface $node     Node generating the error
+     * @param int           $code     Error code
+     * @param \Throwable    $previous Source error
+     *
+     * @throws CompilerException
+     */
+    public function throwException($message, $node = null, $code = 0, $previous = null);
+
+    /**
+     * @param bool          $condition Assertion to verify
+     * @param string        $message   Error message to throw if assertion fails
+     * @param NodeInterface $node      Node generating the error
+     * @param int           $code      Error code
+     * @param \Throwable    $previous  Source error
+     *
+     * @throws CompilerException
+     */
+    public function assert($condition, $message, $node = null, $code = 0, $previous = null);
 }

@@ -10,12 +10,11 @@ class CaseNodeCompiler extends AbstractStatementNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof CaseNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to case compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof CaseNode,
+            'Unexpected '.get_class($node).' given to case compiler.',
+            $node
+        );
 
         /**
          * @var CaseNode $node

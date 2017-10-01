@@ -13,13 +13,11 @@ class YieldNodeCompiler extends AbstractNodeCompiler
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
         $compiler = $this->getCompiler();
-
-        if (!($node instanceof YieldNode)) {
-            $compiler->throwException(
-                'Unexpected '.get_class($node).' given to yield compiler.',
-                $node
-            );
-        }
+        $compiler->assert(
+            $node instanceof YieldNode,
+            'Unexpected '.get_class($node).' given to yield compiler.',
+            $node
+        );
 
         if ($node !== $compiler->getYieldNode()) {
             $importNode = $compiler->getImportNode();

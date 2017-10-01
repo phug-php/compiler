@@ -12,12 +12,11 @@ class CommentNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof CommentNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to comment compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof CommentNode,
+            'Unexpected '.get_class($node).' given to comment compiler.',
+            $node
+        );
 
         /** @var CommentNode $node */
         if (!$node->isVisible()) {

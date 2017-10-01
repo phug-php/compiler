@@ -29,23 +29,22 @@ class ImportNodeCompiler extends AbstractNodeCompiler
      */
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof ImportNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to import compiler.',
-                $node
-            );
-        }
-
         $compiler = $this->getCompiler();
+        $compiler->assert(
+            $node instanceof ImportNode,
+            'Unexpected '.get_class($node).' given to import compiler.',
+            $node
+        );
+
+        /** @var ImportNode $node */
         $path = $node->getPath();
         $isAbsolutePath = mb_substr($path, 0, 1) === '/';
 
-        if ($isAbsolutePath && empty($compiler->getOption('paths'))) {
-            $compiler->throwException(
-                'Either the "basedir" or "paths" option is required'.
-                ' to use includes and extends with "absolute" paths'
-            );
-        }
+        $compiler->assert(
+            !($isAbsolutePath && empty($compiler->getOption('paths'))),
+            'Either the "basedir" or "paths" option is required'.
+            ' to use includes and extends with "absolute" paths'
+        );
 
         $paths = $isAbsolutePath
             ? null

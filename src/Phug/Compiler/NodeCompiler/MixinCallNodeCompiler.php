@@ -16,14 +16,13 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(ParserNodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof MixinCallNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to mixin call compiler.',
-                $node
-            );
-        }
-
         $compiler = $this->getCompiler();
+        $compiler->assert(
+            $node instanceof MixinCallNode,
+            'Unexpected '.get_class($node).' given to mixin call compiler.',
+            $node
+        );
+
         $mixinCall = new MixinCallElement();
 
         /** @var MixinCallNode $node */

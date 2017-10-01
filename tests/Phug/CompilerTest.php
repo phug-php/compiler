@@ -384,4 +384,23 @@ class CompilerTest extends AbstractCompilerTest
         $compiler = new Compiler();
         $compiler->throwException('Test Exception');
     }
+
+    /**
+     * @covers ::assert
+     */
+    public function testAssertSuccess()
+    {
+        $compiler = new Compiler();
+        $compiler->assert(true, 'Test Exception');
+    }
+
+    /**
+     * @covers ::assert
+     * @expectedException \Phug\CompilerException
+     */
+    public function testAssertFailure()
+    {
+        $compiler = new Compiler();
+        $compiler->assert(false, 'Test Exception');
+    }
 }

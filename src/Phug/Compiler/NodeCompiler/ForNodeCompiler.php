@@ -10,12 +10,11 @@ class ForNodeCompiler extends EachNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof ForNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to for compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof ForNode,
+            'Unexpected '.get_class($node).' given to for compiler.',
+            $node
+        );
 
         /**
          * @var ForNode $node

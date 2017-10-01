@@ -11,12 +11,11 @@ class AttributeListNodeCompiler extends AbstractNodeCompiler
 {
     public function compileNode(NodeInterface $node, ElementInterface $parent = null)
     {
-        if (!($node instanceof AttributeListNode)) {
-            $this->getCompiler()->throwException(
-                'Unexpected '.get_class($node).' given to attribute list compiler.',
-                $node
-            );
-        }
+        $this->getCompiler()->assert(
+            $node instanceof AttributeListNode,
+            'Unexpected '.get_class($node).' given to attribute list compiler.',
+            $node
+        );
 
         // @codeCoverageIgnoreStart
         return null;
