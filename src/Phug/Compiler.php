@@ -146,6 +146,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'on_element'           => null,
             'filters'              => [],
             'filter_resolvers'     => [],
+            'includes'             => [],
             'parser_class_name'    => Parser::class,
             'formatter_class_name' => Formatter::class,
             'locator_class_name'   => FileLocator::class,
@@ -626,8 +627,16 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $input = $compileEvent->getInput();
         $path = $compileEvent->getPath();
+        $includes = [];
+        foreach ($this->getOption('includes') as $include) {
+            $includes[] = $this->compileDocument(file_get_contents($include), $include);
+        }
 
         $element = $this->compileDocument($input, $path);
+
+        foreach (array_reverse($includes) as $include) {
+            $element->prependChild($include);
+        }
 
         $output = $this->getFormatter()->format($element);
         $output = $this->getFormatter()->formatDependencies().$output;

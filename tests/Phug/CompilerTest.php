@@ -441,4 +441,32 @@ class CompilerTest extends AbstractCompilerTest
         ]);
         self::assertSame('test', $compiler->getFileContents('TEST'));
     }
+
+    /**
+     * @covers ::compile
+     */
+    public function testIncludesOption()
+    {
+        $compiler = new Compiler();
+        $php = $compiler->compileFile(__DIR__.'/../templates/includes-option.pug');
+        ob_start();
+        eval('?>'.$php);
+        $html = trim(ob_get_contents());
+        ob_end_clean();
+
+        self::assertSame('<html><head><title>My Application</title></head><body></body></html>', $html);
+
+        $compiler = new Compiler([
+            'includes' => [
+                __DIR__.'/../templates/mixins.pug',
+            ],
+        ]);
+        $php = $compiler->compileFile(__DIR__.'/../templates/includes-option.pug');
+        ob_start();
+        eval('?>'.$php);
+        $html = trim(ob_get_contents());
+        ob_end_clean();
+
+        self::assertSame('<html><head><title>My Application</title></head><body><p>bar</p></body></html>', $html);
+    }
 }
