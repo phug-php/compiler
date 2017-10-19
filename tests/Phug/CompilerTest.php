@@ -85,6 +85,7 @@ class CompilerTest extends AbstractCompilerTest
             "html\n".
             '  input'
         );
+        $this->compiler->setOption('short_open_tag_fix', false);
         $this->assertCompile([
             '<!DOCTYPE html>',
             '<html><input></html>',
@@ -104,6 +105,7 @@ class CompilerTest extends AbstractCompilerTest
             "doctype 1.1\n",
             "html: input\n",
         ]);
+        $this->compiler->setOption('short_open_tag_fix', 'auto');
     }
 
     /**
