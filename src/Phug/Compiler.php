@@ -676,7 +676,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->path = $path;
         $this->namedBlocks = [];
 
-        $node = $this->parser->parse($input); //Let exceptions fall through
+        $node = $this->parser->parse($input, $path); //Let exceptions fall through
 
         $element = $this->compileNode($node);
 
