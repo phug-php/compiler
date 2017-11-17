@@ -13,7 +13,8 @@ class FileLocator implements LocatorInterface
 
     public function locate($path, array $locations, array $extensions)
     {
-        if (is_file($path)) {
+        // @ catch softly PHP open_basedir restriction
+        if (@is_file($path)) {
             return is_readable($path) ? $path : null;
         }
 
@@ -26,7 +27,7 @@ class FileLocator implements LocatorInterface
             foreach ($extensions as $extension) {
                 $fullPath = "$location/$path$extension";
 
-                if (is_file($fullPath) && is_readable($fullPath)) {
+                if (@is_file($fullPath) && is_readable($fullPath)) {
                     return realpath($fullPath);
                 }
             }
