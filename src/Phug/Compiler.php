@@ -144,6 +144,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'on_output'            => null,
             'on_node'              => null,
             'on_element'           => null,
+            'filename'             => null,
             'filters'              => [],
             'filter_resolvers'     => [],
             'includes'             => [],
@@ -622,7 +623,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function compile($input, $path = null)
     {
-        $compileEvent = new CompileEvent($input, $path);
+        $compileEvent = new CompileEvent($input, $path ?: $this->getOption('filename'));
         $this->trigger($compileEvent);
 
         $input = $compileEvent->getInput();
@@ -711,7 +712,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function getPath()
     {
-        return $this->path;
+        return $this->path ?: $this->getOption('filename');
     }
 
     public function getModuleBaseClassName()

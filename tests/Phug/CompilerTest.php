@@ -388,6 +388,19 @@ class CompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::throwException
+     * @expectedException \Phug\CompilerException
+     * @expectedExceptionMessage foobar.pug
+     */
+    public function testThrowExceptionFileName()
+    {
+        $compiler = new Compiler([
+            'filename' => 'foobar.pug',
+        ]);
+        $compiler->throwException('Test Exception');
+    }
+
+    /**
      * @covers ::assert
      */
     public function testAssertSuccess()
