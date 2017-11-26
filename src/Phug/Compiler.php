@@ -104,6 +104,11 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * @var array
      */
+    private $importPaths;
+
+    /**
+     * @var array
+     */
     private $nodeCompilers;
 
     /**
@@ -130,6 +135,11 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      * @var NodeInterface
      */
     private $currentNode;
+
+    /**
+     * @var CompilerInterface
+     */
+    private $parentCompiler;
 
     public function __construct($options = null)
     {
@@ -212,6 +222,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $this->nodeCompilers = [];
         $this->namedCompilers = [];
+        $this->importPaths = [];
+        $this->parentCompiler = null;
 
         foreach ($this->getOption('node_compilers') as $className => $handler) {
             $this->setNodeCompiler($className, $handler);
@@ -265,8 +277,22 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     {
         $this->layout = null;
         $this->namedCompilers = [];
+        $this->importPaths = [];
         $this->importNodeYielded = false;
         $this->importNode = null;
+        $this->parentCompiler = null;
+    }
+
+    public function getParentCompiler()
+    {
+        return $this->parentCompiler;
+    }
+
+    public function setParentCompiler(CompilerInterface $compiler)
+    {
+        $this->parentCompiler = $compiler;
+
+        return $this;
     }
 
     /**
@@ -511,23 +537,6 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     }
 
     /**
-     * Import blocks named lists into the compiler.
-     *
-     * @param array $blocks
-     *
-     * @return $this|void
-     */
-    public function importBlocks(array $blocks)
-    {
-        foreach ($blocks as $name => $list) {
-            foreach ($list as $block) {
-                /* @var BlockElement $block */
-                $block->addCompiler($this);
-            }
-        }
-    }
-
-    /**
      * Replace each block by its compiled children.
      *
      * @throws CompilerException
@@ -555,6 +564,71 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         } while ($blockProceeded);
 
         return $this;
+    }
+
+    /**
+     * Import blocks named lists into the compiler.
+     *
+     * @param array $blocks
+     *
+     * @return $this
+     */
+    public function importBlocks(array $blocks)
+    {
+        foreach ($blocks as $name => $list) {
+            foreach ($list as $block) {
+                /* @var BlockElement $block */
+                $block->addCompiler($this);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Register a path as an imported path of the current
+     * compiling path.
+     *
+     * @param $path
+     */
+    public function registerImportPath($path)
+    {
+        $current = $this->getPath() ?: $this->getOption('filename');
+        if (!isset($this->importPaths[$current])) {
+            $this->importPaths[$current] = [];
+        }
+
+        $this->importPaths[$current][] = $path;
+
+        if ($this->parentCompiler) {
+            $this->parentCompiler->registerImportPath($path);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $path
+     *
+     * @return array
+     */
+    public function getImportPaths($path = null)
+    {
+        if ($path === null) {
+            return $this->importPaths;
+        }
+
+        return isset($this->importPaths[$path])
+            ? $this->importPaths[$path]
+            : [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getCurrentImportPaths()
+    {
+        return $this->getImportPaths($this->getPath() ?: $this->getOption('filename'));
     }
 
     /**

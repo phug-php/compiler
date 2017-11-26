@@ -51,6 +51,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
             : [dirname($compiler->getPath()) ?: '.'];
 
         $path = $compiler->resolve($node->getPath(), $paths);
+        $compiler->registerImportPath($path);
 
         /** @var FilterNode $filter */
         if ($filter = $node->getFilter()) {
@@ -73,6 +74,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
         }
 
         $subCompiler = clone $compiler;
+        $subCompiler->setParentCompiler($compiler);
         $subCompiler->setImportNode($compiler->getImportNode() ?: $node);
         $element = $subCompiler->compileFileIntoElement($path);
         $compiler->importBlocks($subCompiler->getBlocks());

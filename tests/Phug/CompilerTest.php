@@ -484,4 +484,37 @@ class CompilerTest extends AbstractCompilerTest
 
         self::assertSame('<html><head><title>My Application</title></head><body><p>bar</p></body></html>', $html);
     }
+    /**
+     * @covers ::getParentCompiler
+     * @covers ::setParentCompiler
+     * @covers ::registerImportPath
+     * @covers ::getImportPaths
+     * @covers ::getCurrentImportPaths
+     */
+    public function testGetCurrentImportPaths()
+    {
+        $compiler = new Compiler();
+        $directory = realpath(__DIR__.'/../templates');
+        $path = $directory.DIRECTORY_SEPARATOR.'inc-multi.pug';
+        $length = mb_strlen($directory);
+
+        $compiler->compileFile($path);
+
+        $paths = $compiler->getCurrentImportPaths();
+        $filteredPaths = array_unique(array_map(function ($path) use ($length) {
+            return str_replace(DIRECTORY_SEPARATOR, '/', mb_substr($path, $length + 1));
+        }, $paths));
+
+        self::assertSame([
+            'auxiliary/sub-layout.pug',
+            'auxiliary/layout.pug',
+            'auxiliary/include.nested.pug',
+            'inc-children.pug',
+            'inc.pug',
+            'inc-page.pug',
+            'page.pug',
+            'layout.pug',
+        ], $filteredPaths);
+        self::assertSame($paths, $compiler->getImportPaths()[$path]);
+    }
 }

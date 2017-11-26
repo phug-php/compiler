@@ -33,10 +33,39 @@ interface CompilerInterface extends ModuleContainerInterface
      */
     public function setLayout(Layout $layout);
 
+    /**
+     * @return CompilerInterface|null
+     */
+    public function getParentCompiler();
+
+    /**
+     * @param CompilerInterface
+     *
+     * @return $this
+     */
+    public function setParentCompiler(CompilerInterface $compiler);
+
+    /**
+     * @param      $path
+     * @param null $paths
+     *
+     * @return mixed
+     */
     public function locate($path, $paths = null);
 
+    /**
+     * @param      $path
+     * @param null $paths
+     *
+     * @return mixed
+     */
     public function resolve($path, $paths = null);
 
+    /**
+     * @param $path
+     *
+     * @return mixed
+     */
     public function getFileContents($path);
 
     /**
@@ -78,6 +107,25 @@ interface CompilerInterface extends ModuleContainerInterface
      * @return $this
      */
     public function importBlocks(array $blocks);
+
+    /**
+     * @param $path
+     *
+     * @return $this
+     */
+    public function registerImportPath($path);
+
+    /**
+     * @param string|null $path
+     *
+     * @return array
+     */
+    public function getImportPaths($path = null);
+
+    /**
+     * @return array
+     */
+    public function getCurrentImportPaths();
 
     /**
      * @param NodeInterface         $node
