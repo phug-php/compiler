@@ -43,7 +43,7 @@ interface CompilerInterface extends ModuleContainerInterface
      *
      * @return $this
      */
-    public function setParentCompiler(CompilerInterface $compiler);
+    public function setParentCompiler(self $compiler);
 
     /**
      * @param      $path

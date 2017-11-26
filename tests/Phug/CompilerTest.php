@@ -484,6 +484,7 @@ class CompilerTest extends AbstractCompilerTest
 
         self::assertSame('<html><head><title>My Application</title></head><body><p>bar</p></body></html>', $html);
     }
+
     /**
      * @covers ::getParentCompiler
      * @covers ::setParentCompiler
