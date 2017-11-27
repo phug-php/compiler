@@ -60,7 +60,7 @@ class FileLocatorTest extends AbstractCompilerTest
 
         $locator = new FileLocator();
         self::assertSame(__FILE__, $locator->locate(__FILE__, [], []));
-        self::assertSame(null, $locator->locate('foo.pug', [], []));
-        self::assertSame(null, $locator->locate('foo.pug', [], []));
+        self::assertNull($locator->locate('foo.pug', [], []));
+        self::assertNull($locator->locate('foo.pug', [], []));
     }
 }

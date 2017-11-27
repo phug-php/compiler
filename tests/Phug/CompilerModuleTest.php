@@ -2,6 +2,7 @@
 
 namespace Phug\Test;
 
+use PHPUnit\Framework\TestCase;
 use Phug\Compiler;
 use Phug\Compiler\Event\CompileEvent;
 use Phug\Compiler\Event\ElementEvent;
@@ -14,7 +15,7 @@ use Phug\Parser\Node\ElementNode;
 /**
  * @coversDefaultClass Phug\AbstractCompilerModule
  */
-class CompilerModuleTest extends \PHPUnit_Framework_TestCase
+class CompilerModuleTest extends TestCase
 {
     /**
      * @group modules

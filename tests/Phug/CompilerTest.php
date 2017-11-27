@@ -362,7 +362,7 @@ class CompilerTest extends AbstractCompilerTest
         self::assertTrue($compiler->hasFilter('4'));
         self::assertSame('A', $compiler->getFilter('a'));
         self::assertSame('B', $compiler->getFilter('b'));
-        self::assertSame(null, $compiler->getFilter('c'));
+        self::assertNull($compiler->getFilter('c'));
         self::assertSame(42, $compiler->getFilter('21'));
         self::assertSame(0, $compiler->getFilter('0'));
 
@@ -374,7 +374,7 @@ class CompilerTest extends AbstractCompilerTest
         $compiler->unsetFilter('c');
 
         self::assertFalse($compiler->hasFilter('c'));
-        self::assertSame(null, $compiler->getFilter('c'));
+        self::assertNull($compiler->getFilter('c'));
     }
 
     /**

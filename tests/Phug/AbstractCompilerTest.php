@@ -4,10 +4,11 @@ namespace Phug\Test;
 
 use Exception;
 use JsPhpize\JsPhpize;
+use PHPUnit\Framework\TestCase;
 use Phug\Compiler;
 use Phug\CompilerEvent;
 
-abstract class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractCompilerTest extends TestCase
 {
     /**
      * @var Compiler
