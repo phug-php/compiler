@@ -4,6 +4,7 @@ namespace Phug\Test\Compiler\NodeCompiler;
 
 use Phug\Compiler;
 use Phug\Compiler\NodeCompiler\FilterNodeCompiler;
+use Phug\CompilerInterface;
 use Phug\Formatter\Element\DocumentElement;
 use Phug\Formatter\Element\TextElement;
 use Phug\Parser\Node\ElementNode;
@@ -136,6 +137,27 @@ class FilterNodeCompilerTest extends AbstractCompilerTest
             '21',
             $compiler->compile(
                 ':foo(opt=1) 2'
+            )
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     */
+    public function testFilterCompilerArgument()
+    {
+        $compiler = new Compiler([
+            'filename' => '/directory/bar.pug',
+            'filters'  => [
+                'foo' => function ($contents, $options, CompilerInterface $compiler) {
+                    return basename($compiler->getPath());
+                },
+            ],
+        ]);
+        self::assertSame(
+            'bar.pug',
+            $compiler->compile(
+                ':foo'
             )
         );
     }

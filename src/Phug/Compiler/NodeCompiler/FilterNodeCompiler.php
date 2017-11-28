@@ -99,7 +99,9 @@ class FilterNodeCompiler extends AbstractNodeCompiler
         return strval(call_user_func(
             $filter,
             $input,
-            $options
+            $options,
+            $this->getCompiler(),
+            $this
         ));
     }
 }

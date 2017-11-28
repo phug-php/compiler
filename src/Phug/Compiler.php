@@ -593,7 +593,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function registerImportPath($path)
     {
-        $current = $this->getPath() ?: $this->getOption('filename');
+        $current = $this->getPath();
         if (!isset($this->importPaths[$current])) {
             $this->importPaths[$current] = [];
         }
@@ -628,7 +628,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
      */
     public function getCurrentImportPaths()
     {
-        return $this->getImportPaths($this->getPath() ?: $this->getOption('filename'));
+        return $this->getImportPaths($this->getPath());
     }
 
     /**
@@ -702,6 +702,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
 
         $input = $compileEvent->getInput();
         $path = $compileEvent->getPath();
+        $this->importPaths = [];
         $includes = [];
         foreach ($this->getOption('includes') as $include) {
             $includes[] = $this->compileDocument(file_get_contents($include), $include);
