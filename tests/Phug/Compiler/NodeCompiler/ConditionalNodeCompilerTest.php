@@ -20,11 +20,11 @@ class ConditionalNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompile(
             [
-                '<?php if ($foo > 50) { ?>',
+                '<?php if ((isset($foo) ? $foo : null) > 50) { ?>',
                 '<p>Huge foo</p>',
-                '<?php } elseif ($foo > 20) { ?>',
+                '<?php } elseif ((isset($foo) ? $foo : null) > 20) { ?>',
                 '<p>Big foo</p>',
-                '<?php } elseif ($foo > 10) { ?>',
+                '<?php } elseif ((isset($foo) ? $foo : null) > 10) { ?>',
                 '<p>Medium foo</p>',
                 '<?php } else { ?>',
                 '<p>Small foo</p>',
@@ -43,7 +43,7 @@ class ConditionalNodeCompilerTest extends AbstractCompilerTest
         );
         $this->assertCompile(
             [
-                '<?php if (!($foo % 1)) { ?>',
+                '<?php if (!((isset($foo) ? $foo : null) % 1)) { ?>',
                 '<p>Even foo</p>',
                 '<?php } else { ?>',
                 '<p>Odd foo</p>',

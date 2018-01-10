@@ -36,7 +36,7 @@ class EachNodeCompilerTest extends AbstractCompilerTest
                 '<?php $__pug_temp_empty = false ?>',
                 '<p><?= $item ?></p>',
                 '<?php } ?>',
-                '<?php if ($__pug_temp_empty) { ?>',
+                '<?php if ((isset($__pug_temp_empty) ? $__pug_temp_empty : null)) { ?>',
                 '<p>no items</p>',
                 '<?php } ?>',
             ],
