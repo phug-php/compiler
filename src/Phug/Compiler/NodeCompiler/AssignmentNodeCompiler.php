@@ -26,7 +26,7 @@ class AssignmentNodeCompiler extends AbstractNodeCompiler
         $name = $node->getName();
         $attributes = new SplObjectStorage();
         foreach ($node->getAttributes() as $attribute) {
-            /** @var AttributeNode $attribute */
+            /* @var AttributeNode $attribute */
             $attributes->attach($this->getCompiler()->compileNode($attribute, $parent));
         }
 
