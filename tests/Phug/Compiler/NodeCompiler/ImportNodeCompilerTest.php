@@ -250,6 +250,17 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @covers ::<public>
+     */
+    public function testNestedIncludedMixins()
+    {
+        $this->assertRenderFile(
+            file_get_contents(__DIR__.'/../../../templates/issue26/error-test.html'),
+            __DIR__.'/../../../templates/issue26/error-test.pug'
+        );
+    }
+
+    /**
      * @covers            \Phug\Compiler::compileIntoElement
      * @expectedException \Phug\CompilerException
      */
