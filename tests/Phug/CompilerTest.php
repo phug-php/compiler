@@ -406,7 +406,7 @@ class CompilerTest extends AbstractCompilerTest
     public function testAssertSuccess()
     {
         $compiler = new Compiler();
-        $compiler->assert(true, 'Test Exception');
+        self::assertNull($compiler->assert(true, 'Test Exception'));
     }
 
     /**
