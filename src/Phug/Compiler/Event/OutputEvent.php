@@ -13,7 +13,8 @@ class OutputEvent extends Event
     /**
      * OutputEvent constructor.
      *
-     * @param string $output
+     * @param CompileEvent $compileEvent
+     * @param string       $output
      */
     public function __construct(CompileEvent $compileEvent, $output)
     {
