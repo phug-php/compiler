@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   duplication:
     enabled: false
   fixme:
@@ -11,23 +12,11 @@ engines:
         enabled: false
       UnusedFormalParameter:
         enabled: false
-plugins:
   phpcodesniffer:
     enabled: true
-  phpmd:
-    enabled: true
-  SonarPHP:
+  sonar-php:
     enabled: true
   phan:
     enabled: true
-ratings:
-  paths:
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
-exclude_paths:
-- tests/
+exclude_patterns:
+- 'tests/'
