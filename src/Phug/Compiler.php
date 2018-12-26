@@ -261,7 +261,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
     /**
      * Reset layout and compilers cache on clone.
      */
-    public function __clone()
+    public function reset()
     {
         $this->layout = null;
         $this->namedCompilers = [];
@@ -269,6 +269,14 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
         $this->importNodeYielded = false;
         $this->importNode = null;
         $this->parentCompiler = null;
+    }
+
+    /**
+     * Reset layout and compilers cache on clone.
+     */
+    public function __clone()
+    {
+        $this->reset();
     }
 
     public function getParentCompiler()

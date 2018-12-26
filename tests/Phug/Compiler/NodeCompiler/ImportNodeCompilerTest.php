@@ -51,6 +51,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler::reset
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
@@ -79,6 +80,7 @@ class ImportNodeCompilerTest extends AbstractCompilerTest
 
     /**
      * @covers ::<public>
+     * @covers \Phug\Compiler::reset
      * @covers \Phug\Compiler::__clone
      * @covers \Phug\Compiler::setLayout
      * @covers \Phug\Compiler::getBlocksByName
