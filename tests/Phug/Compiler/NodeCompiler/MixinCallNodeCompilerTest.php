@@ -49,6 +49,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
             __DIR__.'/../../../templates/mixins-test.pug'
         );
     }
+
     /**
      * @group mixins
      * @covers ::<public>
