@@ -162,7 +162,7 @@ abstract class AbstractCompilerTest extends TestCase
         return $this->assertSameLines($expected, $actual);
     }
 
-    protected function assertRenderFile($expected, $actual, array $options = [])
+    protected function assertRenderFile($expected, $actual, array $options = [], array $variables = [])
     {
         $compiler = $this->compiler;
         $compiler->setOptionsRecursive($options);
@@ -170,7 +170,7 @@ abstract class AbstractCompilerTest extends TestCase
         $actual = preg_replace(
             '/\s(class|id)=""/',
             '',
-            $this->getRenderedHtml($php)
+            $this->getRenderedHtml($php, $variables)
         );
 
         return $this->assertSameLines($expected, $actual);

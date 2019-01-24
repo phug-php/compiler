@@ -49,6 +49,33 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
             __DIR__.'/../../../templates/mixins-test.pug'
         );
     }
+    /**
+     * @group mixins
+     * @covers ::<public>
+     */
+    public function testCompileNestedMixins()
+    {
+        $this->assertRenderFile(
+            [
+                '<p>1</p>',
+                '<p>2</p>',
+                '<p>2</p>',
+            ],
+            __DIR__.'/../../../templates/nested-mixins-local-init.pug'
+        );
+        $this->assertRenderFile(
+            [
+                '<p>1</p>',
+                '<p>2</p>',
+                '<p>2</p>',
+            ],
+            __DIR__.'/../../../templates/nested-mixins.pug',
+            [],
+            [
+                'text' => '2',
+            ]
+        );
+    }
 
     /**
      * @group mixins
