@@ -20,6 +20,29 @@ use Phug\Parser\NodeInterface;
 
 class ImportNodeCompiler extends AbstractNodeCompiler
 {
+    protected function isPugImport($path)
+    {
+        $compiler = $this->getCompiler();
+        $extension = pathinfo($path, PATHINFO_EXTENSION) ?: '';
+        $extensions = $compiler->getOption('extensions');
+
+        if ($extension === '') {
+            return in_array('', $extensions);
+        }
+
+        if (!$compiler->getOption('allow_composite_extensions')) {
+            return in_array(".$extension", $extensions, true);
+        }
+
+        foreach ($extensions as $endPattern) {
+            if (substr($path, -strlen($endPattern)) === $endPattern) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @param NodeInterface    $node
      * @param ElementInterface $parent
@@ -67,10 +90,7 @@ class ImportNodeCompiler extends AbstractNodeCompiler
             return $element;
         }
 
-        $extension = pathinfo($path, PATHINFO_EXTENSION) ?: '';
-        $extensions = $compiler->getOption('extensions');
-
-        if (!in_array($extension === '' ? '' : ".$extension", $extensions, true)) {
+        if (!$this->isPugImport($path)) {
             return new TextElement($compiler->getFileContents($path), $node);
         }
 
