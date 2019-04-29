@@ -28,9 +28,20 @@ class FileLocatorTest extends AbstractCompilerTest
             '/views/base.pug',
             str_replace('\\', '/', $locator->locate('base', $paths, $extensions))
         );
+        self::assertFileExists($locator->locate('base.pug', $paths, $extensions));
         self::assertStringEndsWith(
             '/views/base.pug',
             str_replace('\\', '/', $locator->locate('base.pug', $paths, $extensions))
+        );
+        self::assertFileExists($locator->locate('first-module', $paths, $extensions));
+        self::assertStringEndsWith(
+            '/mixins/lib1/first-module.pug',
+            str_replace('\\', '/', $locator->locate('first-module', $paths, $extensions))
+        );
+        self::assertFileExists($locator->locate('first-module.pug', $paths, $extensions));
+        self::assertStringEndsWith(
+            '/mixins/lib1/first-module.pug',
+            str_replace('\\', '/', $locator->locate('first-module.pug', $paths, $extensions))
         );
 
         self::assertFileExists($locator->locate('../layouts/base', $paths, $extensions));

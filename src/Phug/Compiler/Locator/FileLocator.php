@@ -21,7 +21,7 @@ class FileLocator implements LocatorInterface
 
         $length = strlen($extension);
 
-        if ($length && substr($path, $length) === $extension &&
+        if ($length && substr($path, -$length) === $extension &&
             @is_file($fullPath = "$location/$path") && is_readable($fullPath)
         ) {
             return realpath($fullPath);
