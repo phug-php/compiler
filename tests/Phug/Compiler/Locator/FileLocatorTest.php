@@ -12,6 +12,7 @@ class FileLocatorTest extends AbstractCompilerTest
 {
     /**
      * @covers ::normalize
+     * @covers ::getFullPath
      * @covers ::<public>
      */
     public function testLocate()
@@ -26,6 +27,10 @@ class FileLocatorTest extends AbstractCompilerTest
         self::assertStringEndsWith(
             '/views/base.pug',
             str_replace('\\', '/', $locator->locate('base', $paths, $extensions))
+        );
+        self::assertStringEndsWith(
+            '/views/base.pug',
+            str_replace('\\', '/', $locator->locate('base.pug', $paths, $extensions))
         );
 
         self::assertFileExists($locator->locate('../layouts/base', $paths, $extensions));
