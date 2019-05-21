@@ -13,7 +13,7 @@ use Phug\Test\AbstractCompilerTest;
 class MixinCallNodeCompilerTest extends AbstractCompilerTest
 {
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
@@ -51,7 +51,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      */
     public function testCompileNestedMixins()
@@ -79,7 +79,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      */
     public function testCompileVariadicMixin()
@@ -101,7 +101,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
@@ -121,7 +121,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler::compileDocument
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
@@ -174,7 +174,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
-     * @group mixins
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\MixinNodeCompiler::<public>
      */
@@ -229,6 +229,49 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group mixins
+     */
+    public function testMissingMixin()
+    {
+        $code = [
+            'div'."\n",
+            '  p: +yolo()',
+        ];
+        $exception = null;
+
+        try {
+            $this->assertRender(
+                [],
+                $code,
+                [
+                    'debug' => true,
+                ]
+            );
+        } catch (\InvalidArgumentException $e) {
+            ob_end_clean();
+            $exception = $e;
+        } catch (\Exception $e) {
+            ob_end_clean();
+            $exception = $e;
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            $exception = $e;
+        }
+
+        self::assertInstanceOf(\InvalidArgumentException::class, $exception);
+        self::assertSame('Unknown yolo mixin called.', $exception->getMessage());
+
+        $php = $this->compiler->compile(implode("\n", $code));
+        $lines = explode("\n", $php);
+        $before = implode("\n", array_slice($lines, 0, $exception->getLine()));
+        $pos = strrpos($before, '// PUG_DEBUG:');
+        $after = str_replace('?><?php', '', substr($php, $pos));
+
+        self::assertSame('</p></div>', explode('?>', $after)[1]);
+    }
+
+    /**
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
@@ -253,6 +296,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group  mixins
      * @covers ::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::<public>
      * @covers \Phug\Compiler\NodeCompiler\BlockNodeCompiler::compileAnonymousBlock
@@ -277,6 +321,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group             mixins
      * @covers            ::<public>
      * @expectedException \Phug\CompilerException
      */
@@ -292,6 +337,7 @@ class MixinCallNodeCompilerTest extends AbstractCompilerTest
     }
 
     /**
+     * @group             mixins
      * @covers            ::<public>
      * @expectedException \InvalidArgumentException
      */

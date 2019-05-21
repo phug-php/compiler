@@ -23,7 +23,7 @@ class MixinCallNodeCompiler extends AbstractNodeCompiler
             $node
         );
 
-        $mixinCall = new MixinCallElement();
+        $mixinCall = new MixinCallElement($node, $parent);
 
         /** @var MixinCallNode $node */
         $name = $node->getName();
