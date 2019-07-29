@@ -144,6 +144,7 @@ class Compiler implements ModuleContainerInterface, CompilerInterface
             'default_doctype'            => 'html',
             'extensions'                 => ['', '.pug', '.jade'],
             'get_file_contents'          => 'file_get_contents',
+            'scope_each_variables'       => true,
             'on_compile'                 => null,
             'on_output'                  => null,
             'on_node'                    => null,

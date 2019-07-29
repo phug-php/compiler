@@ -15,6 +15,9 @@ class EachNodeCompilerTest extends AbstractCompilerTest
     /**
      * @covers ::<public>
      * @covers ::compileLoop
+     * @covers ::getScopeVariablesDump
+     * @covers ::getScopeVariablesRestore
+     * @covers ::scopeEachVariables
      * @covers \Phug\Compiler\NodeCompiler\AbstractStatementNodeCompiler::wrapStatement
      */
     public function testCompile()
@@ -28,6 +31,9 @@ class EachNodeCompilerTest extends AbstractCompilerTest
             [
                 'each $item in $items'."\n",
                 '  p?!=$item',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -45,6 +51,9 @@ class EachNodeCompilerTest extends AbstractCompilerTest
                 '  p?!=$item'."\n",
                 'else'."\n",
                 '  p no items',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -56,6 +65,145 @@ class EachNodeCompilerTest extends AbstractCompilerTest
             [
                 'each $item, $key in $items'."\n",
                 '  p?!=$item',
+            ],
+            [
+                'scope_each_variables' => false,
+            ]
+        );
+    }
+
+    /**
+     * @covers ::<public>
+     * @covers ::compileLoop
+     * @covers ::getScopeVariablesDump
+     * @covers ::getScopeVariablesRestore
+     * @covers ::scopeEachVariables
+     * @covers \Phug\Compiler\NodeCompiler\AbstractStatementNodeCompiler::wrapStatement
+     */
+    public function testCompileVariablesScope()
+    {
+        $this->assertRender(
+            [
+                '<p>42</p>',
+                '<ul>',
+                '<li>1</li>',
+                '<li>2</li>',
+                '<li>3</li>',
+                '</ul>',
+                '<p>42</p>',
+            ],
+            [
+                '- $val = 42'."\n",
+                'p= $val'."\n",
+                'ul'."\n",
+                '  each $val in [1, 2, 3]'."\n",
+                '    li= $val'."\n",
+                'p= $val',
+            ]
+        );
+        $this->assertRender(
+            [
+                '<p>x 42</p>',
+                '<ul>',
+                '<li>0 1</li>',
+                '<li>1 2</li>',
+                '<li>2 3</li>',
+                '</ul>',
+                '<p>x 42</p>',
+            ],
+            [
+                '- $val = 42'."\n",
+                '- $index = "x"'."\n",
+                'p #{$index} #{$val}'."\n",
+                'ul'."\n",
+                '  each $val, $index in [1, 2, 3]'."\n",
+                '    li #{$index} #{$val}'."\n",
+                'p #{$index} #{$val}',
+            ]
+        );
+        $this->assertRender(
+            [
+                '<p>42</p>',
+                '<ul>',
+                '<li>1</li>',
+                '<li>2</li>',
+                '<li>3</li>',
+                '</ul>',
+                '<p>3</p>',
+            ],
+            [
+                '- $val = 42'."\n",
+                'p= $val'."\n",
+                'ul'."\n",
+                '  each $val in [1, 2, 3]'."\n",
+                '    li= $val'."\n",
+                'p= $val',
+            ],
+            [
+                'scope_each_variables' => false,
+            ]
+        );
+        $this->assertRender(
+            [
+                '<p>x 42</p>',
+                '<ul>',
+                '<li>0 1</li>',
+                '<li>1 2</li>',
+                '<li>2 3</li>',
+                '</ul>',
+                '<p>2 3</p>',
+            ],
+            [
+                '- $val = 42'."\n",
+                '- $index = "x"'."\n",
+                'p #{$index} #{$val}'."\n",
+                'ul'."\n",
+                '  each $val, $index in [1, 2, 3]'."\n",
+                '    li #{$index} #{$val}'."\n",
+                'p #{$index} #{$val}',
+            ],
+            [
+                'scope_each_variables' => false,
+            ]
+        );
+        $this->assertRender(
+            [
+                '<p>42</p>',
+                '<ul>',
+                '<li>1</li>',
+                '<li>2</li>',
+                '<li>3</li>',
+                '</ul>',
+                '<p>42</p>',
+            ],
+            [
+                '- $val = 42'."\n",
+                'p= $val'."\n",
+                'ul'."\n",
+                '  each $val in [1, 2, 3]'."\n",
+                '    li= $val'."\n",
+                'p= $val',
+            ],
+            [
+                'scope_each_variables' => '__anyName',
+            ]
+        );
+        $this->assertRender(
+            [
+                '<p></p>',
+                '<ul>',
+                '<li>1</li>',
+                '<li>2</li>',
+                '<li>3</li>',
+                '</ul>',
+                '<p></p>',
+            ],
+            [
+                'p= $val'."\n",
+                'ul'."\n",
+                '  each $val in [1, 2, 3]'."\n",
+                '    li= $val'."\n",
+                'p= $val',
             ]
         );
     }
