@@ -122,9 +122,12 @@ abstract class AbstractCompilerTest extends TestCase
         self::assertSame($this->implodeLines($expected), $this->implodeLines($actual));
     }
 
-    protected function assertCompile($expected, $actual)
+    protected function assertCompile($expected, $actual, array $options = [])
     {
-        return $this->assertSameLines($expected, $this->compiler->compile($this->implodeLines($actual)));
+        $compiler = clone $this->compiler;
+        $compiler->setOptionsRecursive($options);
+
+        return $this->assertSameLines($expected, $compiler->compile($this->implodeLines($actual)));
     }
 
     protected function assertCompileFile($expected, $actual)

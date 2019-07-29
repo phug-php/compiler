@@ -22,7 +22,10 @@ class ForNodeCompilerTest extends AbstractCompilerTest
     {
         $this->assertCompile(
             '<?php foreach ($items as $item) {} ?>',
-            'for $item in $items'
+            'for $item in $items',
+            [
+                'scope_each_variables' => false,
+            ]
         );
         $this->assertCompile(
             [
@@ -34,6 +37,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
                 'for $item in $items'."\n",
                 '  //- for each item of items'."\n",
                 '  p?!=$item',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -51,6 +57,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
                 '  p?!=$item'."\n",
                 'else'."\n",
                 '  p no items',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -69,6 +78,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
                 '//- comments does not count'."\n",
                 'else'."\n",
                 '  p no items',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -80,6 +92,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
             [
                 'for $item, $key in $items'."\n",
                 '  p?!=$item',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -91,6 +106,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
             [
                 'for $key of $items'."\n",
                 '  p?!=$key',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -102,6 +120,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
             [
                 'for $key, $item of $items'."\n",
                 '  p?!=$item',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
         $this->assertCompile(
@@ -113,6 +134,9 @@ class ForNodeCompilerTest extends AbstractCompilerTest
             [
                 'for $i = 0; $i < 5; $i++'."\n",
                 '  p?!=$i',
+            ],
+            [
+                'scope_each_variables' => false,
             ]
         );
     }
