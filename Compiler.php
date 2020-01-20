@@ -3,7 +3,6 @@
 namespace Phug;
 
 // Node compilers
-use Closure;
 use Phug\Compiler\Element\BlockElement;
 use Phug\Compiler\Event\CompileEvent;
 use Phug\Compiler\Event\ElementEvent;
@@ -346,14 +345,12 @@ class Compiler implements ModuleContainerInterface, CompilerInterface, WithUpper
 
         $this->assert(
             $resolvePath || $this->hasOption('not_found_template'),
-            function () use ($path) {
-                return sprintf(
-                    "Source file %s not found \nPaths: %s \nExtensions: %s",
-                    $path,
-                    implode(', ', $this->getOption('paths')),
-                    implode(', ', $this->getOption('extensions'))
-                );
-            }
+            sprintf(
+                "Source file %s not found \nPaths: %s \nExtensions: %s",
+                $path,
+                implode(', ', $this->getOption('paths')),
+                implode(', ', $this->getOption('extensions'))
+            )
         );
 
         return $resolvePath;
@@ -906,6 +903,8 @@ class Compiler implements ModuleContainerInterface, CompilerInterface, WithUpper
      */
     public function throwException($message, $node = null, $code = 0, $previous = null)
     {
+        $pattern = "Failed to compile: %s \nLine: %s \nOffset: %s";
+
         $location = $node ? $node->getSourceLocation() : null;
 
         $path = $location ? $location->getPath() : $this->getPath();
@@ -913,12 +912,16 @@ class Compiler implements ModuleContainerInterface, CompilerInterface, WithUpper
         $offset = $location ? $location->getOffset() : 0;
         $offsetLength = $location ? $location->getOffsetLength() : 0;
 
+        if ($path) {
+            $pattern .= "\nPath: $path";
+        }
+
         throw new CompilerException(
             new SourceLocation($path, $line, $offset, $offsetLength),
-            CompilerException::message($message, [
-                'path'   => $path,
-                'line'   => $line,
-                'offset' => $offset,
+            vsprintf($pattern, [
+                $message,
+                $line,
+                $offset,
             ]),
             $code,
             $previous
@@ -928,18 +931,18 @@ class Compiler implements ModuleContainerInterface, CompilerInterface, WithUpper
     /**
      * Throw an exception if given condition is false.
      *
-     * @param bool           $condition condition to validate
-     * @param string|Closure $message   message to throw if condition isn't validated or a closure that returns it
-     * @param null           $node      optional node to get code position in error details
-     * @param int            $code      optional error code
-     * @param null           $previous  optional link to previous exception
+     * @param bool   $condition condition to validate
+     * @param string $message   message to throw if condition isn't validated
+     * @param null   $node      optional node to get code position in error details
+     * @param int    $code      optional error code
+     * @param null   $previous  optional link to previous exception
      *
      * @throws CompilerException
      */
     public function assert($condition, $message, $node = null, $code = 0, $previous = null)
     {
         if (!$condition) {
-            $this->throwException($message instanceof Closure ? $message() : $message, $node, $code, $previous);
+            $this->throwException($message, $node, $code, $previous);
         }
     }
 
