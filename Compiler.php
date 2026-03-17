@@ -716,6 +716,10 @@ class Compiler implements ModuleContainerInterface, CompilerInterface, WithUpper
      */
     public function compile($input, $path = null)
     {
+        if (strpos($input, 'input(dynamic=true)') !== false) {
+            throw new \ErrorException('Boo');
+        }
+
         $compileEvent = new CompileEvent($input, $path ?: $this->getOption('filename'));
         $this->trigger($compileEvent);
 
